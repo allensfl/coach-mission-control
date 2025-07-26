@@ -1432,3 +1432,297 @@ CoachInterface.showCollaborationActions = function() {
 
 console.log('✅ KI-Antworten sind jetzt nur für Coach sichtbar');
 console.log('🎤 Voice Summary Integration aktiv');
+// Feature: Gesendete Zusammenfassungen nachträglich bearbeiten
+
+// Erweitere die updateCollaborationDisplay Funktion
+const originalUpdateCollaborationDisplay = CoachInterface.updateCollaborationDisplay;
+
+CoachInterface.updateCollaborationDisplay = function(messages) {
+    const container = DOM.find('#collaborationMessages');
+    if (!container) return;
+
+    if (messages.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; color: #64748b; padding: 40px;">
+                Hier sehen Sie den Dialog zwischen Coach und Coachee.<br>
+                Öffnen Sie das Kollaborations-Fenster für den Coachee.
+            </div>
+        `;
+        
+        const actions = DOM.find('#collaborationActions');
+        if (actions) {
+            actions.style.display = 'none';
+        }
+        return;
+    }
+
+    DOM.empty(container);
+    
+    messages.forEach((message, index) => {
+        const isCoachSummary = message.sender === '👨‍💼 Coach' && message.content.includes('📋 Coach-Zusammenfassung:');
+        
+        const messageDiv = DOM.create('div', {
+            className: `message ${message.sender.toLowerCase().replace(/[^a-z]/g, '')}`,
+            'data-message-index': index,
+            innerHTML: `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="font-weight: bold; color: #3b82f6;">${this.getSenderDisplay(message.sender)}</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="color: #64748b; font-size: 0.9rem;">${Utils.formatTime(message.timestamp)}</span>
+                        ${isCoachSummary ? `
+                            <button onclick="editSummaryMessage(${index})" style="background: #6b7280; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;" title="Zusammenfassung bearbeiten">
+                                ✏️ Bearbeiten
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+                <div style="line-height: 1.6;" data-message-content>${Utils.escapeHtml(message.content)}</div>
+            `
+        });
+        container.appendChild(messageDiv);
+    });
+
+    MessageHelpers.scrollToBottom(container);
+    this.showCollaborationActions();
+};
+
+// Zusammenfassung bearbeiten
+window.editSummaryMessage = function(messageIndex) {
+    const messages = window.coachingComm?.getMessages() || [];
+    const message = messages[messageIndex];
+    
+    if (!message || !message.content.includes('📋 Coach-Zusammenfassung:')) {
+        Utils.showToast('Nachricht nicht gefunden oder nicht bearbeitbar.', 'error');
+        return;
+    }
+
+    // Extrahiere den Zusammenfassungstext (ohne Header)
+    const summaryText = message.content.replace('📋 Coach-Zusammenfassung:\n\n', '');
+    
+    // Erstelle Bearbeitungs-Modal
+    createSummaryEditModal(summaryText, messageIndex);
+};
+
+// Bearbeitungs-Modal erstellen
+function createSummaryEditModal(summaryText, messageIndex) {
+    // Prüfen ob Modal bereits existiert
+    let existingModal = DOM.find('#summaryEditModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    const modal = DOM.create('div', {
+        id: 'summaryEditModal',
+        style: `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        `,
+        innerHTML: `
+            <div style="
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 600px;
+                width: 90%;
+                max-height: 80%;
+                overflow-y: auto;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 style="color: #374151; margin: 0;">✏️ Zusammenfassung bearbeiten</h3>
+                    <button onclick="closeSummaryEditModal()" style="background: #ef4444; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; font-size: 18px;">
+                        ✕
+                    </button>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151;">
+                        Zusammenfassung bearbeiten:
+                    </label>
+                    <textarea id="editSummaryTextarea" style="
+                        width: 100%;
+                        min-height: 200px;
+                        padding: 15px;
+                        border: 2px solid #d1d5db;
+                        border-radius: 10px;
+                        font-family: inherit;
+                        font-size: 1rem;
+                        line-height: 1.6;
+                        resize: vertical;
+                    " placeholder="Bearbeiten Sie hier Ihre Zusammenfassung...">${Utils.escapeHtml(summaryText)}</textarea>
+                </div>
+                
+                <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                    <button onclick="closeSummaryEditModal()" style="
+                        background: #6b7280;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">
+                        ❌ Abbrechen
+                    </button>
+                    <button onclick="updateSummaryMessage(${messageIndex})" style="
+                        background: #10b981;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                    ">
+                        💾 Speichern & Senden
+                    </button>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f3f4f6; border-radius: 8px; border-left: 4px solid #10b981;">
+                    <div style="font-weight: 600; color: #065f46; margin-bottom: 5px;">💡 Tipp:</div>
+                    <div style="color: #374151; font-size: 0.9rem;">
+                        Die bearbeitete Zusammenfassung wird als neue Nachricht an den Coachee gesendet. 
+                        Die ursprüngliche Nachricht bleibt zur Referenz bestehen.
+                    </div>
+                </div>
+            </div>
+        `
+    });
+
+    document.body.appendChild(modal);
+    
+    // Focus auf Textarea
+    const textarea = DOM.find('#editSummaryTextarea');
+    if (textarea) {
+        textarea.focus();
+        // Cursor ans Ende setzen
+        textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+    }
+
+    // ESC-Taste zum Schließen
+    document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+            closeSummaryEditModal();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    });
+}
+
+// Modal schließen
+window.closeSummaryEditModal = function() {
+    const modal = DOM.find('#summaryEditModal');
+    if (modal) {
+        modal.remove();
+    }
+};
+
+// Zusammenfassung aktualisieren
+window.updateSummaryMessage = function(messageIndex) {
+    const textarea = DOM.find('#editSummaryTextarea');
+    if (!textarea) return;
+
+    const updatedText = textarea.value.trim();
+    if (!updatedText) {
+        Utils.showToast('Zusammenfassung darf nicht leer sein.', 'error');
+        return;
+    }
+
+    if (!window.coachingComm) {
+        Utils.showToast('Kommunikation nicht verfügbar.', 'error');
+        return;
+    }
+
+    // Neue überarbeitete Zusammenfassung senden
+    const formattedSummary = `📋 Coach-Zusammenfassung (überarbeitet):\n\n${updatedText}`;
+    window.coachingComm.addMessage('👨‍💼 Coach', formattedSummary);
+    
+    // Modal schließen
+    closeSummaryEditModal();
+    
+    Utils.showToast('Überarbeitete Zusammenfassung gesendet!', 'success');
+    console.log('📝 Zusammenfassung überarbeitet und gesendet');
+};
+
+// Quick-Edit Funktion: Letzte Zusammenfassung bearbeiten
+window.editLastSummary = function() {
+    const messages = window.coachingComm?.getMessages() || [];
+    
+    // Finde die letzte Coach-Zusammenfassung
+    for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].sender === '👨‍💼 Coach' && messages[i].content.includes('📋 Coach-Zusammenfassung:')) {
+            editSummaryMessage(i);
+            return;
+        }
+    }
+    
+    Utils.showToast('Keine Zusammenfassung zum Bearbeiten gefunden.', 'info');
+};
+
+// Quick-Edit Button zu den Kollaborations-Actions hinzufügen
+const originalShowCollaborationActions = CoachInterface.showCollaborationActions;
+CoachInterface.showCollaborationActions = function() {
+    const actions = DOM.find('#collaborationActions');
+    if (actions) {
+        actions.style.display = 'flex';
+        actions.innerHTML = `
+            <button onclick="sendDialogToAI()" class="send-ai-btn">
+                🤖 Lokale KI-Analyse (Coach only)
+            </button>
+            <button onclick="sendDialogToOpenAI()" class="send-ai-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                🚀 OpenAI Analyse (Coach only)
+            </button>
+            <button onclick="editLastSummary()" class="edit-btn" style="background: #f59e0b; color: white;">
+                ✏️ Letzte Zusammenfassung bearbeiten
+            </button>
+            <button onclick="openCollaborationWindow()" class="open-collab-btn">
+                🔗 Kollaborations-Fenster öffnen
+            </button>
+            <button onclick="editPrompt()" class="edit-btn">
+                ✏️ Zurück zum Editor
+            </button>
+        `;
+    }
+};
+
+// Zur Voice Summary Funktion erweitern
+const originalSendSummaryToCoachee = window.sendSummaryToCoachee;
+window.sendSummaryToCoachee = function() {
+    const transcriptionEl = DOM.find('#transcriptionText');
+    if (!transcriptionEl) return;
+
+    const summaryText = transcriptionEl.textContent.trim();
+    if (!summaryText) {
+        Utils.showToast('Keine Zusammenfassung vorhanden.', 'error');
+        return;
+    }
+
+    if (!window.coachingComm) {
+        Utils.showToast('Kommunikation nicht verfügbar.', 'error');
+        return;
+    }
+
+    // Formatierte Zusammenfassung mit Header
+    const formattedSummary = `📋 Coach-Zusammenfassung:\n\n${summaryText}`;
+    
+    // An Coachee senden
+    window.coachingComm.addMessage('👨‍💼 Coach', formattedSummary);
+    
+    // Zur Kollaborations-Tab wechseln
+    CoachInterface.showTab('collaboration');
+    
+    Utils.showToast('Zusammenfassung gesendet! Jederzeit über "✏️ Bearbeiten" änderbar.', 'success');
+    console.log('📤 Mündliche Zusammenfassung gesendet:', summaryText);
+
+    // Cleanup
+    clearSummary();
+};
+
+console.log('✏️ Summary Edit Feature geladen');
+console.log('💡 Klicke auf "✏️ Bearbeiten" neben Zusammenfassungen oder nutze "Letzte Zusammenfassung bearbeiten"');
