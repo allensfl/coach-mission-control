@@ -1,6 +1,6 @@
 /* ===== PROMPTS.JS - Prompt-Datenbank ===== */
 
-const promptsData = {
+window.prompts = {
     // ===== GEISSLER TRIADISCH (GT1-GT12) =====
     GT1: {
         text: "Ich habe folgendes Anliegen: [PROBLEMBESCHREIBUNG]. Kannst du mir helfen, das strukturiert zu durchdenken?",
@@ -308,4 +308,4 @@ const promptsData = {
     }
 };
 
-console.log('📋 Prompts geladen:', Object.keys(promptsData).length, 'Prompts verfügbar');
+console.log('📋 Prompts geladen:', Object.keys(window.prompts).length, 'Prompts verfügbar');
