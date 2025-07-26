@@ -1220,3 +1220,215 @@ setTimeout(addVoiceSummaryButton, 3000);
 
 console.log('🎤 Voice-to-Text Zusammenfassung Feature geladen');
 console.log('💡 Nutze Coach-KI Tab für mündliche Zusammenfassungen');
+// Fix: KI-Antworten NUR für Coach sichtbar machen
+
+// Original sendDialogToAI und sendDialogToOpenAI Funktionen anpassen
+// Ersetze die bestehenden Funktionen mit diesen:
+
+window.sendDialogToAI = function() {
+    const messages = window.coachingComm?.getMessages() || [];
+    
+    if (messages.length === 0) {
+        Utils.showToast('Keine Nachrichten zum Senden vorhanden.', 'error');
+        return;
+    }
+    
+    // Dialog zu KI-readable Format konvertieren
+    const dialog = messages.map(msg => `${msg.sender}: ${msg.content}`).join('\n\n');
+    
+    // Intelligente KI-Antwort basierend auf Dialog generieren
+    const aiResponse = generateAIResponse(dialog, messages);
+    
+    // KI-Antwort NICHT an Coachee senden - nur für Coach anzeigen
+    displayAIResponseForCoachOnly('🤖 Lokale KI', aiResponse);
+    
+    Utils.showToast('Lokale KI-Analyse erstellt (nur für Coach sichtbar)', 'success');
+    console.log('🤖 Lokale KI-Antwort nur für Coach generiert');
+};
+
+window.sendDialogToOpenAI = async function() {
+    const messages = window.coachingComm?.getMessages() || [];
+    
+    if (messages.length === 0) {
+        Utils.showToast('Keine Nachrichten zum Senden vorhanden.', 'error');
+        return;
+    }
+
+    // Button-Status ändern
+    const button = document.querySelector('[onclick="sendDialogToOpenAI()"]');
+    if (button) {
+        button.textContent = '🚀 OpenAI denkt...';
+        button.disabled = true;
+    }
+
+    try {
+        // Dialog zu strukturiertem Format konvertieren
+        const dialog = messages.map(msg => `${msg.sender}: ${msg.content}`).join('\n\n');
+        
+        // Kontext für bessere KI-Antworten
+        const context = {
+            clientName: window.coachingApp.selectedClient?.name || 'Unbekannt',
+            clientTopics: window.coachingApp.selectedClient?.topics || [],
+            sessionPhase: 'Dialog-Analyse',
+            messageCount: messages.length,
+            lastSender: messages[messages.length - 1]?.sender
+        };
+
+        // OpenAI Assistant aufrufen
+        const aiResponse = await generateOpenAIResponse(dialog, context);
+        
+        if (aiResponse) {
+            // KI-Antwort NICHT an Coachee senden - nur für Coach anzeigen
+            displayAIResponseForCoachOnly('🚀 OpenAI Coach', aiResponse);
+            Utils.showToast('OpenAI Analyse erstellt (nur für Coach sichtbar)', 'success');
+        }
+
+    } catch (error) {
+        console.error('Error sending to OpenAI:', error);
+        Utils.showToast('Fehler beim Senden an OpenAI.', 'error');
+        
+    } finally {
+        // Button zurücksetzen
+        if (button) {
+            button.textContent = '🚀 Dialog an OpenAI';
+            button.disabled = false;
+        }
+    }
+};
+
+// Neue Funktion: KI-Antwort nur für Coach anzeigen
+function displayAIResponseForCoachOnly(sender, response) {
+    // Spezielle KI-Antwort Box im Kollaborations-Monitor hinzufügen
+    const collaborationMessages = DOM.find('#collaborationMessages');
+    if (!collaborationMessages) return;
+
+    // Prüfen ob bereits eine KI-Antwort Box existiert
+    let aiResponseBox = DOM.find('#coachOnlyAIResponse');
+    
+    if (!aiResponseBox) {
+        // Neue KI-Antwort Box erstellen
+        aiResponseBox = DOM.create('div', {
+            id: 'coachOnlyAIResponse',
+            style: `
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+                border: 3px solid #10b981;
+                border-radius: 15px;
+                padding: 20px;
+                margin: 20px 0;
+                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+            `,
+            innerHTML: `
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                    <h4 style="color: #065f46; margin: 0; font-weight: 700;">
+                        🤖 KI-Analyse (nur für Coach)
+                    </h4>
+                    <button onclick="closeCoachAIResponse()" style="background: #ef4444; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 16px;">
+                        ✕
+                    </button>
+                </div>
+                <div id="coachAIContent" style="background: white; padding: 15px; border-radius: 10px; border: 2px solid rgba(16, 185, 129, 0.3); line-height: 1.6; color: #374151;">
+                    <!-- KI-Antwort wird hier eingefügt -->
+                </div>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button onclick="createVoiceSummaryFromAI()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        🎤 Mündliche Zusammenfassung erstellen
+                    </button>
+                    <button onclick="sendAIResponseToCoachee()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;">
+                        📤 Doch an Coachee senden
+                    </button>
+                </div>
+            `
+        });
+        
+        // Box vor den normalen Nachrichten einfügen
+        collaborationMessages.insertBefore(aiResponseBox, collaborationMessages.firstChild);
+    }
+
+    // KI-Antwort einfügen
+    const contentDiv = DOM.find('#coachAIContent');
+    if (contentDiv) {
+        contentDiv.innerHTML = `
+            <div style="font-weight: 600; color: #065f46; margin-bottom: 10px;">${sender}</div>
+            <div>${Utils.escapeHtml(response)}</div>
+        `;
+    }
+
+    // Scroll to top um die KI-Antwort zu zeigen
+    collaborationMessages.scrollTop = 0;
+}
+
+// KI-Antwort Box schließen
+window.closeCoachAIResponse = function() {
+    const aiBox = DOM.find('#coachOnlyAIResponse');
+    if (aiBox) {
+        aiBox.remove();
+    }
+};
+
+// Voice Summary direkt aus KI-Antwort erstellen
+window.createVoiceSummaryFromAI = function() {
+    // Zur Coach-KI Tab wechseln
+    CoachInterface.showTab('coachki');
+    
+    // KI-Antwort in Coach Input einfügen
+    const aiContent = DOM.find('#coachAIContent div:last-child')?.textContent || '';
+    const coachInput = DOM.find('#coachInput');
+    
+    if (coachInput && aiContent) {
+        coachInput.value = `Basierend auf dieser KI-Analyse möchte ich eine Zusammenfassung für meinen Coachee erstellen:\n\n${aiContent}`;
+        
+        // Automatisch lokale Coach-KI aufrufen
+        setTimeout(() => {
+            askCoachKI();
+        }, 500);
+    }
+    
+    Utils.showToast('Voice Summary Modus aktiviert - siehe Coach-KI Tab', 'info');
+};
+
+// KI-Antwort doch an Coachee senden (falls gewünscht)
+window.sendAIResponseToCoachee = function() {
+    const aiContent = DOM.find('#coachAIContent div:last-child')?.textContent || '';
+    
+    if (!aiContent) {
+        Utils.showToast('Keine KI-Antwort vorhanden.', 'error');
+        return;
+    }
+    
+    if (!window.coachingComm) {
+        Utils.showToast('Kommunikation nicht verfügbar.', 'error');
+        return;
+    }
+    
+    // Bestätigungsdialog
+    if (confirm('Möchten Sie die KI-Antwort wirklich an den Coachee senden?')) {
+        window.coachingComm.addMessage('🤖 Coach-KI', aiContent);
+        closeCoachAIResponse();
+        Utils.showToast('KI-Antwort an Coachee gesendet', 'success');
+    }
+};
+
+// Kollaborations-Actions anpassen
+CoachInterface.showCollaborationActions = function() {
+    const actions = DOM.find('#collaborationActions');
+    if (actions) {
+        actions.style.display = 'flex';
+        actions.innerHTML = `
+            <button onclick="sendDialogToAI()" class="send-ai-btn">
+                🤖 Lokale KI-Analyse (Coach only)
+            </button>
+            <button onclick="sendDialogToOpenAI()" class="send-ai-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                🚀 OpenAI Analyse (Coach only)
+            </button>
+            <button onclick="openCollaborationWindow()" class="open-collab-btn">
+                🔗 Kollaborations-Fenster öffnen
+            </button>
+            <button onclick="editPrompt()" class="edit-btn">
+                ✏️ Zurück zum Editor
+            </button>
+        `;
+    }
+};
+
+console.log('✅ KI-Antworten sind jetzt nur für Coach sichtbar');
+console.log('🎤 Voice Summary Integration aktiv');
