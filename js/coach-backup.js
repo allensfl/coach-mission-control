@@ -59,22 +59,6 @@ class CoachingInterface {
                 this.selectClient(clientId);
             });
         });
-
-        // Quick Buttons
-        document.querySelectorAll('.quick-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const action = e.target.dataset.action;
-                this.handleQuickAction(action);
-            });
-        });
-
-        // Prompt Cards
-        document.querySelectorAll('.prompt-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const promptId = e.currentTarget.dataset.promptId;
-                this.usePrompt(promptId);
-            });
-        });
     }
 
     // OpenAI Assistant Integration
@@ -304,7 +288,7 @@ class CoachingInterface {
             document.querySelectorAll('.client-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            document.querySelector(`[data-client-id="${clientId}"]`)?.classList.add('selected');
+            document.querySelector(`[data-client-id="${clientId}"]`).classList.add('selected');
             
             // Neuen Thread für neuen Client starten
             currentThreadId = null;
@@ -328,18 +312,6 @@ class CoachingInterface {
             this.addMessageToChat('coach', message);
             input.value = '';
         }
-    }
-
-    handleQuickAction(action) {
-        const actions = {
-            'process': 'Lass uns den Coaching-Prozess strukturieren...',
-            'methods': 'Welche Coaching-Methoden könnten hier hilfreich sein?',
-            'questions': 'Hier sind einige kraftvolle Coaching-Fragen...',
-            'resources': 'Ich empfehle folgende Ressourcen...'
-        };
-        
-        const message = actions[action] || 'Aktion ausgeführt';
-        document.getElementById('coachInput').value = message;
     }
 
     renderClients(clients) {
@@ -372,7 +344,7 @@ class CoachingInterface {
         if (!container) return;
 
         container.innerHTML = prompts.map(prompt => `
-            <div class="prompt-card" data-category="${prompt.category}" data-prompt-id="${prompt.id}">
+            <div class="prompt-card" data-category="${prompt.category}">
                 <h4>${prompt.title}</h4>
                 <p>${prompt.description}</p>
                 <div class="prompt-actions">
@@ -391,7 +363,7 @@ class CoachingInterface {
     }
 }
 
-// CSS für Notifications und Chat-Messages
+// CSS für Notifications
 const notificationStyles = document.createElement('style');
 notificationStyles.textContent = `
     @keyframes slideIn {
@@ -409,13 +381,11 @@ notificationStyles.textContent = `
         padding: 12px;
         border-radius: 8px;
         backdrop-filter: blur(10px);
-        background: rgba(249, 250, 251, 0.7);
-        border: 1px solid rgba(209, 213, 219, 0.4);
     }
     
     .coach-message {
-        background: rgba(99, 102, 241, 0.1);
-        border-left: 3px solid #6366f1;
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 3px solid #3b82f6;
     }
     
     .ai-message {
@@ -428,11 +398,6 @@ notificationStyles.textContent = `
         border-left: 3px solid #f97316;
     }
     
-    .system-message {
-        background: rgba(107, 114, 128, 0.1);
-        border-left: 3px solid #6b7280;
-    }
-    
     .message-header {
         display: flex;
         justify-content: space-between;
@@ -440,7 +405,6 @@ notificationStyles.textContent = `
         margin-bottom: 8px;
         font-size: 0.875rem;
         opacity: 0.8;
-        color: #374151;
     }
     
     .message-role {
@@ -454,12 +418,6 @@ notificationStyles.textContent = `
     .message-content {
         line-height: 1.5;
         white-space: pre-wrap;
-        color: #1f2937;
-    }
-    
-    .notification {
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 `;
 document.head.appendChild(notificationStyles);
