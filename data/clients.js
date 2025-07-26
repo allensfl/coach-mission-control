@@ -1,6 +1,6 @@
 /* ===== CLIENTS.JS - Klienten-Datenbank ===== */
 
-window.clients = [
+const clientsData = [
     {
         id: 1,
         name: "Sarah Müller",
