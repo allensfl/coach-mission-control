@@ -876,3 +876,347 @@ window.debugOpenAI = function() {
         .then(r => console.log('API Status:', r.status))
         .catch(e => console.log('API Error:', e.message));
 };
+// Voice-to-Text Zusammenfassung Feature - Patch für coach.js
+
+// Speech Recognition Setup
+let speechRecognition = null;
+let isRecording = false;
+let recordingStartTime = null;
+
+// Initialize Speech Recognition
+function initSpeechRecognition() {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        speechRecognition.continuous = true;
+        speechRecognition.interimResults = true;
+        speechRecognition.lang = 'de-DE';
+        
+        console.log('🎤 Speech Recognition initialisiert');
+        return true;
+    } else {
+        console.log('❌ Speech Recognition nicht verfügbar');
+        return false;
+    }
+}
+
+// Voice Summary Interface hinzufügen
+function addVoiceSummaryInterface() {
+    const coachKIResponse = DOM.find('#coachKIResponse');
+    if (!coachKIResponse || DOM.find('#voiceSummarySection')) return;
+
+    const voiceSummaryHTML = `
+        <div id="voiceSummarySection" style="margin-top: 20px; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 2px solid rgba(16, 185, 129, 0.3);">
+            <h4 style="color: #065f46; margin-bottom: 15px; display: flex; align-items: center;">
+                🎤 Mündliche Zusammenfassung für Coachee
+            </h4>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center;">
+                <button id="startRecordingBtn" onclick="startVoiceRecording()" class="voice-btn" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🎤 Aufnahme starten
+                </button>
+                <button id="stopRecordingBtn" onclick="stopVoiceRecording()" class="voice-btn" style="background: #ef4444; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: none;">
+                    ⏹️ Aufnahme stoppen
+                </button>
+                <span id="recordingStatus" style="color: #065f46; font-weight: 600;"></span>
+            </div>
+            
+            <div id="transcriptionContainer" style="background: white; border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 15px; min-height: 100px; margin-bottom: 15px; display: none;">
+                <div style="color: #065f46; font-weight: 600; margin-bottom: 10px;">Transkription:</div>
+                <div id="transcriptionText" style="line-height: 1.6; color: #374151;"></div>
+            </div>
+            
+            <div id="summaryActions" style="display: none; gap: 10px;">
+                <button onclick="editSummary()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    ✏️ Bearbeiten
+                </button>
+                <button onclick="sendSummaryToCoachee()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    📤 An Coachee senden
+                </button>
+                <button onclick="clearSummary()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    🗑️ Löschen
+                </button>
+            </div>
+        </div>
+    `;
+    
+    coachKIResponse.insertAdjacentHTML('beforeend', voiceSummaryHTML);
+}
+
+// Aufnahme starten
+window.startVoiceRecording = function() {
+    if (!speechRecognition) {
+        if (!initSpeechRecognition()) {
+            Utils.showToast('Speech Recognition nicht verfügbar. Browser unterstützt diese Funktion nicht.', 'error');
+            return;
+        }
+    }
+
+    isRecording = true;
+    recordingStartTime = Date.now();
+    
+    // UI Updates
+    DOM.find('#startRecordingBtn').style.display = 'none';
+    DOM.find('#stopRecordingBtn').style.display = 'inline-block';
+    DOM.find('#recordingStatus').textContent = 'Aufnahme läuft... 🔴';
+    DOM.find('#transcriptionContainer').style.display = 'block';
+    DOM.find('#transcriptionText').textContent = 'Sprechen Sie jetzt...';
+
+    // Recording Timer
+    const timer = setInterval(() => {
+        if (!isRecording) {
+            clearInterval(timer);
+            return;
+        }
+        const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+        DOM.find('#recordingStatus').textContent = `Aufnahme läuft... 🔴 ${elapsed}s`;
+    }, 1000);
+
+    // Speech Recognition Events
+    speechRecognition.onresult = function(event) {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + ' ';
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        const transcriptionEl = DOM.find('#transcriptionText');
+        if (transcriptionEl) {
+            const currentFinal = transcriptionEl.getAttribute('data-final') || '';
+            transcriptionEl.setAttribute('data-final', currentFinal + finalTranscript);
+            transcriptionEl.innerHTML = 
+                `<span style="color: #374151;">${currentFinal + finalTranscript}</span>` +
+                `<span style="color: #9ca3af; font-style: italic;">${interimTranscript}</span>`;
+        }
+    };
+
+    speechRecognition.onerror = function(event) {
+        console.error('Speech Recognition Error:', event.error);
+        Utils.showToast(`Spracherkennung Fehler: ${event.error}`, 'error');
+        stopVoiceRecording();
+    };
+
+    speechRecognition.onend = function() {
+        if (isRecording) {
+            // Automatisch neu starten wenn noch aufgenommen wird
+            speechRecognition.start();
+        }
+    };
+
+    speechRecognition.start();
+    Utils.showToast('Sprachaufnahme gestartet', 'success');
+    console.log('🎤 Sprachaufnahme gestartet');
+};
+
+// Aufnahme stoppen
+window.stopVoiceRecording = function() {
+    if (!speechRecognition || !isRecording) return;
+
+    isRecording = false;
+    speechRecognition.stop();
+
+    // UI Updates
+    DOM.find('#startRecordingBtn').style.display = 'inline-block';
+    DOM.find('#stopRecordingBtn').style.display = 'none';
+    DOM.find('#recordingStatus').textContent = 'Aufnahme beendet ✅';
+    DOM.find('#summaryActions').style.display = 'flex';
+
+    const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+    Utils.showToast(`Sprachaufnahme beendet (${duration}s)`, 'success');
+    
+    // Finale Transkription aufräumen
+    const transcriptionEl = DOM.find('#transcriptionText');
+    if (transcriptionEl) {
+        const finalText = transcriptionEl.getAttribute('data-final') || transcriptionEl.textContent;
+        transcriptionEl.innerHTML = `<span style="color: #374151;">${finalText.trim()}</span>`;
+    }
+    
+    console.log('⏹️ Sprachaufnahme beendet');
+};
+
+// Zusammenfassung bearbeiten
+window.editSummary = function() {
+    const transcriptionEl = DOM.find('#transcriptionText');
+    if (!transcriptionEl) return;
+
+    const currentText = transcriptionEl.textContent || '';
+    const textarea = DOM.create('textarea', {
+        style: 'width: 100%; min-height: 100px; padding: 10px; border: 2px solid #10b981; border-radius: 6px; font-family: inherit;',
+        value: currentText
+    });
+
+    transcriptionEl.parentNode.replaceChild(textarea, transcriptionEl);
+    textarea.focus();
+
+    // Save/Cancel Buttons
+    const actions = DOM.find('#summaryActions');
+    actions.innerHTML = `
+        <button onclick="saveSummaryEdit()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            💾 Speichern
+        </button>
+        <button onclick="cancelSummaryEdit()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            ❌ Abbrechen
+        </button>
+    `;
+};
+
+// Bearbeitung speichern
+window.saveSummaryEdit = function() {
+    const textarea = DOM.find('#transcriptionContainer textarea');
+    if (!textarea) return;
+
+    const newText = textarea.value.trim();
+    const newDiv = DOM.create('div', {
+        id: 'transcriptionText',
+        style: 'line-height: 1.6; color: #374151;',
+        innerHTML: `<span style="color: #374151;">${Utils.escapeHtml(newText)}</span>`
+    });
+
+    textarea.parentNode.replaceChild(newDiv, textarea);
+
+    // Restore Actions
+    const actions = DOM.find('#summaryActions');
+    actions.innerHTML = `
+        <button onclick="editSummary()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            ✏️ Bearbeiten
+        </button>
+        <button onclick="sendSummaryToCoachee()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            📤 An Coachee senden
+        </button>
+        <button onclick="clearSummary()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            🗑️ Löschen
+        </button>
+    `;
+
+    Utils.showToast('Zusammenfassung gespeichert', 'success');
+};
+
+// Bearbeitung abbrechen
+window.cancelSummaryEdit = function() {
+    // Reload the interface
+    location.reload();
+};
+
+// Zusammenfassung an Coachee senden
+window.sendSummaryToCoachee = function() {
+    const transcriptionEl = DOM.find('#transcriptionText');
+    if (!transcriptionEl) return;
+
+    const summaryText = transcriptionEl.textContent.trim();
+    if (!summaryText) {
+        Utils.showToast('Keine Zusammenfassung vorhanden.', 'error');
+        return;
+    }
+
+    if (!window.coachingComm) {
+        Utils.showToast('Kommunikation nicht verfügbar.', 'error');
+        return;
+    }
+
+    // Formatierte Zusammenfassung mit Header
+    const formattedSummary = `📋 Coach-Zusammenfassung:\n\n${summaryText}`;
+    
+    // An Coachee senden
+    window.coachingComm.addMessage('👨‍💼 Coach', formattedSummary);
+    
+    // Zur Kollaborations-Tab wechseln
+    CoachInterface.showTab('collaboration');
+    
+    Utils.showToast('Zusammenfassung an Coachee gesendet!', 'success');
+    console.log('📤 Mündliche Zusammenfassung gesendet:', summaryText);
+
+    // Cleanup
+    clearSummary();
+};
+
+// Zusammenfassung löschen
+window.clearSummary = function() {
+    const voiceSection = DOM.find('#voiceSummarySection');
+    if (voiceSection) {
+        voiceSection.remove();
+    }
+    
+    // Stop recording if active
+    if (isRecording) {
+        stopVoiceRecording();
+    }
+};
+
+// KI-Antworten nur für Coach sichtbar machen
+function hideAIResponsesFromCoachee() {
+    // Collaboration Display anpassen
+    const originalUpdateDisplay = CoachInterface.updateCollaborationDisplay;
+    
+    CoachInterface.updateCollaborationDisplay = function(messages) {
+        // Filter AI messages für Coachee-View
+        const isCoacheeView = window.location.pathname.includes('collaboration');
+        const filteredMessages = isCoacheeView ? 
+            messages.filter(msg => !msg.sender.includes('KI') && !msg.sender.includes('OpenAI')) : 
+            messages;
+        
+        return originalUpdateDisplay.call(this, filteredMessages);
+    };
+}
+
+// Coach-KI Response Display erweitern
+const originalDisplayResponse = CoachKI.displayResponse;
+CoachKI.displayResponse = function(response) {
+    // Original Response anzeigen
+    originalDisplayResponse.call(this, response);
+    
+    // Voice Summary Interface hinzufügen
+    setTimeout(() => {
+        addVoiceSummaryInterface();
+    }, 100);
+};
+
+// Initialize Voice Features
+document.addEventListener('DOMContentLoaded', function() {
+    // Speech Recognition prüfen und initialisieren
+    if (initSpeechRecognition()) {
+        console.log('🎤 Voice Summary Feature verfügbar');
+    } else {
+        console.log('❌ Voice Summary Feature nicht verfügbar (Browser-Support fehlt)');
+    }
+    
+    // Hide AI responses from Coachee view
+    hideAIResponsesFromCoachee();
+});
+
+// Quick-Access Button für Voice Summary
+function addVoiceSummaryButton() {
+    const quickAccess = DOM.find('.quick-access');
+    if (quickAccess && !DOM.find('#voiceSummaryQuickBtn')) {
+        const voiceBtn = DOM.create('button', {
+            id: 'voiceSummaryQuickBtn',
+            className: 'quick-btn',
+            innerHTML: '🎤 Voice Summary',
+            style: 'background: #10b981; color: white;'
+        });
+        
+        DOM.on(voiceBtn, 'click', () => {
+            // Direkt zur Coach-KI Tab und Voice Interface
+            CoachInterface.showTab('coachki');
+            setTimeout(() => {
+                const input = DOM.find('#coachInput');
+                if (input) {
+                    input.value = 'Ich möchte eine mündliche Zusammenfassung für meinen Coachee erstellen.';
+                    askCoachKI();
+                }
+            }, 300);
+        });
+        
+        quickAccess.appendChild(voiceBtn);
+    }
+}
+
+// Voice Summary Button nach Initialisierung hinzufügen
+setTimeout(addVoiceSummaryButton, 3000);
+
+console.log('🎤 Voice-to-Text Zusammenfassung Feature geladen');
+console.log('💡 Nutze Coach-KI Tab für mündliche Zusammenfassungen');
