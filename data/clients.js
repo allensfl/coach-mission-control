@@ -124,7 +124,7 @@ const clientsData = [
 ];
 
 // Hilfsfunktionen für Klienten-Management
-window.ClientUtils = {
+ClientUtils = {
     // Klient nach ID finden
     findById(id) {
         return clientsData.find(client => client.id === id);
@@ -275,4 +275,4 @@ window.ClientUtils = {
 };
 
 console.log('👥 Klienten geladen:', clientsData.length, 'Klienten verfügbar');
-console.log('📊 Klienten-Statistiken:', window.ClientUtils.getStats());
+console.log('📊 Klienten-Statistiken:', ClientUtils.getStats());
