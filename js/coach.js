@@ -1727,4 +1727,671 @@ window.sendSummaryToCoachee = function() {
 console.log('✏️ Summary Edit Feature geladen');
 console.log('💡 Klicke auf "✏️ Bearbeiten" neben Zusammenfassungen oder nutze "Letzte Zusammenfassung bearbeiten"');
 // Berndeutsch → Hochdeutsch Übersetzung mit OpenAI
+// Direkte ChatGPT Übersetzung für Berndeutsch → Hochdeutsch
+
+// ChatGPT Übersetzungsfunktion
+async function translateWithChatGPT(berndeutschText) {
+    try {
+        const response = await fetch('/api/translate-berndeutsch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: berndeutschText
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Translation API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            return data.translation;
+        } else {
+            throw new Error(data.message || 'Translation failed');
+        }
+        
+    } catch (error) {
+        console.error('ChatGPT Translation Error:', error);
+        Utils.showToast(`Übersetzungsfehler: ${error.message}`, 'error');
+        return null;
+    }
+}
+
+// Berndeutsch Interface zu Voice Summary hinzufügen
+function addChatGPTBerndeutschInterface() {
+    const coachKIResponse = DOM.find('#coachKIResponse');
+    if (!coachKIResponse || DOM.find('#chatgptBerndeutschSection')) return;
+
+    const chatgptBerndeutschHTML = `
+        <div id="chatgptBerndeutschSection" style="margin-top: 20px; padding: 20px; background: rgba(245, 158, 11, 0.1); border-radius: 12px; border: 2px solid rgba(245, 158, 11, 0.3);">
+            <h4 style="color: #92400e; margin-bottom: 15px; display: flex; align-items: center;">
+                🏔️ Berndeutsch → Hochdeutsch (ChatGPT)
+            </h4>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #92400e;">
+                    Berndeutsch Text eingeben:
+                </label>
+                <textarea id="berndeutschInput" style="
+                    width: 100%;
+                    min-height: 120px;
+                    padding: 15px;
+                    border: 2px solid rgba(245, 158, 11, 0.4);
+                    border-radius: 10px;
+                    font-family: inherit;
+                    font-size: 1rem;
+                    line-height: 1.6;
+                    resize: vertical;
+                " placeholder="Schriib hie din Berndütsch Text ine..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                <button onclick="startBerndeutschSpeechInput()" style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🎤 Berndeutsch sprechen
+                </button>
+                <button id="translateChatGPTBtn" onclick="translateBerndeutschWithChatGPT()" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🔄 Mit ChatGPT übersetzen
+                </button>
+                <span id="chatgptTranslationStatus" style="color: #92400e; font-weight: 600;"></span>
+            </div>
+            
+            <div id="chatgptHochdeutschResult" style="display: none; background: white; border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="color: #065f46; font-weight: 600; margin-bottom: 10px;">🇩🇪 ChatGPT Hochdeutsch Übersetzung:</div>
+                <div id="chatgptHochdeutschText" style="line-height: 1.6; color: #374151;"></div>
+            </div>
+            
+            <div id="chatgptActions" style="display: none; gap: 10px;">
+                <button onclick="editChatGPTTranslation()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    ✏️ Übersetzung bearbeiten
+                </button>
+                <button onclick="sendChatGPTTranslationToCoachee()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    📤 An Coachee senden
+                </button>
+                <button onclick="clearChatGPTTranslation()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    🗑️ Löschen
+                </button>
+            </div>
+        </div>
+    `;
+    
+    coachKIResponse.insertAdjacentHTML('beforeend', chatgptBerndeutschHTML);
+}
+
+// Berndeutsch Speech Input
+let berndeutschSpeechRecognition = null;
+let isBerndeutschRecording = false;
+
+window.startBerndeutschSpeechInput = function() {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        Utils.showToast('Speech Recognition nicht verfügbar in diesem Browser.', 'error');
+        return;
+    }
+
+    if (isBerndeutschRecording) {
+        // Stoppen
+        if (berndeutschSpeechRecognition) {
+            berndeutschSpeechRecognition.stop();
+        }
+        return;
+    }
+
+    // Starten
+    berndeutschSpeechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    berndeutschSpeechRecognition.continuous = true;
+    berndeutschSpeechRecognition.interimResults = true;
+    berndeutschSpeechRecognition.lang = 'de-CH'; // Schweizerdeutsch
+
+    const button = event.target;
+    button.textContent = '⏹️ Aufnahme stoppen';
+    button.style.background = '#ef4444';
+    isBerndeutschRecording = true;
+
+    berndeutschSpeechRecognition.onresult = function(event) {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + ' ';
+            } else {
+                interimTranscript += transcript;
+            }
+        }
+
+        const textarea = DOM.find('#berndeutschInput');
+        if (textarea) {
+            const currentFinal = textarea.getAttribute('data-final') || '';
+            textarea.setAttribute('data-final', currentFinal + finalTranscript);
+            textarea.value = currentFinal + finalTranscript + interimTranscript;
+        }
+    };
+
+    berndeutschSpeechRecognition.onend = function() {
+        button.textContent = '🎤 Berndeutsch sprechen';
+        button.style.background = '#f59e0b';
+        isBerndeutschRecording = false;
+
+        // Finale Transkription aufräumen
+        const textarea = DOM.find('#berndeutschInput');
+        if (textarea) {
+            const finalText = textarea.getAttribute('data-final') || '';
+            textarea.value = finalText.trim();
+        }
+
+        Utils.showToast('Berndeutsch Aufnahme beendet', 'success');
+    };
+
+    berndeutschSpeechRecognition.onerror = function(event) {
+        console.error('Speech Recognition Error:', event.error);
+        Utils.showToast(`Spracherkennung Fehler: ${event.error}`, 'error');
+        button.textContent = '🎤 Berndeutsch sprechen';
+        button.style.background = '#f59e0b';
+        isBerndeutschRecording = false;
+    };
+
+    berndeutschSpeechRecognition.start();
+    Utils.showToast('Berndeutsch Aufnahme gestartet', 'success');
+};
+
+// Mit ChatGPT übersetzen
+window.translateBerndeutschWithChatGPT = function() {
+    const textarea = DOM.find('#berndeutschInput');
+    if (!textarea) return;
+
+    const berndeutschText = textarea.value.trim();
+    if (!berndeutschText) {
+        Utils.showToast('Bitte geben Sie einen Berndeutsch Text ein.', 'error');
+        return;
+    }
+
+    // Button Status
+    const translateBtn = DOM.find('#translateChatGPTBtn');
+    const status = DOM.find('#chatgptTranslationStatus');
+    
+    if (translateBtn) {
+        translateBtn.textContent = '🔄 ChatGPT übersetzt...';
+        translateBtn.disabled = true;
+    }
+    
+    if (status) {
+        status.textContent = 'ChatGPT übersetzt...';
+    }
+
+    // ChatGPT Übersetzung aufrufen
+    translateWithChatGPT(berndeutschText)
+        .then(hochdeutschText => {
+            if (hochdeutschText) {
+                // Ergebnis anzeigen
+                DOM.find('#chatgptHochdeutschResult').style.display = 'block';
+                DOM.find('#chatgptHochdeutschText').textContent = hochdeutschText;
+                DOM.find('#chatgptActions').style.display = 'flex';
+                
+                if (status) {
+                    status.textContent = 'Übersetzung erfolgreich! ✅';
+                }
+                
+                Utils.showToast('ChatGPT Übersetzung erfolgreich!', 'success');
+            } else {
+                if (status) {
+                    status.textContent = 'Übersetzung fehlgeschlagen ❌';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Translation Error:', error);
+            if (status) {
+                status.textContent = 'Übersetzung fehlgeschlagen ❌';
+            }
+        })
+        .finally(() => {
+            // Button zurücksetzen
+            if (translateBtn) {
+                translateBtn.textContent = '🔄 Mit ChatGPT übersetzen';
+                translateBtn.disabled = false;
+            }
+        });
+};
+
+// ChatGPT Übersetzung bearbeiten
+window.editChatGPTTranslation = function() {
+    const textDiv = DOM.find('#chatgptHochdeutschText');
+    if (!textDiv) return;
+
+    const currentText = textDiv.textContent || '';
+    const textarea = DOM.create('textarea', {
+        style: 'width: 100%; min-height: 100px; padding: 10px; border: 2px solid #10b981; border-radius: 6px; font-family: inherit; font-size: 1rem;',
+        value: currentText
+    });
+
+    textDiv.parentNode.replaceChild(textarea, textDiv);
+    textarea.focus();
+
+    // Save/Cancel Buttons
+    const actions = DOM.find('#chatgptActions');
+    actions.innerHTML = `
+        <button onclick="saveChatGPTEdit()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            💾 Speichern
+        </button>
+        <button onclick="cancelChatGPTEdit('${Utils.escapeHtml(currentText)}')" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            ❌ Abbrechen
+        </button>
+    `;
+};
+
+// ChatGPT Edit speichern
+window.saveChatGPTEdit = function() {
+    const textarea = DOM.find('#chatgptHochdeutschResult textarea');
+    if (!textarea) return;
+
+    const newText = textarea.value.trim();
+    const newDiv = DOM.create('div', {
+        id: 'chatgptHochdeutschText',
+        style: 'line-height: 1.6; color: #374151;',
+        textContent: newText
+    });
+
+    textarea.parentNode.replaceChild(newDiv, textarea);
+
+    // Restore Actions
+    restoreChatGPTActions();
+    Utils.showToast('Übersetzung gespeichert', 'success');
+};
+
+// ChatGPT Edit abbrechen
+window.cancelChatGPTEdit = function(originalText) {
+    const textarea = DOM.find('#chatgptHochdeutschResult textarea');
+    if (!textarea) return;
+
+    const newDiv = DOM.create('div', {
+        id: 'chatgptHochdeutschText',
+        style: 'line-height: 1.6; color: #374151;',
+        textContent: originalText
+    });
+
+    textarea.parentNode.replaceChild(newDiv, textarea);
+    restoreChatGPTActions();
+};
+
+// Actions wiederherstellen
+function restoreChatGPTActions() {
+    const actions = DOM.find('#chatgptActions');
+    actions.innerHTML = `
+        <button onclick="editChatGPTTranslation()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            ✏️ Übersetzung bearbeiten
+        </button>
+        <button onclick="sendChatGPTTranslationToCoachee()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            📤 An Coachee senden
+        </button>
+        <button onclick="clearChatGPTTranslation()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+            🗑️ Löschen
+        </button>
+    `;
+}
+
+// ChatGPT Übersetzung an Coachee senden
+window.sendChatGPTTranslationToCoachee = function() {
+    const textDiv = DOM.find('#chatgptHochdeutschText');
+    if (!textDiv) return;
+
+    const hochdeutschText = textDiv.textContent.trim();
+    if (!hochdeutschText) {
+        Utils.showToast('Keine Übersetzung vorhanden.', 'error');
+        return;
+    }
+
+    if (!window.coachingComm) {
+        Utils.showToast('Kommunikation nicht verfügbar.', 'error');
+        return;
+    }
+
+    // Formatierte Zusammenfassung
+    const formattedSummary = `📋 Coach-Zusammenfassung (Berndeutsch → ChatGPT Hochdeutsch):\n\n${hochdeutschText}`;
+    
+    // An Coachee senden
+    window.coachingComm.addMessage('👨‍💼 Coach', formattedSummary);
+    
+    // Zur Kollaborations-Tab wechseln
+    CoachInterface.showTab('collaboration');
+    
+    Utils.showToast('ChatGPT Übersetzung an Coachee gesendet!', 'success');
+    console.log('📤 ChatGPT Berndeutsch → Hochdeutsch gesendet');
+
+    // Cleanup
+    clearChatGPTTranslation();
+};
+
+// ChatGPT Übersetzung löschen
+window.clearChatGPTTranslation = function() {
+    const section = DOM.find('#chatgptBerndeutschSection');
+    if (section) {
+        section.remove();
+    }
+};
+
+// Coach-KI Response Display erweitern für ChatGPT Berndeutsch
+const originalCoachKIDisplay = CoachKI.displayResponse;
+CoachKI.displayResponse = function(response) {
+    // Original Response anzeigen
+    originalCoachKIDisplay.call(this, response);
+    
+    // ChatGPT Berndeutsch Interface hinzufügen
+    setTimeout(() => {
+        addVoiceSummaryInterface(); // Original
+        addChatGPTBerndeutschInterface(); // ChatGPT Berndeutsch
+    }, 100);
+};
+
+console.log('🏔️ ChatGPT Berndeutsch → Hochdeutsch Translation geladen');
+console.log('💡 Nutze Coach-KI Tab für ChatGPT Berndeutsch Übersetzungen');
+// Bessere Berndeutsch Erkennung mit Whisper API
+
+// Neue API Route für Whisper Audio → Text
+// api/whisper-transcribe.js
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    try {
+        // Audio-Datei aus FormData extrahieren
+        const formData = new FormData();
+        
+        // Audio Blob von Frontend empfangen
+        const audioBlob = req.body.audio;
+        formData.append('file', audioBlob, 'audio.webm');
+        formData.append('model', 'whisper-1');
+        formData.append('language', 'de'); // Deutsch (erkennt auch Schweizerdeutsch besser)
+        formData.append('prompt', 'Berndeutsch, Schweizerdeutsch, Bärndütsch'); // Hilft bei Dialekt-Erkennung
+
+        const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Whisper API Error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+        }
+
+        const data = await response.json();
+        
+        res.status(200).json({ 
+            success: true,
+            transcription: data.text,
+            confidence: 'high' // Whisper ist sehr gut
+        });
+
+    } catch (error) {
+        console.error('Whisper Transcription Error:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Transcription failed',
+            message: error.message 
+        });
+    }
+}
+
+// Frontend: Bessere Audio-Aufnahme mit Whisper
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecordingWithWhisper = false;
+
+// Whisper-basierte Aufnahme starten
+window.startWhisperBerndeutschRecording = function() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        Utils.showToast('Audio-Aufnahme nicht verfügbar in diesem Browser.', 'error');
+        return;
+    }
+
+    if (isRecordingWithWhisper) {
+        stopWhisperBerndeutschRecording();
+        return;
+    }
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            isRecordingWithWhisper = true;
+
+            // UI Updates
+            const button = event.target;
+            button.textContent = '⏹️ Whisper Aufnahme stoppen';
+            button.style.background = '#ef4444';
+            
+            const status = DOM.find('#chatgptTranslationStatus');
+            if (status) {
+                status.textContent = 'Whisper Aufnahme läuft... 🔴';
+            }
+
+            // Audio-Daten sammeln
+            mediaRecorder.ondataavailable = function(event) {
+                audioChunks.push(event.data);
+            };
+
+            // Aufnahme beendet - an Whisper senden
+            mediaRecorder.onstop = function() {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                sendAudioToWhisper(audioBlob);
+                
+                // Stream stoppen
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            Utils.showToast('Whisper Aufnahme gestartet - viel bessere Berndeutsch Erkennung!', 'success');
+        })
+        .catch(error => {
+            console.error('Microphone access error:', error);
+            Utils.showToast('Mikrofon-Zugriff verweigert.', 'error');
+        });
+};
+
+// Whisper Aufnahme stoppen
+function stopWhisperBerndeutschRecording() {
+    if (mediaRecorder && isRecordingWithWhisper) {
+        mediaRecorder.stop();
+        isRecordingWithWhisper = false;
+        
+        const button = document.querySelector('[onclick*="startWhisperBerndeutschRecording"]');
+        if (button) {
+            button.textContent = '🎤 Whisper Berndeutsch (besser!)';
+            button.style.background = '#10b981';
+        }
+        
+        const status = DOM.find('#chatgptTranslationStatus');
+        if (status) {
+            status.textContent = 'Whisper verarbeitet Audio...';
+        }
+    }
+}
+
+// Audio an Whisper API senden
+async function sendAudioToWhisper(audioBlob) {
+    try {
+        const formData = new FormData();
+        formData.append('audio', audioBlob, 'recording.webm');
+
+        const response = await fetch('/api/whisper-transcribe', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error(`Whisper API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            // Transkription in Textarea einfügen
+            const textarea = DOM.find('#berndeutschInput');
+            if (textarea) {
+                textarea.value = data.transcription;
+            }
+            
+            const status = DOM.find('#chatgptTranslationStatus');
+            if (status) {
+                status.textContent = 'Whisper Transkription erfolgreich! ✅';
+            }
+            
+            Utils.showToast('Whisper Berndeutsch Erkennung erfolgreich!', 'success');
+        } else {
+            throw new Error(data.message || 'Whisper transcription failed');
+        }
+        
+    } catch (error) {
+        console.error('Whisper Error:', error);
+        Utils.showToast(`Whisper Fehler: ${error.message}`, 'error');
+        
+        const status = DOM.find('#chatgptTranslationStatus');
+        if (status) {
+            status.textContent = 'Whisper Fehler ❌';
+        }
+    }
+}
+
+// Verbessertes ChatGPT Berndeutsch Interface mit Whisper
+function addImprovedChatGPTBerndeutschInterface() {
+    const coachKIResponse = DOM.find('#coachKIResponse');
+    if (!coachKIResponse || DOM.find('#improvedChatgptBerndeutschSection')) return;
+
+    const improvedHTML = `
+        <div id="improvedChatgptBerndeutschSection" style="margin-top: 20px; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 2px solid rgba(16, 185, 129, 0.3);">
+            <h4 style="color: #065f46; margin-bottom: 15px; display: flex; align-items: center;">
+                🏔️ Verbesserte Berndeutsch → Hochdeutsch (Whisper + ChatGPT)
+                <span style="background: #10b981; color: white; padding: 0.2rem 0.6rem; border-radius: 8px; font-size: 0.8rem; margin-left: 10px;">BESSER!</span>
+            </h4>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #065f46;">
+                    Berndeutsch Text (Whisper AI Erkennung):
+                </label>
+                <textarea id="improvedBerndeutschInput" style="
+                    width: 100%;
+                    min-height: 120px;
+                    padding: 15px;
+                    border: 2px solid rgba(16, 185, 129, 0.4);
+                    border-radius: 10px;
+                    font-family: inherit;
+                    font-size: 1rem;
+                    line-height: 1.6;
+                    resize: vertical;
+                " placeholder="Text wird hier von Whisper AI eingefügt (viel genauer als Browser!)"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                <button onclick="startWhisperBerndeutschRecording()" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🎤 Whisper Berndeutsch (besser!)
+                </button>
+                <button onclick="translateImprovedBerndeutschWithChatGPT()" style="background: #f59e0b; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🔄 ChatGPT übersetzen
+                </button>
+                <span id="improvedTranslationStatus" style="color: #065f46; font-weight: 600;"></span>
+            </div>
+            
+            <div id="improvedHochdeutschResult" style="display: none; background: white; border: 2px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="color: #065f46; font-weight: 600; margin-bottom: 10px;">🇩🇪 Perfekte Hochdeutsch Übersetzung:</div>
+                <div id="improvedHochdeutschText" style="line-height: 1.6; color: #374151;"></div>
+            </div>
+            
+            <div id="improvedActions" style="display: none; gap: 10px;">
+                <button onclick="editImprovedTranslation()" style="background: #6b7280; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    ✏️ Bearbeiten
+                </button>
+                <button onclick="sendImprovedTranslationToCoachee()" style="background: #10b981; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    📤 An Coachee senden
+                </button>
+                <button onclick="clearImprovedTranslation()" style="background: #ef4444; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer;">
+                    🗑️ Löschen
+                </button>
+            </div>
+            
+            <div style="margin-top: 15px; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid #10b981;">
+                <div style="font-weight: 600; color: #065f46; margin-bottom: 5px;">💡 Warum ist das besser?</div>
+                <div style="color: #374151; font-size: 0.9rem;">
+                    • Whisper AI (wie ChatGPT) statt Browser Speech Recognition<br>
+                    • Speziell für Schweizer Dialekte optimiert<br>
+                    • Viel höhere Genauigkeit bei Berndeutsch
+                </div>
+            </div>
+        </div>
+    `;
+    
+    coachKIResponse.insertAdjacentHTML('beforeend', improvedHTML);
+}
+
+// Verbesserte Übersetzung mit besserem Input
+window.translateImprovedBerndeutschWithChatGPT = function() {
+    const textarea = DOM.find('#improvedBerndeutschInput');
+    if (!textarea) return;
+
+    const berndeutschText = textarea.value.trim();
+    if (!berndeutschText) {
+        Utils.showToast('Bitte geben Sie einen Berndeutsch Text ein oder nutzen Sie Whisper Aufnahme.', 'error');
+        return;
+    }
+
+    // Button Status
+    const status = DOM.find('#improvedTranslationStatus');
+    if (status) {
+        status.textContent = 'ChatGPT übersetzt (mit besserem Input)...';
+    }
+
+    // ChatGPT Übersetzung mit verbessertem Prompt
+    translateWithImprovedChatGPT(berndeutschText)
+        .then(hochdeutschText => {
+            if (hochdeutschText) {
+                DOM.find('#improvedHochdeutschResult').style.display = 'block';
+                DOM.find('#improvedHochdeutschText').textContent = hochdeutschText;
+                DOM.find('#improvedActions').style.display = 'flex';
+                
+                if (status) {
+                    status.textContent = 'Perfekte Übersetzung! ✅';
+                }
+                
+                Utils.showToast('Verbesserte ChatGPT Übersetzung erfolgreich!', 'success');
+            }
+        })
+        .catch(error => {
+            if (status) {
+                status.textContent = 'Übersetzung fehlgeschlagen ❌';
+            }
+        });
+};
+
+// Verbesserter ChatGPT Prompt für bessere Übersetzung
+async function translateWithImprovedChatGPT(berndeutschText) {
+    try {
+        const response = await fetch('/api/translate-berndeutsch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: `${berndeutschText}
+
+WICHTIGER KONTEXT: Dies ist authentischer Berndeutsch/Schweizerdeutsch Text, der bereits korrekt von Whisper AI erkannt wurde. Bitte übersetze präzise ins Hochdeutsche und behalte die emotionale Nuance bei.`
+            })
+        });
+
+        const data = await response.json();
+        return data.success ? data.translation : null;
+        
+    } catch (error) {
+        console.error('Improved ChatGPT Translation Error:', error);
+        return null;
+    }
+}
+
+console.log('🏔️ Verbesserte Berndeutsch → Hochdeutsch mit Whisper AI geladen');
+console.log('💡 Whisper AI ist VIEL genauer als Browser Speech Recognition!');
 
