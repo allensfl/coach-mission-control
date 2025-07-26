@@ -1,4 +1,8 @@
-/* ===== COACH.JS - Coach Interface Logik ===== */
+/* ===== COACH.JS - Coach Interface Logik mit OpenAI Integration ===== */
+
+// OpenAI Assistant Integration
+let currentThreadId = null;
+let aiProcessing = false;
 
 // Coach-spezifische Funktionen
 const CoachInterface = {
@@ -247,7 +251,8 @@ const CoachInterface = {
             'coachee': '👤 Coachee', 
             'system': '🎯 System',
             'kicoach': '🤖 KI-Coach',
-            'ki-coach': '🤖 KI-Coach'
+            'ki-coach': '🤖 KI-Coach',
+            'openaicoach': '🚀 OpenAI Coach'
         };
         
         const key = sender.toLowerCase().replace(/[^a-z]/g, '');
@@ -260,7 +265,10 @@ const CoachInterface = {
             actions.style.display = 'flex';
             actions.innerHTML = `
                 <button onclick="sendDialogToAI()" class="send-ai-btn">
-                    🤖 Dialog an KI senden
+                    🤖 Dialog an lokale KI
+                </button>
+                <button onclick="sendDialogToOpenAI()" class="send-ai-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    🚀 Dialog an OpenAI
                 </button>
                 <button onclick="openCollaborationWindow()" class="open-collab-btn">
                     🔗 Kollaborations-Fenster öffnen
@@ -322,12 +330,64 @@ const CoachInterface = {
     }
 };
 
+// ===== OPENAI ASSISTANT INTEGRATION =====
+
+// OpenAI Assistant API Call
+async function generateOpenAIResponse(message, context) {
+    if (aiProcessing) {
+        Utils.showToast('KI verarbeitet bereits eine Anfrage...', 'info');
+        return null;
+    }
+
+    aiProcessing = true;
+    
+    try {
+        const response = await fetch('/api/openai-assistant', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                threadId: currentThreadId,
+                context: context
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        // Thread ID für kontinuierliche Gespräche speichern
+        if (data.threadId) {
+            currentThreadId = data.threadId;
+        }
+
+        return data.response;
+        
+    } catch (error) {
+        console.error('OpenAI API Error:', error);
+        Utils.showToast('OpenAI nicht verfügbar. Fallback wird verwendet.', 'error');
+        
+        // Fallback zur lokalen KI-Antwort
+        return generateAIResponse(message, []);
+        
+    } finally {
+        aiProcessing = false;
+    }
+}
+
 // Globale Funktionen für HTML-Aufrufe
 window.startSession = function() {
     if (!window.coachingApp.selectedClient) {
         Utils.showToast('Bitte wählen Sie zuerst einen Klienten aus.', 'error');
         return;
     }
+    
+    // OpenAI Thread für neue Session zurücksetzen
+    currentThreadId = null;
     
     // Messages bei neuer Session leeren
     if (window.coachingComm) {
@@ -370,7 +430,7 @@ window.sendToCollaboration = function() {
     console.log('✅ Prompt an Kollaboration gesendet');
 };
 
-// "Dialog an KI senden" Funktion
+// "Dialog an lokale KI senden" Funktion
 window.sendDialogToAI = function() {
     const messages = window.coachingComm?.getMessages() || [];
     
@@ -386,10 +446,61 @@ window.sendDialogToAI = function() {
     const aiResponse = generateAIResponse(dialog, messages);
     
     // KI-Antwort zur Kollaboration hinzufügen
-    window.coachingComm.addMessage('KI-Coach', aiResponse);
+    window.coachingComm.addMessage('🤖 Lokale KI', aiResponse);
     
-    Utils.showToast('Dialog an KI gesendet - Antwort erhalten!', 'success');
-    console.log('🤖 KI-Antwort generiert für Dialog');
+    Utils.showToast('Dialog an lokale KI gesendet - Antwort erhalten!', 'success');
+    console.log('🤖 Lokale KI-Antwort generiert für Dialog');
+};
+
+// "Dialog an OpenAI senden" Funktion
+window.sendDialogToOpenAI = async function() {
+    const messages = window.coachingComm?.getMessages() || [];
+    
+    if (messages.length === 0) {
+        Utils.showToast('Keine Nachrichten zum Senden vorhanden.', 'error');
+        return;
+    }
+
+    // Button-Status ändern
+    const button = document.querySelector('[onclick="sendDialogToOpenAI()"]');
+    if (button) {
+        button.textContent = '🚀 OpenAI denkt...';
+        button.disabled = true;
+    }
+
+    try {
+        // Dialog zu strukturiertem Format konvertieren
+        const dialog = messages.map(msg => `${msg.sender}: ${msg.content}`).join('\n\n');
+        
+        // Kontext für bessere KI-Antworten
+        const context = {
+            clientName: window.coachingApp.selectedClient?.name || 'Unbekannt',
+            clientTopics: window.coachingApp.selectedClient?.topics || [],
+            sessionPhase: 'Dialog-Analyse',
+            messageCount: messages.length,
+            lastSender: messages[messages.length - 1]?.sender
+        };
+
+        // OpenAI Assistant aufrufen
+        const aiResponse = await generateOpenAIResponse(dialog, context);
+        
+        if (aiResponse) {
+            // KI-Antwort zur Kollaboration hinzufügen
+            window.coachingComm.addMessage('🚀 OpenAI Coach', aiResponse);
+            Utils.showToast('OpenAI Assistant Antwort erhalten!', 'success');
+        }
+
+    } catch (error) {
+        console.error('Error sending to OpenAI:', error);
+        Utils.showToast('Fehler beim Senden an OpenAI.', 'error');
+        
+    } finally {
+        // Button zurücksetzen
+        if (button) {
+            button.textContent = '🚀 Dialog an OpenAI';
+            button.disabled = false;
+        }
+    }
 };
 
 // "An KI senden" Funktion - schickt den kompletten Dialog an die KI
@@ -398,7 +509,7 @@ window.sendToAI = function() {
     sendDialogToAI();
 };
 
-// KI-Antwort basierend auf Dialogverlauf generieren
+// KI-Antwort basierend auf Dialogverlauf generieren (LOKALE KI)
 function generateAIResponse(dialog, messages) {
     const lastMessage = messages[messages.length - 1];
     const dialogLower = dialog.toLowerCase();
@@ -437,7 +548,7 @@ Lassen Sie uns erkunden: Wenn dieses Hindernis Ihr Freund wäre - was würde es 
     }
     
     // Standard-Antwort basierend auf letzter Nachricht
-    if (lastMessage.sender === 'Coachee') {
+    if (lastMessage && lastMessage.sender === 'Coachee') {
         return `Vielen Dank für diese offene Antwort. Ich merke, wie Sie sich Gedanken machen und reflektieren - das ist ein wichtiger Teil des Coaching-Prozesses.
 
 Was Sie beschreiben, zeigt mir Ihre Bereitschaft zur Veränderung und gleichzeitig eine gesunde Vorsicht. Beides ist wertvoll.
@@ -467,6 +578,7 @@ window.clearEditor = function() {
     }
 };
 
+// LOKALE Coach-KI Funktion
 window.askCoachKI = function() {
     const input = DOM.find('#coachInput');
     const phase = DOM.find('#sessionPhase');
@@ -486,9 +598,64 @@ window.askCoachKI = function() {
     );
     
     CoachKI.displayResponse(response);
-    Utils.showToast('Coach-KI Antwort generiert', 'success');
+    Utils.showToast('Lokale Coach-KI Antwort generiert', 'success');
     
-    console.log('🧠 Coach-KI Response:', response);
+    console.log('🧠 Lokale Coach-KI Response:', response);
+};
+
+// OPENAI Coach-KI Funktion
+window.askOpenAICoach = async function() {
+    const input = DOM.find('#coachInput');
+    const phase = DOM.find('#sessionPhase');
+    const coacheeType = DOM.find('#coacheeType');
+    const urgency = DOM.find('#urgency');
+    
+    if (!input?.value?.trim()) {
+        Utils.showToast('Bitte beschreiben Sie Ihre Coaching-Situation.', 'error');
+        return;
+    }
+
+    // Button-Status ändern
+    const button = document.querySelector('[onclick="askOpenAICoach()"]');
+    if (button) {
+        button.textContent = '🚀 OpenAI denkt...';
+        button.disabled = true;
+    }
+
+    try {
+        const context = {
+            clientName: window.coachingApp.selectedClient?.name || 'Unbekannt',
+            clientTopics: window.coachingApp.selectedClient?.topics || [],
+            sessionPhase: phase?.value || '',
+            coacheeType: coacheeType?.value || '',
+            urgency: urgency?.value || '',
+            requestType: 'coach-supervision'
+        };
+
+        const aiResponse = await generateOpenAIResponse(input.value.trim(), context);
+        
+        if (aiResponse) {
+            // OpenAI Antwort anzeigen
+            const response = {
+                category: 'OPENAI COACH',
+                content: aiResponse
+            };
+            
+            CoachKI.displayResponse(response);
+            Utils.showToast('OpenAI Coach-KI Antwort erhalten!', 'success');
+        }
+
+    } catch (error) {
+        console.error('Error with OpenAI Coach:', error);
+        Utils.showToast('Fehler bei OpenAI. Lokale Coach-KI verwenden.', 'error');
+        
+    } finally {
+        // Button zurücksetzen
+        if (button) {
+            button.textContent = '🚀 OpenAI Coach-KI';
+            button.disabled = false;
+        }
+    }
 };
 
 window.clearCoachInput = function() {
@@ -501,7 +668,7 @@ window.clearCoachInput = function() {
     Utils.showToast('Eingabe geleert', 'info');
 };
 
-// Coach-KI Logic
+// Coach-KI Logic (LOKALE KI)
 const CoachKI = {
     generateResponse(input, phase, coacheeType, urgency) {
         const inputLower = input.toLowerCase();
@@ -625,9 +792,28 @@ const CoachKI = {
             followUp.style.display = 'block';
             
             Utils.animateElement(responseDiv, 'fade-in');
+            
+            // OpenAI Button hinzufügen wenn noch nicht da
+            setTimeout(addOpenAICoachButton, 500);
         }
     }
 };
+
+// OpenAI Coach Button hinzufügen
+function addOpenAICoachButton() {
+    const actionButtons = DOM.find('.action-buttons');
+    if (actionButtons && !DOM.find('#openai-coach-btn')) {
+        const openaiCoachBtn = DOM.create('button', {
+            id: 'openai-coach-btn',
+            className: 'ask-ki-btn',
+            innerHTML: '🚀 OpenAI Coach-KI',
+            style: 'background: linear-gradient(135deg, #10b981, #059669); margin-left: 10px;'
+        });
+        
+        DOM.on(openaiCoachBtn, 'click', askOpenAICoach);
+        actionButtons.appendChild(openaiCoachBtn);
+    }
+}
 
 // Follow-up Aktionen
 window.implementSuggestion = function() {
@@ -651,8 +837,13 @@ window.deepDive = function() {
 document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
         CoachInterface.init();
-        CoachInterface.setupCoachKI(); // Coach-KI Setup hinzufügen
+        CoachInterface.setupCoachKI();
+        
+        // OpenAI Coach Button nach kurzer Verzögerung hinzufügen
+        setTimeout(addOpenAICoachButton, 2000);
+        
         console.log('🎯 Coach Interface bereit');
+        console.log('🚀 OpenAI Assistant Integration aktiv');
     }
 });
 
@@ -671,4 +862,17 @@ window.loadInterventionshilfe = function() {
 
 window.loadNotfallSupport = function() {
     CoachInterface.loadNotfallSupport();
+};
+
+// Debug-Funktion für OpenAI Integration
+window.debugOpenAI = function() {
+    console.log('=== OPENAI INTEGRATION DEBUG ===');
+    console.log('Current Thread ID:', currentThreadId);
+    console.log('AI Processing:', aiProcessing);
+    console.log('API Endpoint Available:', '/api/openai-assistant');
+    
+    // Test API Verfügbarkeit
+    fetch('/api/openai-assistant', { method: 'HEAD' })
+        .then(r => console.log('API Status:', r.status))
+        .catch(e => console.log('API Error:', e.message));
 };
