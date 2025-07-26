@@ -1726,5 +1726,70 @@ window.sendSummaryToCoachee = function() {
 
 console.log('✏️ Summary Edit Feature geladen');
 console.log('💡 Klicke auf "✏️ Bearbeiten" neben Zusammenfassungen oder nutze "Letzte Zusammenfassung bearbeiten"');
+// Einfacher ChatGPT Button für Berndeutsch Übersetzung
+
+// ChatGPT Button zu Quick Access hinzufügen
+function addChatGPTButton() {
+    const quickAccess = DOM.find('.quick-access');
+    if (quickAccess && !DOM.find('#chatgptButton')) {
+        const chatgptBtn = DOM.create('button', {
+            id: 'chatgptButton',
+            className: 'quick-btn',
+            innerHTML: '🏔️ ChatGPT für Berndeutsch',
+            style: 'background: #10b981; color: white;'
+        });
+        
+        DOM.on(chatgptBtn, 'click', () => {
+            // Neues Tab zu ChatGPT öffnen
+            window.open('https://chatgpt.com', '_blank');
+            
+            // Hilfreiche Anweisung anzeigen
+            Utils.showToast('ChatGPT geöffnet! Nutze: "Übersetze diesen Berndeutsch ins Hochdeutsche: [dein Text]"', 'info', 8000);
+            
+            console.log('🏔️ ChatGPT für Berndeutsch Übersetzung geöffnet');
+        });
+        
+        quickAccess.appendChild(chatgptBtn);
+    }
+}
+
+// ChatGPT Button auch zu Collaboration Actions hinzufügen
+function addChatGPTToCollaboration() {
+    const actions = DOM.find('#collaborationActions');
+    if (actions && !DOM.find('#collabChatGPTBtn')) {
+        const chatgptCollabBtn = DOM.create('button', {
+            id: 'collabChatGPTBtn',
+            className: 'open-collab-btn',
+            innerHTML: '🏔️ ChatGPT öffnen',
+            style: 'background: #10b981; color: white; margin-left: 10px;'
+        });
+        
+        DOM.on(chatgptCollabBtn, 'click', () => {
+            window.open('https://chatgpt.com', '_blank');
+            Utils.showToast('ChatGPT für Berndeutsch → Hochdeutsch Übersetzung geöffnet!', 'success', 5000);
+        });
+        
+        actions.appendChild(chatgptCollabBtn);
+    }
+}
+
+// Erweitere die showCollaborationActions Funktion
+const originalShowCollaborationActions = CoachInterface.showCollaborationActions;
+CoachInterface.showCollaborationActions = function() {
+    // Original Actions anzeigen
+    originalShowCollaborationActions.call(this);
+    
+    // ChatGPT Button hinzufügen
+    setTimeout(addChatGPTToCollaboration, 100);
+};
+
+// Buttons nach Initialisierung hinzufügen
+document.addEventListener('DOMContentLoaded', function() {
+    // Quick Access Button nach kurzer Verzögerung
+    setTimeout(addChatGPTButton, 2000);
+});
+
+console.log('🏔️ ChatGPT Button für Berndeutsch hinzugefügt');
+console.log('💡 Öffnet ChatGPT in neuem Tab für professionelle Übersetzungen');
 
 
