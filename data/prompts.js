@@ -308,4 +308,4 @@ const promptsData = {
     }
 };
 
-console.log('📋 Prompts geladen:', Object.keys(window.prompts).length, 'Prompts verfügbar');
+console.log('📋 Prompts geladen:', Object.keys(promptsData).length, 'Prompts verfügbar');

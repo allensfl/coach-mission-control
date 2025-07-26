@@ -127,19 +127,19 @@ const clientsData = [
 window.ClientUtils = {
     // Klient nach ID finden
     findById(id) {
-        return window.clients.find(client => client.id === id);
+        return clientsData.find(client => client.id === id);
     },
 
     // Klienten nach Thema filtern
     filterByTopic(topic) {
-        return window.clients.filter(client => 
+        return clientsData.filter(client => 
             client.topics.some(t => t.toLowerCase().includes(topic.toLowerCase()))
         );
     },
 
     // Klienten nach Profession filtern
     filterByProfession(profession) {
-        return window.clients.filter(client => 
+        return clientsData.filter(client => 
             client.profession.toLowerCase().includes(profession.toLowerCase())
         );
     },
@@ -147,7 +147,7 @@ window.ClientUtils = {
     // Alle verfügbaren Topics extrahieren
     getAllTopics() {
         const topics = new Set();
-        window.clients.forEach(client => {
+        clientsData.forEach(client => {
             client.topics.forEach(topic => topics.add(topic));
         });
         return Array.from(topics).sort();
@@ -155,14 +155,14 @@ window.ClientUtils = {
 
     // Alle verfügbaren Professionen extrahieren
     getAllProfessions() {
-        return [...new Set(window.clients.map(client => client.profession))].sort();
+        return [...new Set(clientsData.map(client => client.profession))].sort();
     },
 
     // Klient-Statistiken
     getStats() {
-        const totalClients = window.clients.length;
-        const avgAge = window.clients.reduce((sum, client) => sum + client.age, 0) / totalClients;
-        const totalSessions = window.clients.reduce((sum, client) => sum + client.sessionHistory, 0);
+        const totalClients = clientsData.length;
+        const avgAge = clientsData.reduce((sum, client) => sum + client.age, 0) / totalClients;
+        const totalSessions = clientsData.reduce((sum, client) => sum + client.sessionHistory, 0);
         
         return {
             totalClients,
@@ -177,7 +177,7 @@ window.ClientUtils = {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         
-        return window.clients.filter(client => {
+        return clientsData.filter(client => {
             if (!client.lastSession) return false;
             const lastSessionDate = new Date(client.lastSession);
             return lastSessionDate > thirtyDaysAgo;
@@ -186,7 +186,7 @@ window.ClientUtils = {
 
     // Neue Klienten (keine Sessions)
     getNewClients() {
-        return window.clients.filter(client => client.sessionHistory === 0);
+        return clientsData.filter(client => client.sessionHistory === 0);
     },
 
     // Klient-Profil HTML generieren
@@ -274,5 +274,5 @@ window.ClientUtils = {
     }
 };
 
-console.log('👥 Klienten geladen:', window.clients.length, 'Klienten verfügbar');
+console.log('👥 Klienten geladen:', clientsData.length, 'Klienten verfügbar');
 console.log('📊 Klienten-Statistiken:', window.ClientUtils.getStats());
