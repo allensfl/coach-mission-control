@@ -284,7 +284,7 @@ const WindowManager = {
     collaborationWindow: null,
     
     openCollaborationWindow() {
-        const url = 'collaboration--gray-standalone.html'; // Geändert!
+        const url = 'collaboration-gray-standalone.html'; // Geändert!
         const features = 'width=900,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no';
         
         // Prüfen ob Fenster bereits offen
