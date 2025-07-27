@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Mission Control - Beta Feedback</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .feedback-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .rating-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .rating-label {
+            flex: 1;
+            font-weight: 500;
+            color: #34495e;
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .star:hover,
+        .star.active {
+            color: #f39c12;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .checkbox-item:hover {
+            background: #ecf0f1;
+        }
+        
+        .checkbox-item input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+        }
+        
+        .submit-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .feedback-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .rating-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-container">
+        <div class="header">
+            <h1>🚀 Beta-Feedback</h1>
+            <p>Hilf uns, Coach Mission Control zu perfektionieren!</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <form id="feedbackForm">
+            <!-- SEKTION 1: ALLGEMEINE BEWERTUNG -->
+            <div class="section">
+                <h3>📊 Allgemeine Bewertung</h3>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Gesamteindruck der App</span>
+                    <div class="rating-stars" data-rating="overall">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Benutzerfreundlichkeit (UI/UX)</span>
+                    <div class="rating-stars" data-rating="usability">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Qualität der KI-Antworten</span>
+                    <div class="rating-stars" data-rating="ai_quality">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Geschwindigkeit/Performance</span>
+                    <div class="rating-stars" data-rating="performance">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SEKTION 2: FUNKTIONALITÄT -->
+            <div class="section">
+                <h3>⚙️ Funktionalität & Features</h3>
+                
+                <p><strong>Welche Features haben Sie getestet?</strong></p>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="client_selection">
+                        <span>Klienten-Auswahl</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="session_start">
+                        <span>Session-Start</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="voice_input">
+                        <span>Voice-Input</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="ai_responses">
+                        <span>KI-Antworten</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="session_summary">
+                        <span>Session-Zusammenfassung</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="tested_features" value="mobile_usage">
+                        <span>Mobile Nutzung</span>
+                    </label>
+                </div>
+                
+                <br>
+                <p><strong>Welche Probleme sind aufgetreten?</strong></p>
+                <textarea name="problems" placeholder="Beschreiben Sie alle technischen Probleme, Bugs oder Schwierigkeiten, die Sie hatten..."></textarea>
+            </div>
+            
+            <!-- SEKTION 3: COACHING-QUALITÄT -->
+            <div class="section">
+                <h3>💬 Coaching-Qualität</h3>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Relevanz der Coaching-Fragen</span>
+                    <div class="rating-stars" data-rating="question_relevance">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+                
+                <div class="rating-group">
+                    <span class="rating-label">Tiefe der Analyse</span>
+                    <div class="rating-stars" data-rating="analysis_depth">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                </div>
+                
+                <p><strong>Beste KI-Antwort/Empfehlung, die Sie erhalten haben:</strong></p>
+                <textarea name="best_response" placeholder="Teilen Sie die beste oder hilfreichste Antwort, die Sie von der KI erhalten haben..."></textarea>
+                
+                <p><strong>Was würden Sie an den Coaching-Prompts verbessern?</strong></p>
+                <textarea name="prompt_improvements" placeholder="Welche Coaching-Fragen fehlen? Was sollte anders gefragt werden? Welche Bereiche sollten mehr berücksichtigt werden?"></textarea>
+            </div>
+            
+            <!-- SEKTION 4: VERBESSERUNGSVORSCHLÄGE -->
+            <div class="section">
+                <h3>💡 Verbesserungsvorschläge</h3>
+                
+                <p><strong>Welche Features fehlen Ihnen?</strong></p>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="client_management">
+                        <span>Erweiterte Klienten-Verwaltung</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="session_notes">
+                        <span>Session-Notizen speichern</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="progress_tracking">
+                        <span>Fortschritts-Tracking</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="calendar_integration">
+                        <span>Kalender-Integration</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="export_functions">
+                        <span>Export-Funktionen</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="missing_features" value="offline_mode">
+                        <span>Offline-Modus</span>
+                    </label>
+                </div>
+                
+                <p><strong>Ihre drei wichtigsten Verbesserungsvorschläge:</strong></p>
+                <textarea name="top_improvements" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea>
+            </div>
+            
+            <!-- SEKTION 5: BUSINESS-FEEDBACK -->
+            <div class="section">
+                <h3>💼 Business & Preisgestaltung</h3>
+                
+                <p><strong>Würden Sie diese App in Ihrer Coaching-Praxis einsetzen?</strong></p>
+                <div class="rating-stars" data-rating="would_use">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                
+                <p><strong>Wie viel würden Sie maximal für diese App bezahlen?</strong></p>
+                <select name="price_willingness" style="width: 100%; padding: 10px; border-radius: 5px; border: 2px solid #e0e0e0;">
+                    <option value="">Bitte wählen...</option>
+                    <option value="under_500">Unter €500</option>
+                    <option value="500_1000">€500 - €1.000</option>
+                    <option value="1000_2000">€1.000 - €2.000</option>
+                    <option value="2000_3000">€2.000 - €3.000</option>
+                    <option value="3000_5000">€3.000 - €5.000</option>
+                    <option value="over_5000">Über €5.000</option>
+                </select>
+                
+                <br><br>
+                <p><strong>Abschließende Gedanken:</strong></p>
+                <textarea name="final_thoughts" placeholder="Alles andere, was Sie uns mitteilen möchten - Lob, Kritik, Ideen..."></textarea>
+            </div>
+            
+            <!-- SUBMIT -->
+            <div class="submit-section">
+                <h3 style="color: white; margin-bottom: 20px;">Vielen Dank für Ihr wertvolles Feedback! 🙏</h3>
+                <button type="submit" class="submit-btn">Feedback senden</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        // Rating System
+        document.querySelectorAll('.rating-stars').forEach(ratingGroup => {
+            const stars = ratingGroup.querySelectorAll('.star');
+            
+            stars.forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    const rating = index + 1;
+                    const ratingName = ratingGroup.dataset.rating;
+                    
+                    // Update visual state
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('active', i < rating);
+                    });
+                    
+                    // Store rating value
+                    ratingGroup.dataset.value = rating;
+                });
+                
+                star.addEventListener('mouseenter', () => {
+                    stars.forEach((s, i) => {
+                        s.style.color = i <= index ? '#f39c12' : '#ddd';
+                    });
+                });
+                
+                star.addEventListener('mouseleave', () => {
+                    stars.forEach((s, i) => {
+                        const currentRating = parseInt(ratingGroup.dataset.value) || 0;
+                        s.style.color = i < currentRating ? '#f39c12' : '#ddd';
+                    });
+                });
+            });
+        });
+        
+        // Progress Bar
+        function updateProgress() {
+            const form = document.getElementById('feedbackForm');
+            const allInputs = form.querySelectorAll('input, textarea, select');
+            const filledInputs = Array.from(allInputs).filter(input => {
+                if (input.type === 'checkbox') return input.checked;
+                return input.value.trim() !== '';
+            });
+            
+            const progress = (filledInputs.length / allInputs.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+        
+        // Update progress on input changes
+        document.addEventListener('input', updateProgress);
+        document.addEventListener('change', updateProgress);
+        
+        // Form submission
+        document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Collect all ratings
+            const ratings = {};
+            document.querySelectorAll('.rating-stars').forEach(group => {
+                const ratingName = group.dataset.rating;
+                const ratingValue = group.dataset.value || 0;
+                ratings[ratingName] = parseInt(ratingValue);
+            });
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {
+                ratings: ratings,
+                responses: Object.fromEntries(formData.entries()),
+                timestamp: new Date().toISOString(),
+                user_agent: navigator.userAgent
+            };
+            
+            // Here you would normally send the data to your server
+            console.log('Feedback Data:', data);
+            
+            // For demo purposes, show success message
+            alert('Vielen Dank für Ihr Feedback! 🎉\n\nIhre Antworten wurden erfolgreich übermittelt.');
+            
+            // In real implementation, you'd send this to your backend:
+            // fetch('/api/feedback', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify(data)
+            // });
+        });
+        
+        // Initialize progress
+        updateProgress();
+    </script>
+</body>
+</html>
