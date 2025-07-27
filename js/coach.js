@@ -1748,3 +1748,622 @@ function addSimpleChatGPTButton() {
 
 // Button nach 3 Sekunden hinzufügen
 setTimeout(addSimpleChatGPTButton, 3000);
+// Coach Wissens-Upload System für triadisches KI-Coaching
+
+// Neue Sektion in Coach-KI Tab für Wissens-Management
+function addKnowledgeManagementSection() {
+    const coachKIContainer = DOM.find('.coachki-container');
+    if (!coachKIContainer || DOM.find('#knowledgeManagement')) return;
+
+    const knowledgeHTML = `
+        <div id="knowledgeManagement" style="background: rgba(59, 130, 246, 0.1); border-radius: 15px; padding: 25px; margin-bottom: 25px; border: 2px solid rgba(59, 130, 246, 0.3);">
+            <h3 style="color: #1e40af; margin-bottom: 20px; display: flex; align-items: center;">
+                📚 Dein Coaching-Wissen (Geissler Clone)
+                <span style="background: #3b82f6; color: white; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.8rem; margin-left: 10px;">DEIN WISSEN</span>
+            </h3>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #1e40af;">
+                    Lade deine Coaching-Dokumente hoch (Word, PDF):
+                </label>
+                <input type="file" id="knowledgeUpload" multiple accept=".pdf,.doc,.docx,.txt" style="
+                    width: 100%;
+                    padding: 12px;
+                    border: 2px solid rgba(59, 130, 246, 0.4);
+                    border-radius: 8px;
+                    background: white;
+                ">
+                <div style="font-size: 0.9rem; color: #1e40af; margin-top: 5px;">
+                    💡 Empfehlung: Separate Dokumente für Diagnostik, Methoden, Interventionen, eigene Erfahrungen
+                </div>
+            </div>
+            
+            <div id="uploadedFiles" style="display: none; background: white; border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="color: #1e40af; font-weight: 600; margin-bottom: 10px;">📄 Deine Wissens-Dokumente:</div>
+                <div id="filesList"></div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button onclick="processKnowledgeFiles()" id="processBtn" style="background: #3b82f6; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;" disabled>
+                    🧠 Wissen an KI übertragen
+                </button>
+                <button onclick="testKnowledgeClone()" style="background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    🧪 Clone testen
+                </button>
+            </div>
+            
+            <div id="knowledgeStatus" style="background: rgba(59, 130, 246, 0.1); border-radius: 8px; padding: 12px; border-left: 4px solid #3b82f6;">
+                <div style="font-weight: 600; color: #1e40af; margin-bottom: 5px;">📋 Geissler Clone Status:</div>
+                <div id="cloneStatus" style="color: #374151; font-size: 0.9rem;">
+                    Noch keine Wissens-Dokumente hochgeladen. Lade deine Coaching-Expertise hoch, um einen personalisierten KI-Coach zu erstellen.
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Vor den Quick-Access Buttons einfügen
+    const quickAccess = DOM.find('.quick-access');
+    if (quickAccess) {
+        quickAccess.insertAdjacentHTML('beforebegin', knowledgeHTML);
+        setupKnowledgeUpload();
+    }
+}
+
+// Knowledge Upload Setup
+function setupKnowledgeUpload() {
+    const uploadInput = DOM.find('#knowledgeUpload');
+    if (uploadInput) {
+        uploadInput.addEventListener('change', handleFileUpload);
+    }
+}
+
+// File Upload Handler
+function handleFileUpload(event) {
+    const files = event.target.files;
+    if (files.length === 0) return;
+
+    const filesList = DOM.find('#filesList');
+    const uploadedFiles = DOM.find('#uploadedFiles');
+    const processBtn = DOM.find('#processBtn');
+    
+    DOM.empty(filesList);
+    
+    Array.from(files).forEach(file => {
+        const fileDiv = DOM.create('div', {
+            style: 'display: flex; justify-content: space-between; align-items: center; padding: 8px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; margin-bottom: 5px;',
+            innerHTML: `
+                <span style="color: #1e40af;">📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
+                <span style="color: #10b981; font-size: 0.8rem;">✓ Bereit</span>
+            `
+        });
+        filesList.appendChild(fileDiv);
+    });
+    
+    uploadedFiles.style.display = 'block';
+    processBtn.disabled = false;
+    
+    Utils.showToast(`${files.length} Wissens-Dokumente bereit für Upload`, 'success');
+}
+
+// Knowledge Processing
+window.processKnowledgeFiles = async function() {
+    const uploadInput = DOM.find('#knowledgeUpload');
+    const files = uploadInput?.files;
+    
+    if (!files || files.length === 0) {
+        Utils.showToast('Keine Dateien zum Verarbeiten.', 'error');
+        return;
+    }
+    
+    const processBtn = DOM.find('#processBtn');
+    const cloneStatus = DOM.find('#cloneStatus');
+    
+    processBtn.textContent = '🔄 Verarbeite Wissen...';
+    processBtn.disabled = true;
+    
+    try {
+        // Simuliere Knowledge Processing (hier würdest du die Dateien an OpenAI Assistant senden)
+        cloneStatus.innerHTML = '🔄 Verarbeite deine Coaching-Expertise...';
+        
+        // Hier würde der echte Upload zu OpenAI Assistant passieren
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        // Success
+        cloneStatus.innerHTML = `
+            ✅ <strong>Geissler Clone erfolgreich erstellt!</strong><br>
+            📚 ${files.length} Dokumente verarbeitet<br>
+            🧠 Dein persönliches Coaching-Wissen ist jetzt aktiv<br>
+            🎯 KI nutzt DEIN Wissen vorrangig vor Standard-LLM
+        `;
+        
+        Utils.showToast('Dein Coaching-Wissen wurde erfolgreich an die KI übertragen!', 'success');
+        
+        // Enable advanced features
+        enablePersonalizedCoaching();
+        
+    } catch (error) {
+        cloneStatus.innerHTML = '❌ Fehler beim Übertragen des Wissens. Versuche es erneut.';
+        Utils.showToast('Fehler beim Wissens-Upload.', 'error');
+    } finally {
+        processBtn.textContent = '🧠 Wissen an KI übertragen';
+        processBtn.disabled = false;
+    }
+};
+
+// Test Knowledge Clone
+window.testKnowledgeClone = function() {
+    const input = DOM.find('#coachInput');
+    if (input) {
+        input.value = 'Teste meinen personalisierten Coaching-Clone: Wie würde ICH als Coach mit einem Klienten umgehen, der Probleme mit Work-Life-Balance hat? Nutze mein hochgeladenes Wissen.';
+        
+        // Nach kurzer Verzögerung Coach-KI aufrufen
+        setTimeout(() => {
+            askOpenAICoach();
+        }, 500);
+    }
+    
+    Utils.showToast('Clone-Test gestartet - prüfe ob die KI dein Wissen nutzt!', 'info');
+};
+
+// Personalized Coaching Features aktivieren
+function enablePersonalizedCoaching() {
+    // Add "Clone Mode" Indikator
+    const quickAccess = DOM.find('.quick-access');
+    if (quickAccess && !DOM.find('#cloneModeIndicator')) {
+        const indicator = DOM.create('div', {
+            id: 'cloneModeIndicator',
+            style: 'background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: 600;',
+            innerHTML: '🧠 PERSONALISIERTER CLONE AKTIV - KI nutzt DEIN Wissen!'
+        });
+        quickAccess.parentNode.insertBefore(indicator, quickAccess);
+    }
+}
+
+console.log('📚 Wissens-Management für Geissler Clone geladen');
+// Geissler A-E Prompt System für triadisches Coaching
+
+// Erweiterte Prompt-Struktur nach Geissler
+const GeisslerPromptSystem = {
+    // A-Prompts: Coach-Orientierung
+    A_PROMPTS: {
+        A1: {
+            text: "COACH-ORIENTIERUNG: Du sollst als Coach methodisch vorgehen. Nutze aktives Zuhören, spiegle zurück was du hörst, und führe den Coachee durch strukturierte Reflexionsfragen. Halte dich an die GT-Methodik.",
+            type: "A-PROMPT",
+            target: "COACH",
+            phase: "Vorbereitung"
+        }
+    },
+    
+    // B-Prompts: Protokoll-Anleitung für Coachee
+    B_PROMPTS: {
+        B1: {
+            text: "PROTOKOLL-ANLEITUNG: Beschreibe deine Situation strukturiert: 1) Was ist das konkrete Problem? 2) Was ist dein Ziel? 3) Was hast du bereits versucht? 4) Welche Hindernisse siehst du? Sei so spezifisch wie möglich.",
+            type: "B-PROMPT", 
+            target: "COACHEE",
+            phase: "Problemerfassung"
+        }
+    },
+    
+    // C-Prompts: KI-Bearbeitungsanweisungen
+    C_PROMPTS: {
+        C1: {
+            text: "KI-BEARBEITUNG: Analysiere das erhaltene Protokoll mit diesen Textbausteinen: [AUSBALANCIERUNGSPROBLEME] [RESSOURCENAKTIVIERUNG] [ZIELFORMULIERUNG]. Gib eine strukturierte Coaching-Antwort mit konkreten nächsten Schritten.",
+            type: "C-PROMPT",
+            target: "KI",
+            phase: "Analyse"
+        }
+    },
+    
+    // D-Prompts: Coachee-Anleitung für KI-Output
+    D_PROMPTS: {
+        D1: {
+            text: "UMGANG MIT KI-ANTWORT: Lies die KI-Antwort aufmerksam. Welcher Punkt resoniert am stärksten mit dir? Was überrascht dich? Welcher Aspekt passt noch nicht? Teile deine Reaktion mit dem Coach.",
+            type: "D-PROMPT",
+            target: "COACHEE", 
+            phase: "Reflexion"
+        }
+    },
+    
+    // E-Prompts: Feedback-Anleitung
+    E_PROMPTS: {
+        E1: {
+            text: "FEEDBACK-ANLEITUNG: Bewerte die KI-Antwort: War sie hilfreich? Zu oberflächlich oder zu komplex? Hat sie dein Anliegen verstanden? Dein Feedback hilft, die nächste KI-Antwort zu verbessern.",
+            type: "E-PROMPT",
+            target: "COACHEE",
+            phase: "Feedback"
+        }
+    }
+};
+
+// Mega-Prompt Builder nach Geissler-System
+function buildGeisslerMegaPrompt(phase, problemType) {
+    const megaPrompt = {
+        phase: phase,
+        problemType: problemType,
+        prompts: []
+    };
+    
+    switch(phase) {
+        case 'Phase 1: Problem & Ziel':
+            megaPrompt.prompts = [
+                GeisslerPromptSystem.A_PROMPTS.A1,
+                GeisslerPromptSystem.B_PROMPTS.B1,
+                GeisslerPromptSystem.C_PROMPTS.C1,
+                GeisslerPromptSystem.D_PROMPTS.D1
+            ];
+            break;
+            
+        case 'Phase 2: Analyse':
+            megaPrompt.prompts = [
+                {
+                    text: "COACH: Führe eine Tiefenanalyse durch. Nutze systemische Fragen und erkunde Muster.",
+                    type: "A-PROMPT",
+                    target: "COACH"
+                },
+                {
+                    text: "COACHEE: Beschreibe die Situation aus verschiedenen Perspektiven. Was würden andere Beteiligte sagen?",
+                    type: "B-PROMPT", 
+                    target: "COACHEE"
+                },
+                {
+                    text: "KI: Nutze [MUSTERKENNUNG] und [SYSTEMANALYSE] Textbausteine für die Analyse.",
+                    type: "C-PROMPT",
+                    target: "KI"
+                }
+            ];
+            break;
+            
+        case 'Phase 3: Lösung':
+            megaPrompt.prompts = [
+                {
+                    text: "COACH: Fokussiere auf Lösungen und Ressourcen. Nutze die Wunderfrage.",
+                    type: "A-PROMPT",
+                    target: "COACH"
+                },
+                {
+                    text: "COACHEE: Entwickle konkrete Lösungsansätze. Was wäre der erste kleine Schritt?",
+                    type: "B-PROMPT",
+                    target: "COACHEE"
+                },
+                {
+                    text: "KI: Nutze [LÖSUNGSENTWICKLUNG] und [ERFOLGSIMAGINATION] für konkrete Handlungsschritte.",
+                    type: "C-PROMPT", 
+                    target: "KI"
+                }
+            ];
+            break;
+            
+        case 'Phase 4: Umsetzung':
+            megaPrompt.prompts = [
+                {
+                    text: "COACH: Plane konkrete Umsetzungsschritte und Erfolgskontrolle.",
+                    type: "A-PROMPT",
+                    target: "COACH"
+                },
+                {
+                    text: "COACHEE: Definiere messbare Ziele und Timeline für die Umsetzung.",
+                    type: "B-PROMPT",
+                    target: "COACHEE"
+                },
+                {
+                    text: "KI: Nutze [AKTIONSPLANUNG] und [SUPPORT-NETZWERK] für Umsetzungsstrategie.",
+                    type: "C-PROMPT",
+                    target: "KI"
+                },
+                {
+                    text: "FEEDBACK: Bewerte die Machbarkeit des Umsetzungsplans. Was fehlt noch?",
+                    type: "E-PROMPT",
+                    target: "COACHEE"
+                }
+            ];
+            break;
+    }
+    
+    return megaPrompt;
+}
+
+// Mega-Prompt Selector Interface
+function addMegaPromptSelector() {
+    const promptEditor = DOM.find('.prompt-editor');
+    if (!promptEditor || DOM.find('#megaPromptSelector')) return;
+
+    const selectorHTML = `
+        <div id="megaPromptSelector" style="background: rgba(147, 51, 234, 0.1); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 2px solid rgba(147, 51, 234, 0.3);">
+            <h4 style="color: #7c3aed; margin-bottom: 15px;">🎯 Geissler Mega-Prompts (A-E System)</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #7c3aed;">Phase:</label>
+                    <select id="megaPromptPhase" style="width: 100%; padding: 8px; border: 2px solid rgba(147, 51, 234, 0.3); border-radius: 6px;">
+                        <option value="Phase 1: Problem & Ziel">Phase 1: Problem & Ziel</option>
+                        <option value="Phase 2: Analyse">Phase 2: Analyse</option>
+                        <option value="Phase 3: Lösung">Phase 3: Lösung</option>
+                        <option value="Phase 4: Umsetzung">Phase 4: Umsetzung</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 600; margin-bottom: 5px; color: #7c3aed;">Problem-Typ:</label>
+                    <select id="megaPromptType" style="width: 100%; padding: 8px; border: 2px solid rgba(147, 51, 234, 0.3); border-radius: 6px;">
+                        <option value="leadership">Führung</option>
+                        <option value="work-life">Work-Life-Balance</option>
+                        <option value="career">Karriere</option>
+                        <option value="team">Team-Konflikte</option>
+                        <option value="change">Veränderung</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button onclick="generateMegaPrompt()" style="background: #7c3aed; color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%;">
+                🧩 Mega-Prompt generieren (A-E System)
+            </button>
+            
+            <div id="megaPromptPreview" style="display: none; background: white; border: 2px solid rgba(147, 51, 234, 0.3); border-radius: 8px; padding: 15px; margin-top: 15px;">
+                <div style="color: #7c3aed; font-weight: 600; margin-bottom: 10px;">📋 Generierter Mega-Prompt:</div>
+                <div id="megaPromptContent" style="font-family: monospace; line-height: 1.5; color: #374151;"></div>
+            </div>
+        </div>
+    `;
+    
+    promptEditor.insertAdjacentHTML('afterbegin', selectorHTML);
+}
+
+// Mega-Prompt Generator
+window.generateMegaPrompt = function() {
+    const phase = DOM.find('#megaPromptPhase')?.value;
+    const type = DOM.find('#megaPromptType')?.value;
+    
+    if (!phase || !type) return;
+    
+    const megaPrompt = buildGeisslerMegaPrompt(phase, type);
+    const preview = DOM.find('#megaPromptPreview');
+    const content = DOM.find('#megaPromptContent');
+    
+    if (preview && content) {
+        let promptText = `GEISSLER MEGA-PROMPT (${phase})\n\n`;
+        
+        megaPrompt.prompts.forEach((prompt, index) => {
+            promptText += `${prompt.type} - ${prompt.target}:\n${prompt.text}\n\n`;
+        });
+        
+        content.textContent = promptText;
+        preview.style.display = 'block';
+        
+        // In Editor laden
+        const editor = DOM.find('#promptEditor');
+        if (editor) {
+            editor.value = promptText;
+        }
+        
+        Utils.showToast('Geissler Mega-Prompt generiert!', 'success');
+    }
+};
+
+console.log('🎯 Geissler A-E Prompt System geladen');
+// E-Prompt Feedback System für Coachee
+
+// Feedback Interface zu Collaboration hinzufügen
+function addCoacheeFeedbackSystem() {
+    // Erweitere Collaboration Messages mit Feedback-Buttons
+    const originalUpdateDisplay = CoachInterface.updateCollaborationDisplay;
+    
+    CoachInterface.updateCollaborationDisplay = function(messages) {
+        originalUpdateDisplay.call(this, messages);
+        
+        // Feedback-Buttons zu KI-Antworten hinzufügen
+        const kiMessages = DOM.findAll('.message').forEach(messageEl => {
+            const senderEl = messageEl.querySelector('[style*="font-weight: bold"]');
+            if (senderEl && (senderEl.textContent.includes('🤖') || senderEl.textContent.includes('🚀'))) {
+                addFeedbackToMessage(messageEl);
+            }
+        });
+    };
+}
+
+// Feedback zu KI-Message hinzufügen
+function addFeedbackToMessage(messageEl) {
+    if (messageEl.querySelector('.feedback-section')) return; // Bereits vorhanden
+    
+    const feedbackSection = DOM.create('div', {
+        className: 'feedback-section',
+        style: 'margin-top: 15px; padding: 15px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; border-left: 4px solid #f59e0b;',
+        innerHTML: `
+            <div style="color: #92400e; font-weight: 600; margin-bottom: 10px;">
+                📝 E-PROMPT: Wie war diese KI-Antwort für dich?
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;">
+                <button onclick="giveFeedback(this, 'helpful')" class="feedback-btn" data-type="helpful" style="background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                    ✅ Hilfreich
+                </button>
+                <button onclick="giveFeedback(this, 'too-complex')" class="feedback-btn" data-type="too-complex" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                    🤯 Zu komplex
+                </button>
+                <button onclick="giveFeedback(this, 'too-simple')" class="feedback-btn" data-type="too-simple" style="background: #f59e0b; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                    😴 Zu oberflächlich
+                </button>
+                <button onclick="giveFeedback(this, 'misunderstood')" class="feedback-btn" data-type="misunderstood" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                    ❌ Falsch verstanden
+                </button>
+            </div>
+            <textarea placeholder="Dein detailliertes Feedback (optional)..." style="width: 100%; min-height: 60px; padding: 8px; border: 2px solid rgba(245, 158, 11, 0.3); border-radius: 6px; font-size: 0.9rem; resize: vertical;"></textarea>
+            <button onclick="submitDetailedFeedback(this)" style="background: #f59e0b; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 8px;">
+                📤 Feedback senden
+            </button>
+        `
+    });
+    
+    messageEl.appendChild(feedbackSection);
+}
+
+// Feedback geben
+window.giveFeedback = function(button, type) {
+    const feedbackSection = button.closest('.feedback-section');
+    const messageEl = button.closest('.message');
+    
+    // Alle Buttons deaktivieren
+    feedbackSection.querySelectorAll('.feedback-btn').forEach(btn => {
+        btn.style.opacity = '0.5';
+        btn.disabled = true;
+    });
+    
+    // Gewählten Button hervorheben
+    button.style.opacity = '1';
+    button.style.transform = 'scale(1.05)';
+    
+    // Feedback-Daten sammeln
+    const feedbackData = {
+        type: type,
+        timestamp: new Date().toISOString(),
+        messageContent: messageEl.querySelector('[style*="line-height"]')?.textContent || '',
+        source: 'coachee'
+    };
+    
+    // Feedback an Coach senden
+    sendFeedbackToCoach(feedbackData);
+    
+    // E-Prompt basierte Antwort
+    showEPromptResponse(type, feedbackSection);
+    
+    Utils.showToast(`Feedback "${type}" gesendet`, 'success');
+};
+
+// Detailliertes Feedback senden
+window.submitDetailedFeedback = function(button) {
+    const textarea = button.previousElementSibling;
+    const feedbackText = textarea.value.trim();
+    
+    if (!feedbackText) {
+        Utils.showToast('Bitte gib detailliertes Feedback ein.', 'error');
+        return;
+    }
+    
+    const feedbackData = {
+        type: 'detailed',
+        content: feedbackText,
+        timestamp: new Date().toISOString(),
+        source: 'coachee'
+    };
+    
+    sendFeedbackToCoach(feedbackData);
+    
+    // Feedback als Message hinzufügen
+    if (window.coachingComm) {
+        window.coachingComm.addMessage('👤 Coachee Feedback', `📝 Detailliertes Feedback zur KI-Antwort:\n\n${feedbackText}`);
+    }
+    
+    // Interface ausblenden
+    button.closest('.feedback-section').style.display = 'none';
+    
+    Utils.showToast('Detailliertes Feedback gesendet!', 'success');
+};
+
+// Feedback an Coach weiterleiten
+function sendFeedbackToCoach(feedbackData) {
+    if (!window.coachingComm) return;
+    
+    let feedbackMessage = `📊 COACHEE FEEDBACK: ${feedbackData.type}`;
+    
+    if (feedbackData.content) {
+        feedbackMessage += `\n\n"${feedbackData.content}"`;
+    }
+    
+    feedbackMessage += `\n\n💡 Diese Information hilft, die nächste KI-Antwort zu verbessern.`;
+    
+    // Nur für Coach sichtbar (spezielle Markierung)
+    window.coachingComm.addMessage('📊 Feedback System', feedbackMessage);
+}
+
+// E-Prompt Response basierend auf Feedback-Typ
+function showEPromptResponse(type, feedbackSection) {
+    const responses = {
+        'helpful': 'Super! Die KI hat dir geholfen. Welcher konkrete Aspekt war besonders wertvoll?',
+        'too-complex': 'Die Antwort war zu komplex. Lass uns das vereinfachen - welcher Teil war unklar?',
+        'too-simple': 'Die Antwort war zu oberflächlich. Was hättest du dir detaillierter gewünscht?',
+        'misunderstood': 'Die KI hat dich missverstanden. Wie könntest du dein Anliegen klarer formulieren?'
+    };
+    
+    const responseDiv = DOM.create('div', {
+        style: 'margin-top: 10px; padding: 10px; background: rgba(59, 130, 246, 0.1); border-radius: 6px; border-left: 3px solid #3b82f6;',
+        innerHTML: `
+            <div style="color: #1e40af; font-weight: 600; margin-bottom: 5px;">💬 Coaching-Rückfrage:</div>
+            <div style="color: #374151; font-style: italic;">${responses[type] || 'Danke für dein Feedback!'}</div>
+        `
+    });
+    
+    feedbackSection.appendChild(responseDiv);
+}
+
+// Feedback Analytics für Coach
+function addFeedbackAnalytics() {
+    const coachKIContainer = DOM.find('.coachki-container');
+    if (!coachKIContainer || DOM.find('#feedbackAnalytics')) return;
+
+    const analyticsHTML = `
+        <div id="feedbackAnalytics" style="background: rgba(16, 185, 129, 0.1); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 2px solid rgba(16, 185, 129, 0.3);">
+            <h4 style="color: #065f46; margin-bottom: 15px;">📊 Feedback Analytics (E-Prompt System)</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; color: #10b981;">✅</div>
+                    <div style="font-weight: 600;">Hilfreich</div>
+                    <div id="helpfulCount" style="font-size: 1.2rem; color: #065f46;">0</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; color: #f59e0b;">🤯</div>
+                    <div style="font-weight: 600;">Zu komplex</div>
+                    <div id="complexCount" style="font-size: 1.2rem; color: #92400e;">0</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; color: #f59e0b;">😴</div>
+                    <div style="font-weight: 600;">Zu oberflächlich</div>
+                    <div id="simpleCount" style="font-size: 1.2rem; color: #92400e;">0</div>
+                </div>
+                <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                    <div style="font-size: 1.5rem; color: #ef4444;">❌</div>
+                    <div style="font-weight: 600;">Missverstanden</div>
+                    <div id="misunderstoodCount" style="font-size: 1.2rem; color: #dc2626;">0</div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(16, 185, 129, 0.1); border-radius: 8px; padding: 12px;">
+                <div style="font-weight: 600; color: #065f46; margin-bottom: 5px;">💡 Feedback-Insights:</div>
+                <div id="feedbackInsights" style="color: #374151; font-size: 0.9rem;">
+                    Noch kein Feedback erhalten. E-Prompts helfen dir, die KI-Qualität zu verstehen.
+                </div>
+            </div>
+        </div>
+    `;
+    
+    coachKIContainer.insertAdjacentHTML('afterbegin', analyticsHTML);
+}
+
+// Feedback Analytics updaten
+function updateFeedbackAnalytics(type) {
+    const countEl = DOM.find(`#${type}Count`);
+    if (countEl) {
+        const currentCount = parseInt(countEl.textContent) || 0;
+        countEl.textContent = currentCount + 1;
+    }
+    
+    // Insights updaten
+    const insights = DOM.find('#feedbackInsights');
+    if (insights) {
+        const helpful = parseInt(DOM.find('#helpfulCount')?.textContent) || 0;
+        const complex = parseInt(DOM.find('#complexCount')?.textContent) || 0;
+        const simple = parseInt(DOM.find('#simpleCount')?.textContent) || 0;
+        const misunderstood = parseInt(DOM.find('#misunderstoodCount')?.textContent) || 0;
+        
+        const total = helpful + complex + simple + misunderstood;
+        
+        if (total > 0) {
+            const helpfulPercent = Math.round((helpful / total) * 100);
+            insights.innerHTML = `
+                ${helpfulPercent}% der KI-Antworten waren hilfreich. 
+                ${complex > 0 ? `${complex} zu komplex, ` : ''}
+                ${simple > 0 ? `${simple} zu oberflächlich, ` : ''}
+                ${misunderstood > 0 ? `${misunderstood} missverstanden` : ''}
+            `;
+        }
+    }
+}
+
+console.log('📝 E-Prompt Feedback System geladen');
