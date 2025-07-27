@@ -1,5 +1,5 @@
 // Coach Mission Control - Demo Version
-// Fehlerfreie JavaScript-Implementierung für Demo-Features
+// Fehlerfreie JavaScript-Implementierung für Demo-Features mit Client-Rendering
 
 // Demo-Konfiguration
 const DEMO_CONFIG = {
@@ -115,26 +115,97 @@ function loadDemoClients() {
     
     if (!clientsContainer) {
         console.warn('Clients container nicht gefunden - checking alternative selectors');
-        // Versuche andere mögliche Container
-        const alternativeContainers = document.querySelectorAll('[id*="client"], [class*="client"]');
-        console.log('Alternative containers found:', alternativeContainers.length);
         return;
     }
     
     console.log('✅ Clients container gefunden:', clientsContainer.id);
     
-    // Demo-Clients aus data/clients.js sollten automatisch geladen werden
-    // Hier nur Demo-Badge hinzufügen falls nötig
-    setTimeout(() => {
-        const clientCards = document.querySelectorAll('.client-card, .client-item, .client');
-        console.log(`Found ${clientCards.length} client cards`);
-        
-        clientCards.forEach(card => {
-            if (!card.querySelector('.demo-badge')) {
-                addDemoBadge(card);
+    // NEU: Client-Cards dynamisch erstellen
+    if (window.clients && window.clients.length > 0) {
+        renderClientCards(clientsContainer);
+    } else {
+        // Warten bis clients.js geladen ist
+        setTimeout(() => {
+            if (window.clients && window.clients.length > 0) {
+                renderClientCards(clientsContainer);
+            } else {
+                console.warn('window.clients nicht verfügbar - versuche erneut in 2 Sekunden');
+                setTimeout(() => {
+                    if (window.clients && window.clients.length > 0) {
+                        renderClientCards(clientsContainer);
+                    }
+                }, 2000);
             }
+        }, 1000);
+    }
+}
+
+// NEU: Funktion zum Rendern der Client-Cards
+function renderClientCards(container) {
+    console.log(`🎯 Rendering ${window.clients.length} demo clients`);
+    
+    container.innerHTML = ''; // Container leeren
+    
+    window.clients.forEach(client => {
+        const clientCard = document.createElement('div');
+        clientCard.className = 'client-card';
+        clientCard.style.cssText = `
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-left: 4px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        `;
+        
+        clientCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div style="flex: 1;">
+                    <h3 style="margin: 0 0 8px 0; color: #1e293b; font-size: 1.2em;">
+                        ${client.name}
+                    </h3>
+                    <p style="margin: 0 0 5px 0; color: #64748b; font-size: 0.9em;">
+                        <strong>${client.age} Jahre</strong> • ${client.profession}
+                    </p>
+                    <p style="margin: 0 0 10px 0; color: #475569; line-height: 1.4;">
+                        <strong>Situation:</strong> ${client.situation}
+                    </p>
+                    <p style="margin: 0; color: #059669; font-weight: 500;">
+                        <strong>Ziele:</strong> ${client.goals}
+                    </p>
+                </div>
+            </div>
+        `;
+        
+        // Demo-Badge hinzufügen
+        addDemoBadge(clientCard);
+        
+        // Click-Handler
+        clientCard.addEventListener('click', (event) => {
+            selectClient(client, event);
         });
-    }, 1000); // Längere Wartezeit für sicheres Laden
+        
+        // Hover-Effekte
+        clientCard.addEventListener('mouseenter', () => {
+            clientCard.style.transform = 'translateY(-2px)';
+            clientCard.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            clientCard.style.borderColor = '#10b981';
+        });
+        
+        clientCard.addEventListener('mouseleave', () => {
+            clientCard.style.transform = 'translateY(0)';
+            clientCard.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            clientCard.style.borderColor = '#e2e8f0';
+        });
+        
+        container.appendChild(clientCard);
+    });
+    
+    console.log(`✅ ${window.clients.length} client cards erfolgreich gerendert`);
 }
 
 function addDemoBadge(clientCard) {
@@ -154,8 +225,105 @@ function addDemoBadge(clientCard) {
         z-index: 10;
     `;
     
-    clientCard.style.position = 'relative';
     clientCard.appendChild(badge);
+}
+
+// NEU: Client-Auswahl Funktion
+function selectClient(client, event) {
+    console.log('Client ausgewählt:', client.name);
+    
+    // Alle Cards deselektieren
+    document.querySelectorAll('.client-card').forEach(card => {
+        card.style.borderLeftColor = '#10b981';
+        card.style.backgroundColor = 'white';
+    });
+    
+    // Aktuelle Card markieren
+    const currentCard = event.target.closest('.client-card');
+    currentCard.style.borderLeftColor = '#3b82f6';
+    currentCard.style.backgroundColor = '#f8fafc';
+    
+    // Session-Button anzeigen
+    const sessionBtn = document.getElementById('startSessionBtn');
+    if (sessionBtn) {
+        sessionBtn.style.display = 'inline-block';
+        sessionBtn.onclick = () => startSessionWithClient(client);
+    }
+    
+    // Demo-Event tracking
+    trackDemoEvent('client_selected', {
+        client_name: client.name,
+        client_profession: client.profession
+    });
+}
+
+// NEU: Session mit Klient starten
+function startSessionWithClient(client) {
+    if (!demoSession.hasSessionsLeft()) {
+        showSessionLimitModal();
+        return;
+    }
+    
+    console.log('Session gestartet mit:', client.name);
+    
+    // Session verwenden
+    demoSession.incrementSession();
+    updateSessionCounter();
+    
+    // Zum Coach-KI Tab wechseln
+    const coachTab = document.querySelector('[data-tab="coach-ki"]') ||
+                    document.querySelector('.tab-btn:last-child') ||
+                    document.querySelector('[onclick*="coach"]');
+    if (coachTab) {
+        coachTab.click();
+    }
+    
+    // Client-Info im Coach-Interface anzeigen
+    displayClientInfo(client);
+    
+    trackDemoEvent('session_started', {
+        client_name: client.name,
+        sessions_remaining: demoSession.getSessionsRemaining()
+    });
+}
+
+// NEU: Client-Info im Coach-Interface
+function displayClientInfo(client) {
+    console.log('Coaching-Session für:', client.name);
+    
+    // Info im Coach-Tab anzeigen
+    setTimeout(() => {
+        const coachingArea = document.querySelector('#coachingTab, [id*="coach"]') ||
+                           document.querySelector('.tab-content:last-child');
+        
+        if (coachingArea) {
+            const clientInfo = document.createElement('div');
+            clientInfo.className = 'current-client-info';
+            clientInfo.style.cssText = `
+                background: #f0f9ff;
+                border: 1px solid #0ea5e9;
+                border-radius: 8px;
+                padding: 15px;
+                margin-bottom: 20px;
+            `;
+            
+            clientInfo.innerHTML = `
+                <h4 style="margin: 0 0 10px 0; color: #0c4a6e;">
+                    🎯 Coaching-Session mit ${client.name}
+                </h4>
+                <p style="margin: 0; color: #075985; font-size: 0.9em;">
+                    ${client.profession} • Ziel: ${client.goals}
+                </p>
+            `;
+            
+            // Alte Client-Info entfernen
+            const oldInfo = coachingArea.querySelector('.current-client-info');
+            if (oldInfo) oldInfo.remove();
+            
+            // Neue Info einfügen
+            coachingArea.insertBefore(clientInfo, coachingArea.firstChild);
+        }
+    }, 100);
 }
 
 function setupEventListeners() {
@@ -424,6 +592,8 @@ function openCollaborationTeaser() {
 // Globale Funktionen für HTML onclick-Events
 window.closeSessionLimitModal = closeSessionLimitModal;
 window.openCollaborationTeaser = openCollaborationTeaser;
+window.selectClient = selectClient;
+window.startSessionWithClient = startSessionWithClient;
 
 // Error Handling
 window.addEventListener('error', function(e) {
