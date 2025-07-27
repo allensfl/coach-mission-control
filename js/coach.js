@@ -2367,3 +2367,15 @@ function updateFeedbackAnalytics(type) {
 }
 
 console.log('📝 E-Prompt Feedback System geladen');
+// Geissler Features initialisieren
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+            addKnowledgeManagementSection();
+            addMegaPromptSelector(); 
+            addFeedbackAnalytics();
+            addCoacheeFeedbackSystem();
+            console.log('🎯 Geissler triadisches KI-Coaching Features aktiviert');
+        }
+    }, 4000);
+});
