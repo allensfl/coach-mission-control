@@ -77,44 +77,64 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeDemoFeatures() {
-    // Demo-Banner Status Check
-    const demoBanner = document.querySelector('.demo-banner');
+    // FIX: Demo-Banner Selector - multiple attempts
+    const demoBanner = document.querySelector('.demo-version-banner') ||
+                      document.querySelector('.demo-banner') ||
+                      document.querySelector('[class*="demo"]') ||
+                      document.querySelector('.banner');
+    
     if (demoBanner) {
         console.log('✅ Demo-Banner gefunden');
     } else {
-        console.warn('⚠️ Demo-Banner nicht gefunden');
+        console.warn('⚠️ Demo-Banner nicht gefunden - aber nicht kritisch');
     }
     
-    // Navigation Tabs
-    const tabs = document.querySelectorAll('.nav-tab');
+    // Navigation Tabs - multiple selectors
+    const tabs = document.querySelectorAll('.nav-tab, .tab-btn, [data-tab]');
     tabs.forEach(tab => {
         tab.addEventListener('click', handleTabClick);
     });
     
     // Kollaboration Button
-    const collabButton = document.querySelector('button[onclick*="collaboration"]');
+    const collabButton = document.querySelector('button[onclick*="collaboration"]') ||
+                        document.querySelector('[data-tab="collaboration"]') ||
+                        document.querySelector('.tab-btn[data-tab="kollaboration"]');
+    
     if (collabButton) {
         collabButton.onclick = openCollaborationTeaser;
     }
+    
+    console.log('✅ Demo-Features initialisiert');
 }
 
 function loadDemoClients() {
-    const clientsContainer = document.getElementById('clients-list');
+    // FIX: Richtiger Selector für clientsContainer
+    const clientsContainer = document.getElementById('clientsContainer') || 
+                            document.getElementById('clients-list') ||
+                            document.querySelector('.clients-container');
+    
     if (!clientsContainer) {
-        console.warn('Clients container nicht gefunden');
+        console.warn('Clients container nicht gefunden - checking alternative selectors');
+        // Versuche andere mögliche Container
+        const alternativeContainers = document.querySelectorAll('[id*="client"], [class*="client"]');
+        console.log('Alternative containers found:', alternativeContainers.length);
         return;
     }
+    
+    console.log('✅ Clients container gefunden:', clientsContainer.id);
     
     // Demo-Clients aus data/clients.js sollten automatisch geladen werden
     // Hier nur Demo-Badge hinzufügen falls nötig
     setTimeout(() => {
-        const clientCards = document.querySelectorAll('.client-card');
+        const clientCards = document.querySelectorAll('.client-card, .client-item, .client');
+        console.log(`Found ${clientCards.length} client cards`);
+        
         clientCards.forEach(card => {
             if (!card.querySelector('.demo-badge')) {
                 addDemoBadge(card);
             }
         });
-    }, 500);
+    }, 1000); // Längere Wartezeit für sicheres Laden
 }
 
 function addDemoBadge(clientCard) {
@@ -139,8 +159,12 @@ function addDemoBadge(clientCard) {
 }
 
 function setupEventListeners() {
-    // Coach-KI Button
-    const coachButton = document.querySelector('button[onclick*="coach"], .nav-tab[data-tab="coach"]');
+    // Coach-KI Button - multiple selectors
+    const coachButton = document.querySelector('button[onclick*="coach"]') ||
+                       document.querySelector('.nav-tab[data-tab="coach"]') ||
+                       document.querySelector('.tab-btn[data-tab="coach-ki"]') ||
+                       document.querySelector('[data-tab="coaching"]');
+    
     if (coachButton) {
         coachButton.addEventListener('click', handleCoachKIClick);
     }
@@ -159,10 +183,12 @@ function handleTabClick(event) {
     event.preventDefault();
     
     const tab = event.currentTarget;
-    const tabName = tab.dataset.tab || tab.textContent.toLowerCase();
+    const tabName = tab.dataset.tab || 
+                   tab.textContent.toLowerCase().replace(/[^a-z]/g, '') ||
+                   'clients';
     
     // Remove active class from all tabs
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nav-tab, .tab-btn').forEach(t => t.classList.remove('active'));
     
     // Add active class to clicked tab
     tab.classList.add('active');
@@ -179,17 +205,26 @@ function showTabContent(tabName) {
         area.classList.remove('active');
     });
     
-    // Show specific content
-    const targetContent = document.getElementById(tabName + '-content') || 
-                         document.getElementById(tabName) ||
-                         document.querySelector(`[data-tab="${tabName}"]`);
+    // Show specific content - multiple selector attempts
+    const targetContent = document.getElementById(tabName + 'Tab') ||          // clientsTab
+                         document.getElementById(tabName + '-content') ||      // clients-content
+                         document.getElementById(tabName) ||                   // clients
+                         document.querySelector(`[data-tab="${tabName}"]`) ||  // data-tab
+                         document.getElementById('clientsTab');                // fallback
     
     if (targetContent) {
         targetContent.style.display = 'block';
         targetContent.classList.add('active');
+        console.log(`✅ Tab gewechselt zu: ${tabName}`);
+    } else {
+        console.warn(`⚠️ Tab content nicht gefunden für: ${tabName}`);
+        // Fallback - zeige ersten verfügbaren Tab
+        const firstTab = document.querySelector('.tab-content');
+        if (firstTab) {
+            firstTab.style.display = 'block';
+            firstTab.classList.add('active');
+        }
     }
-    
-    console.log(`Tab gewechselt zu: ${tabName}`);
 }
 
 function handleCoachKIClick(event) {
@@ -213,8 +248,12 @@ function handleCoachKIClick(event) {
 }
 
 function showCoachKI() {
-    // Coach-KI Tab aktivieren
-    const coachTab = document.querySelector('[data-tab="coach"], .nav-tab:last-child');
+    // Coach-KI Tab aktivieren - multiple attempts
+    const coachTab = document.querySelector('[data-tab="coach"]') ||
+                    document.querySelector('[data-tab="coach-ki"]') ||
+                    document.querySelector('.nav-tab:last-child') ||
+                    document.querySelector('.tab-btn:last-child');
+    
     if (coachTab) {
         coachTab.click();
     }
@@ -225,7 +264,8 @@ function showCoachKI() {
 
 function loadDemoPrompts() {
     const promptsContainer = document.getElementById('prompts-container') || 
-                           document.querySelector('.prompts-list');
+                           document.querySelector('.prompts-list') ||
+                           document.querySelector('[class*="prompt"]');
     
     if (!promptsContainer) {
         console.warn('Prompts container nicht gefunden');
@@ -446,4 +486,4 @@ document.addEventListener('visibilitychange', function() {
 });
 
 console.log('✅ Coach Mission Control Demo JavaScript vollständig geladen');
-console.log(`📊 Demo Status: ${demoSession.getSessionsRemaining()} Sessions verbleibend`);// Cache-Bust: So 27 Jul 2025 14:53:17 CEST
+console.log(`📊 Demo Status: ${demoSession.getSessionsRemaining()} Sessions verbleibend`);
