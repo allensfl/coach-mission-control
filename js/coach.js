@@ -2379,3 +2379,774 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 4000);
 });
+// ===== DEMO-VERSION CODE FÜR COACH.JS =====
+// Diesen Code ganz am Ende der coach.js hinzufügen
+
+// DEMO-KONFIGURATION
+const DEMO_MODE = true; // Für Demo-Version auf true setzen
+const MAX_DEMO_SESSIONS = 5; // 5 Sessions wie gewünscht
+const DEMO_VERSION = "1.0";
+
+// Demo-Session Counter (im localStorage für Persistenz)
+let demoSessionCount = parseInt(localStorage.getItem('demoSessionCount')) || 0;
+
+// DEMO-DATEN: Vordefinierte Test-Klienten
+const DEMO_CLIENTS = [
+    {
+        id: 'demo1',
+        name: 'Maria Müller',
+        age: 58,
+        profession: 'Abteilungsleiterin Finanzen',
+        situation: 'Vorbereitung auf Ruhestand in 18 Monaten',
+        goals: 'Sinnvolle Tätigkeiten nach der Pension finden, Lebensübergang gestalten',
+        sessionHistory: 3,
+        notes: 'Sehr strukturiert, möchte klaren Plan für Ruhestand',
+        isDemo: true
+    },
+    {
+        id: 'demo2', 
+        name: 'Thomas Weber',
+        age: 45,
+        profession: 'IT-Manager',
+        situation: 'Karrierewechsel nach Burnout-Erfahrung',
+        goals: 'Work-Life-Balance finden, neue berufliche Richtung entwickeln',
+        sessionHistory: 2,
+        notes: 'Hoher Leistungsanspruch, lernt gerade loszulassen',
+        isDemo: true
+    },
+    {
+        id: 'demo3',
+        name: 'Sandra Fischer',
+        age: 52,
+        profession: 'Gymnasiallehrerin',
+        situation: 'Übergang von Vollzeit zu Teilzeit',
+        goals: 'Neue Lebensperspektiven entwickeln, Zeit sinnvoll nutzen',
+        sessionHistory: 1,
+        notes: 'Sehr reflektiert, sucht nach kreativen Ausdrucksmöglichkeiten',
+        isDemo: true
+    },
+    {
+        id: 'demo4',
+        name: 'Robert Meier',
+        age: 49,
+        profession: 'Verkaufsleiter',
+        situation: 'Firma wird verkauft, berufliche Neuorientierung',
+        goals: 'Selbstständigkeit prüfen, Führungsrolle neu definieren',
+        sessionHistory: 4,
+        notes: 'Unternehmertyp, braucht neue Herausforderungen',
+        isDemo: true
+    },
+    {
+        id: 'demo5',
+        name: 'Claudia Bernhard',
+        age: 55,
+        profession: 'Pflegedienstleiterin',
+        situation: 'Erschöpfung durch Corona, Sinnkrise',
+        goals: 'Berufung wiederfinden, Energie zurückgewinnen',
+        sessionHistory: 2,
+        notes: 'Hohe Empathie, vernachlässigt oft eigene Bedürfnisse',
+        isDemo: true
+    }
+];
+
+// DEMO-PROMPTS: Ausgewählte Prompts für Demo
+const DEMO_PROMPT_KEYS = [
+    'GT1', 'GT3', 'GT7', 'GT9',  // Grundsätzliche Themen
+    'SF1', 'SF3',                // Solution Finder
+    'DIAG1', 'DIAG2',           // Diagnostik
+    'LÖS1', 'LÖS3',             // Lösungsorientiert
+    'META1'                      // Meta-Reflexion
+];
+
+// DEMO-FUNKTIONEN
+
+// Demo-Banner hinzufügen
+function addDemoBanner() {
+    const banner = DOM.create('div', {
+        className: 'demo-banner',
+        innerHTML: `
+            <div class="demo-banner-content">
+                <span class="demo-badge">🎯 DEMO-VERSION</span>
+                <span class="demo-text">Testen Sie Coach Mission Control kostenlos! Noch ${MAX_DEMO_SESSIONS - demoSessionCount} von ${MAX_DEMO_SESSIONS} Demo-Sessions verfügbar.</span>
+                <button class="demo-upgrade-btn" onclick="showUpgradeInfo()">Vollversion kaufen</button>
+            </div>
+        `,
+        style: `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 12px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        `
+    });
+
+    // Banner-Styles hinzufügen
+    const style = DOM.create('style', {
+        innerHTML: `
+            .demo-banner-content {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+                flex-wrap: wrap;
+            }
+            .demo-badge {
+                background: rgba(255,255,255,0.2);
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+            .demo-text {
+                flex: 1;
+                min-width: 300px;
+                text-align: center;
+            }
+            .demo-upgrade-btn {
+                background: white;
+                color: #059669;
+                border: none;
+                padding: 8px 20px;
+                border-radius: 20px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            .demo-upgrade-btn:hover {
+                background: #f0f0f0;
+                transform: translateY(-1px);
+            }
+            body { margin-top: 60px !important; }
+            @media (max-width: 768px) {
+                .demo-banner-content { flex-direction: column; gap: 10px; }
+                .demo-text { min-width: auto; }
+                body { margin-top: 80px !important; }
+            }
+        `
+    });
+
+    document.head.appendChild(style);
+    document.body.prepend(banner);
+}
+
+// Demo-Limits prüfen
+function checkDemoLimits() {
+    if (DEMO_MODE && demoSessionCount >= MAX_DEMO_SESSIONS) {
+        showUpgradeModal();
+        return false;
+    }
+    return true;
+}
+
+// Demo-Session zählen
+function incrementDemoSession() {
+    if (DEMO_MODE) {
+        demoSessionCount++;
+        localStorage.setItem('demoSessionCount', demoSessionCount.toString());
+        updateDemoBanner();
+        
+        // Bei vorletzter Session Email-Capture zeigen
+        if (demoSessionCount === MAX_DEMO_SESSIONS - 1) {
+            setTimeout(showEmailCaptureModal, 3000);
+        }
+    }
+}
+
+// Demo-Banner aktualisieren
+function updateDemoBanner() {
+    const banner = DOM.find('.demo-banner');
+    if (banner) {
+        const remaining = MAX_DEMO_SESSIONS - demoSessionCount;
+        const text = DOM.find('.demo-text');
+        if (text) {
+            text.textContent = `Testen Sie Coach Mission Control kostenlos! Noch ${remaining} von ${MAX_DEMO_SESSIONS} Demo-Sessions verfügbar.`;
+        }
+    }
+}
+
+// Upgrade-Modal zeigen
+function showUpgradeModal() {
+    const modal = DOM.create('div', {
+        className: 'upgrade-modal',
+        innerHTML: `
+            <div class="upgrade-modal-overlay" onclick="closeUpgradeModal()"></div>
+            <div class="upgrade-modal-content">
+                <button class="close-btn" onclick="closeUpgradeModal()">×</button>
+                <h2>🚀 Demo-Limit erreicht!</h2>
+                <p class="demo-thanks">Fantastisch! Sie haben alle ${MAX_DEMO_SESSIONS} Demo-Sessions genutzt.</p>
+                
+                <div class="upgrade-benefits">
+                    <h3>Die Vollversion bietet Ihnen:</h3>
+                    <div class="benefits-grid">
+                        <div class="benefit">
+                            <span class="benefit-icon">🚀</span>
+                            <span>Unbegrenzte KI-Gespräche</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">👥</span>
+                            <span>Eigene Klienten-Verwaltung</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">📋</span>
+                            <span>Alle 65+ Coaching-Prompts</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🎤</span>
+                            <span>Voice Summary ohne Limits</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🔧</span>
+                            <span>Ihre eigenen OpenAI-APIs</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🎨</span>
+                            <span>White-Label Branding</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">📚</span>
+                            <span>10 Wissensbasis-Dokumente</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">💎</span>
+                            <span>Geissler triadisches System</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pricing-section">
+                    <div class="price-comparison">
+                        <div class="price-old">
+                            <span class="price-label">Einzelentwicklung:</span>
+                            <span class="price-amount">€25.000+</span>
+                        </div>
+                        <div class="price-new">
+                            <span class="price-label">Ihr Preis heute:</span>
+                            <span class="price-amount">€2.997</span>
+                            <span class="price-note">Einmalzahlung</span>
+                        </div>
+                    </div>
+                    
+                    <div class="urgency-note">
+                        <p>🔥 <strong>Limitiertes Angebot:</strong> Nur die ersten 100 Coaches erhalten diesen Preis!</p>
+                    </div>
+                    
+                    <button class="upgrade-btn" onclick="redirectToPayment()">
+                        🛒 Jetzt Vollversion kaufen - €2.997
+                    </button>
+                    
+                    <div class="guarantees">
+                        <p>✅ 30 Tage Geld-zurück-Garantie</p>
+                        <p>✅ Sofortiger Download nach Zahlung</p>
+                        <p>✅ Kostenloser Setup-Support</p>
+                    </div>
+                </div>
+                
+                <div class="demo-reset">
+                    <p><small>Oder <a href="#" onclick="resetDemoForDevelopment()">Demo zurücksetzen</a> (nur für Entwicklung)</small></p>
+                </div>
+            </div>
+        `,
+        style: `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `
+    });
+
+    // Modal-Styles hinzufügen
+    const modalStyle = DOM.create('style', {
+        innerHTML: `
+            .upgrade-modal-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.8);
+                backdrop-filter: blur(5px);
+            }
+            .upgrade-modal-content {
+                position: relative;
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                max-width: 600px;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                animation: modalSlideIn 0.3s ease-out;
+            }
+            @keyframes modalSlideIn {
+                from { opacity: 0; transform: translateY(-30px) scale(0.9); }
+                to { opacity: 1; transform: translateY(0) scale(1); }
+            }
+            .close-btn {
+                position: absolute;
+                top: 15px;
+                right: 20px;
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #666;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                transition: all 0.2s ease;
+            }
+            .close-btn:hover {
+                background: #f0f0f0;
+                color: #333;
+            }
+            .upgrade-modal-content h2 {
+                color: #059669;
+                margin-bottom: 10px;
+                font-size: 1.8rem;
+            }
+            .demo-thanks {
+                color: #666;
+                margin-bottom: 30px;
+                font-size: 1.1rem;
+            }
+            .benefits-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+                margin: 20px 0;
+            }
+            .benefit {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                background: #f8f9fa;
+                border-radius: 8px;
+            }
+            .benefit-icon {
+                font-size: 1.2rem;
+            }
+            .price-comparison {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 20px 0;
+                gap: 20px;
+            }
+            .price-old {
+                text-align: center;
+                opacity: 0.6;
+            }
+            .price-old .price-amount {
+                text-decoration: line-through;
+                color: #999;
+                font-size: 1.2rem;
+                font-weight: bold;
+            }
+            .price-new {
+                text-align: center;
+            }
+            .price-new .price-amount {
+                color: #059669;
+                font-size: 2rem;
+                font-weight: bold;
+                display: block;
+            }
+            .price-note {
+                font-size: 0.9rem;
+                color: #666;
+            }
+            .urgency-note {
+                background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+                color: white;
+                padding: 15px;
+                border-radius: 10px;
+                text-align: center;
+                margin: 20px 0;
+            }
+            .upgrade-btn {
+                width: 100%;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                border: none;
+                padding: 18px 30px;
+                border-radius: 50px;
+                font-size: 1.2rem;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                margin: 20px 0;
+            }
+            .upgrade-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            }
+            .guarantees {
+                text-align: center;
+                margin-top: 20px;
+            }
+            .guarantees p {
+                margin: 5px 0;
+                color: #059669;
+                font-weight: 500;
+            }
+            .demo-reset {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
+            }
+            @media (max-width: 768px) {
+                .upgrade-modal-content {
+                    padding: 20px;
+                    margin: 10px;
+                    max-width: none;
+                }
+                .price-comparison {
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .benefits-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        `
+    });
+
+    document.head.appendChild(modalStyle);
+    document.body.appendChild(modal);
+}
+
+// Modal schließen
+function closeUpgradeModal() {
+    const modal = DOM.find('.upgrade-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Email-Capture Modal
+function showEmailCaptureModal() {
+    const modal = DOM.create('div', {
+        className: 'email-capture-modal',
+        innerHTML: `
+            <div class="email-modal-overlay" onclick="closeEmailModal()"></div>
+            <div class="email-modal-content">
+                <button class="close-btn" onclick="closeEmailModal()">×</button>
+                <h3>🎯 Fast geschafft!</h3>
+                <p>Sie haben bereits ${demoSessionCount} von ${MAX_DEMO_SESSIONS} Demo-Sessions genutzt.</p>
+                <p><strong>Bleiben Sie informiert über Coach Mission Control:</strong></p>
+                
+                <form class="email-form" onsubmit="captureEmail(event)">
+                    <input type="email" placeholder="Ihre E-Mail-Adresse" required>
+                    <button type="submit">📧 Infos erhalten</button>
+                </form>
+                
+                <div class="email-benefits">
+                    <p>✅ Exklusive Coaching-Tipps</p>
+                    <p>✅ Updates zur Vollversion</p>
+                    <p>✅ Spezial-Angebote für Early Birds</p>
+                </div>
+                
+                <button class="skip-btn" onclick="closeEmailModal()">Später</button>
+            </div>
+        `,
+        style: `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `
+    });
+
+    // Email-Modal-Styles
+    const emailStyle = DOM.create('style', {
+        innerHTML: `
+            .email-modal-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.7);
+                backdrop-filter: blur(3px);
+            }
+            .email-modal-content {
+                position: relative;
+                background: white;
+                border-radius: 15px;
+                padding: 30px;
+                max-width: 400px;
+                text-align: center;
+                box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+                animation: emailModalSlideIn 0.3s ease-out;
+            }
+            @keyframes emailModalSlideIn {
+                from { opacity: 0; transform: scale(0.8); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            .email-form {
+                margin: 20px 0;
+            }
+            .email-form input {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                font-size: 1rem;
+            }
+            .email-form button {
+                width: 100%;
+                background: #10b981;
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 8px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            .email-benefits {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                margin: 15px 0;
+            }
+            .email-benefits p {
+                margin: 5px 0;
+                font-size: 0.9rem;
+            }
+            .skip-btn {
+                background: none;
+                border: 1px solid #ddd;
+                padding: 8px 20px;
+                border-radius: 20px;
+                cursor: pointer;
+                color: #666;
+            }
+        `
+    });
+
+    document.head.appendChild(emailStyle);
+    document.body.appendChild(modal);
+}
+
+// Email-Capture verarbeiten
+function captureEmail(event) {
+    event.preventDefault();
+    const email = event.target.querySelector('input[type="email"]').value;
+    
+    // Hier würdest du die Email an dein System senden
+    // Für jetzt nur in localStorage speichern
+    localStorage.setItem('capturedEmail', email);
+    
+    Utils.showToast('📧 Vielen Dank! Sie erhalten bald weitere Informationen.', 'success');
+    closeEmailModal();
+}
+
+// Email-Modal schließen
+function closeEmailModal() {
+    const modal = DOM.find('.email-capture-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// PayPal-Zahlung weiterleiten
+function redirectToPayment() {
+    // Hier wird später dein PayPal-Link eingefügt
+    const paypalUrl = 'https://paypal.me/allensfl/2997'; // Anpassen!
+    window.open(paypalUrl, '_blank');
+    
+    // Analytics tracking
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'purchase_button_clicked', {
+            'event_category': 'conversion',
+            'event_label': 'demo_to_purchase',
+            'value': 2997
+        });
+    }
+}
+
+// Upgrade-Info zeigen (für Banner-Button)
+function showUpgradeInfo() {
+    showUpgradeModal();
+}
+
+// Demo zurücksetzen (nur für Entwicklung)
+function resetDemoForDevelopment() {
+    if (confirm('Demo-Counter zurücksetzen? (Nur für Entwicklung)')) {
+        localStorage.removeItem('demoSessionCount');
+        demoSessionCount = 0;
+        updateDemoBanner();
+        closeUpgradeModal();
+        Utils.showToast('Demo zurückgesetzt!', 'success');
+    }
+}
+
+// Originale Funktionen überschreiben für Demo-Limits
+if (DEMO_MODE) {
+    
+    // Klienten-Daten überschreiben
+    const originalRenderClients = CoachInterface.renderClients;
+    CoachInterface.renderClients = function() {
+        // Demo-Klienten anzeigen statt echte Daten
+        const clientList = DOM.find('#clientList');
+        if (!clientList) return;
+
+        clientList.innerHTML = DEMO_CLIENTS.map(client => `
+            <div class="client-card" data-client-id="${client.id}" onclick="CoachInterface.selectClient('${client.id}')">
+                <div class="client-header">
+                    <h3>${client.name}</h3>
+                    <span class="client-age">${client.age} Jahre</span>
+                    ${client.isDemo ? '<span class="demo-badge">DEMO</span>' : ''}
+                </div>
+                <div class="client-details">
+                    <p><strong>Beruf:</strong> ${client.profession}</p>
+                    <p><strong>Situation:</strong> ${client.situation}</p>
+                    <p><strong>Ziele:</strong> ${client.goals}</p>
+                    <p><strong>Sessions:</strong> ${client.sessionHistory}</p>
+                    ${client.notes ? `<p><strong>Notizen:</strong> ${client.notes}</p>` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        // Demo-Badge-Styling hinzufügen
+        if (!DOM.find('#demo-client-styles')) {
+            const style = DOM.create('style', {
+                id: 'demo-client-styles',
+                innerHTML: `
+                    .demo-badge {
+                        background: #10b981;
+                        color: white;
+                        padding: 2px 8px;
+                        border-radius: 10px;
+                        font-size: 0.7rem;
+                        font-weight: bold;
+                    }
+                    .client-card[data-client-id^="demo"] {
+                        border-left: 4px solid #10b981;
+                    }
+                `
+            });
+            document.head.appendChild(style);
+        }
+    };
+
+    // Prompt-Auswahl einschränken
+    const originalShowPromptModal = window.showPromptModal;
+    window.showPromptModal = function() {
+        // Nur Demo-Prompts anzeigen
+        const modal = DOM.create('div', {
+            className: 'prompt-modal',
+            innerHTML: `
+                <div class="modal-overlay" onclick="closePromptModal()"></div>
+                <div class="modal-content">
+                    <h2>Demo-Prompts auswählen</h2>
+                    <p class="demo-note">In der Demo stehen Ihnen ${DEMO_PROMPT_KEYS.length} ausgewählte Prompts zur Verfügung. Die Vollversion enthält alle 65+ Prompts.</p>
+                    <div class="prompt-grid">
+                        ${DEMO_PROMPT_KEYS.map(key => {
+                            const prompt = window.prompts[key];
+                            if (!prompt) return '';
+                            return `
+                                <div class="prompt-card" onclick="selectPrompt('${key}')">
+                                    <h4>${key}</h4>
+                                    <p>${prompt.title || 'Coaching-Prompt'}</p>
+                                    <span class="demo-available">✅ Demo verfügbar</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="demo-limitation">
+                        <p>🚀 <strong>Vollversion:</strong> Zugriff auf alle ${Object.keys(window.prompts || {}).length}+ Prompts</p>
+                        <button onclick="showUpgradeModal()">Vollversion kaufen</button>
+                    </div>
+                    <button onclick="closePromptModal()">Schließen</button>
+                </div>
+            `
+        });
+
+        document.body.appendChild(modal);
+    };
+
+    // KI-Funktionen mit Demo-Limits
+    const originalSendDialogToOpenAI = window.sendDialogToOpenAI;
+    window.sendDialogToOpenAI = async function(message, context) {
+        if (!checkDemoLimits()) return;
+        
+        incrementDemoSession();
+        
+        // Originale Funktion aufrufen
+        if (originalSendDialogToOpenAI) {
+            return await originalSendDialogToOpenAI(message, context);
+        }
+    };
+
+    const originalSendDialogToAI = window.sendDialogToAI;
+    window.sendDialogToAI = async function(message, context) {
+        if (!checkDemoLimits()) return;
+        
+        incrementDemoSession();
+        
+        // Originale Funktion aufrufen
+        if (originalSendDialogToAI) {
+            return await originalSendDialogToAI(message, context);
+        }
+    };
+
+    // Demo-Banner beim Laden hinzufügen
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(addDemoBanner, 1000);
+    });
+
+    // Analytics für Demo-Version
+    function trackDemoEvent(event, data = {}) {
+        if (typeof gtag !== 'undefined') {
+            gtag('event', event, {
+                'event_category': 'demo',
+                'custom_map': {'dimension1': 'demo_version'},
+                ...data
+            });
+        }
+    }
+
+    // Demo-Events tracken
+    trackDemoEvent('demo_session_start');
+    
+    console.log(`🎯 Demo-Version ${DEMO_VERSION} geladen`);
+    console.log(`📊 Sessions: ${demoSessionCount}/${MAX_DEMO_SESSIONS}`);
+    console.log(`👥 Demo-Klienten: ${DEMO_CLIENTS.length}`);
+    console.log(`📋 Demo-Prompts: ${DEMO_PROMPT_KEYS.length}`);
+}
+
+// Export für andere Module
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        DEMO_MODE,
+        MAX_DEMO_SESSIONS,
+        DEMO_CLIENTS,
+        DEMO_PROMPT_KEYS,
+        checkDemoLimits,
+        incrementDemoSession,
+        showUpgradeModal
+    };
+}
