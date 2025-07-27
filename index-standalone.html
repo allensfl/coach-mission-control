@@ -108,15 +108,98 @@
             backdrop-filter: blur(5px);
         }
         
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 15px;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
+        /* MODAL FIX - Füge das zu deiner index-standalone.html hinzu */
+/* Ersetze den bestehenden .modal-content Style */
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto; /* Weniger Abstand von oben */
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%; /* Breiter auf kleinen Bildschirmen */
+    max-width: 600px; /* Etwas breiter */
+    max-height: 85vh; /* Maximale Höhe begrenzen */
+    overflow-y: auto; /* Scrollbar wenn nötig */
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative; /* Für bessere Positionierung */
+}
+
+/* Responsiv für kleinere Bildschirme */
+@media (max-height: 800px) {
+    .modal-content {
+        margin: 2% auto;
+        max-height: 95vh;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 2% auto;
+        padding: 20px;
+    }
+}
+
+/* Button-Gruppe immer sichtbar machen */
+.btn-group {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding-top: 20px;
+    margin-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* DSGVO-Bereich kompakter machen */
+.dsgvo-consent {
+    background: #f8f9fa;
+    padding: 15px; /* Weniger Padding */
+    border-radius: 8px;
+    margin: 15px 0; /* Weniger Margin */
+    border-left: 4px solid #17a2b8;
+}
+
+.dsgvo-consent h4 {
+    color: #17a2b8;
+    margin-bottom: 8px;
+    font-size: 14px; /* Kleinere Schrift */
+}
+
+.dsgvo-consent p {
+    font-size: 12px; /* Kleinere Schrift */
+    margin-bottom: 8px;
+}
+
+/* Formular-Gruppen kompakter */
+.form-group {
+    margin-bottom: 15px; /* Weniger Abstand */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px; /* Weniger Abstand */
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px; /* Weniger Padding */
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+/* Textareas kleiner machen */
+.form-group textarea {
+    min-height: 80px; /* Kleiner */
+    resize: vertical;
+}
         
         .form-group {
             margin-bottom: 20px;
@@ -225,6 +308,130 @@
             background: #f8d7da;
             color: #721c24;
         }
+        /* CSS für verbesserte DSGVO-Sektion */
+.dsgvo-consent-improved {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #17a2b8;
+}
+
+.dsgvo-consent-improved h4 {
+    color: #17a2b8;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.privacy-toggle-btn {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
+}
+
+.privacy-toggle-btn:hover {
+    background: #138496;
+}
+
+.privacy-policy-content {
+    background: white;
+    border: 2px solid #17a2b8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.privacy-text h5 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.privacy-text h6 {
+    color: #34495e;
+    margin: 15px 0 8px 0;
+    font-size: 14px;
+}
+
+.privacy-text p, .privacy-text li {
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.privacy-text ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.consent-checkboxes {
+    margin: 20px 0;
+}
+
+.consent-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    cursor: pointer;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.3s;
+}
+
+.consent-item:hover {
+    border-color: #17a2b8;
+}
+
+.consent-item.coach-item {
+    background: #e7f3ff;
+    border-color: #17a2b8;
+}
+
+.consent-item input[type="checkbox"] {
+    margin-right: 12px;
+    margin-top: 2px;
+    transform: scale(1.2);
+    flex-shrink: 0;
+}
+
+.consent-text {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #2c3e50;
+}
+
+.withdrawal-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 15px;
+}
+
+.withdrawal-text {
+    font-size: 11px;
+    color: #856404;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.consent-item input[type="checkbox"]:invalid {
+    outline: 2px solid #dc3545;
+}
+
+.consent-item input[type="checkbox"]:valid {
+    outline: 2px solid #28a745;
+}
     </style>
 </head>
 <body>
@@ -308,16 +515,96 @@
                     <textarea id="clientNotes" name="notes" rows="3" 
                               placeholder="Wichtige Informationen über den Klienten..."></textarea>
                 </div>
+                <!-- VERBESSERTE DSGVO-SEKTION -->
+<div class="dsgvo-consent-improved">
+    <h4>📋 Datenschutz & Einverständniserklärung</h4>
+    
+    <!-- Schritt 1: Datenschutzerklärung anzeigen -->
+    <div class="privacy-policy-section">
+        <button type="button" class="privacy-toggle-btn" onclick="togglePrivacyPolicy()">
+            📄 Vollständige Datenschutzerklärung anzeigen
+        </button>
+        
+        <div id="privacyPolicyContent" class="privacy-policy-content" style="display: none;">
+            <div class="privacy-text">
+                <h5>Datenschutzerklärung für Coaching-Services</h5>
                 
-                <!-- DSGVO Einverständnis -->
-                <div class="dsgvo-consent">
-                    <h4>📋 Datenschutz-Einverständniserklärung</h4>
-                    <p>Ich bestätige, dass der Klient der Speicherung und Verarbeitung seiner Daten zu Coaching-Zwecken zugestimmt hat. Die Daten werden ausschließlich lokal auf diesem Gerät gespeichert.</p>
-                    <label style="display: flex; align-items: center; margin-top: 10px;">
-                        <input type="checkbox" id="dsgvoConsent" required style="margin-right: 10px;">
-                        <span>Einverständniserklärung des Klienten liegt vor</span>
-                    </label>
-                </div>
+                <h6>1. Datenerhebung und -verarbeitung</h6>
+                <p>Wir erheben und verarbeiten Ihre personenbezogenen Daten ausschließlich zu Coaching-Zwecken:</p>
+                <ul>
+                    <li>Name, E-Mail, Telefonnummer (Kontaktdaten)</li>
+                    <li>Coaching-Ziele und Notizen aus Sessions</li>
+                    <li>Session-Protokolle und Aufzeichnungen</li>
+                </ul>
+                
+                <h6>2. Rechtsgrundlage</h6>
+                <p>Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).</p>
+                
+                <h6>3. Datenspeicherung</h6>
+                <p><strong>Wichtig:</strong> Alle Daten werden ausschließlich lokal auf diesem Gerät gespeichert. Es erfolgt keine Übertragung an externe Server oder Dritte.</p>
+                
+                <h6>4. Ihre Rechte</h6>
+                <ul>
+                    <li><strong>Auskunftsrecht:</strong> Sie können jederzeit Auskunft über Ihre gespeicherten Daten verlangen</li>
+                    <li><strong>Berichtigungsrecht:</strong> Unrichtige Daten können korrigiert werden</li>
+                    <li><strong>Löschungsrecht:</strong> Sie können die Löschung Ihrer Daten jederzeit verlangen</li>
+                    <li><strong>Datenportabilität:</strong> Ihre Daten können exportiert werden</li>
+                    <li><strong>Widerrufsrecht:</strong> Die Einwilligung kann jederzeit widerrufen werden</li>
+                </ul>
+                
+                <h6>5. Aufbewahrungsdauer</h6>
+                <p>Ihre Daten werden nur solange gespeichert, wie dies für die Coaching-Services erforderlich ist oder bis Sie die Löschung verlangen.</p>
+                
+                <h6>6. Kontakt</h6>
+                <p>Bei Fragen zum Datenschutz kontaktieren Sie uns unter: [Ihre Kontaktdaten]</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Schritt 2: Explizite Einverständniserklärung -->
+    <div class="consent-checkboxes">
+        <label class="consent-item">
+            <input type="checkbox" id="privacyPolicyRead" required>
+            <span class="consent-text">
+                <strong>✅ Ich habe die Datenschutzerklärung vollständig gelesen und verstanden</strong>
+            </span>
+        </label>
+        
+        <label class="consent-item">
+            <input type="checkbox" id="dataProcessingConsent" required>
+            <span class="consent-text">
+                <strong>✅ Ich willige in die Verarbeitung meiner personenbezogenen Daten zu Coaching-Zwecken ein</strong>
+            </span>
+        </label>
+        
+        <label class="consent-item">
+            <input type="checkbox" id="localStorageConsent" required>
+            <span class="consent-text">
+                <strong>✅ Ich bin damit einverstanden, dass meine Daten lokal auf diesem Gerät gespeichert werden</strong>
+            </span>
+        </label>
+    </div>
+    
+    <!-- Schritt 3: Coach-Bestätigung -->
+    <div class="coach-confirmation">
+        <label class="consent-item coach-item">
+            <input type="checkbox" id="coachConfirmation" required>
+            <span class="consent-text">
+                <strong>👨‍💼 Als Coach bestätige ich:</strong> Der Klient hat die Datenschutzerklärung erhalten, gelesen und sein Einverständnis erklärt
+            </span>
+        </label>
+    </div>
+    
+    <!-- Hinweis auf Widerrufsrecht -->
+    <div class="withdrawal-notice">
+        <p class="withdrawal-text">
+            💡 <strong>Wichtiger Hinweis:</strong> Diese Einwilligung kann jederzeit ohne Angabe von Gründen widerrufen werden. 
+            Der Widerruf kann per E-Mail oder über die Löschfunktion in der App erfolgen.
+        </p>
+    </div>
+</div>
+                
+               
                 
                 <div class="btn-group">
                     <button type="button" class="btn btn-secondary" onclick="closeAddClientModal()">
@@ -334,6 +621,51 @@
     <!-- JavaScript -->
     <script src="js/client-manager.js"></script>
     <script>
+        // JavaScript für die Datenschutzerklärung
+function togglePrivacyPolicy() {
+    const content = document.getElementById('privacyPolicyContent');
+    const button = document.querySelector('.privacy-toggle-btn');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        button.textContent = '📄 Datenschutzerklärung ausblenden';
+        button.style.background = '#dc3545';
+    } else {
+        content.style.display = 'none';
+        button.textContent = '📄 Vollständige Datenschutzerklärung anzeigen';
+        button.style.background = '#17a2b8';
+    }
+}
+
+// Formular-Validierung erweitern
+function validateDSGVOConsent() {
+    const privacyRead = document.getElementById('privacyPolicyRead').checked;
+    const dataConsent = document.getElementById('dataProcessingConsent').checked;
+    const storageConsent = document.getElementById('localStorageConsent').checked;
+    const coachConfirm = document.getElementById('coachConfirmation').checked;
+    
+    if (!privacyRead) {
+        alert('Bitte bestätigen Sie, dass die Datenschutzerklärung gelesen wurde.');
+        return false;
+    }
+    
+    if (!dataConsent) {
+        alert('Die Einwilligung zur Datenverarbeitung ist erforderlich.');
+        return false;
+    }
+    
+    if (!storageConsent) {
+        alert('Die Einwilligung zur lokalen Datenspeicherung ist erforderlich.');
+        return false;
+    }
+    
+    if (!coachConfirm) {
+        alert('Bitte bestätigen Sie als Coach, dass der Klient informiert wurde.');
+        return false;
+    }
+    
+    return true;
+}
         // Globale Variablen
         let selectedClientId = null;
         let allClients = [];
@@ -478,7 +810,12 @@
         
         // Formular-Handling
         document.getElementById('addClientForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    // DSGVO-Validierung
+    if (!validateDSGVOConsent()) {
+        return false;
+    }
             
             const formData = new FormData(this);
             const clientData = Object.fromEntries(formData.entries());
