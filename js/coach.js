@@ -446,4 +446,4 @@ document.addEventListener('visibilitychange', function() {
 });
 
 console.log('✅ Coach Mission Control Demo JavaScript vollständig geladen');
-console.log(`📊 Demo Status: ${demoSession.getSessionsRemaining()} Sessions verbleibend`);
+console.log(`📊 Demo Status: ${demoSession.getSessionsRemaining()} Sessions verbleibend`);// Cache-Bust: So 27 Jul 2025 14:53:17 CEST
