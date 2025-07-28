@@ -127,7 +127,7 @@
             color: #1e293b;
         }
 
-        /* Enhanced prompt repository with method filtering */
+        /* Method filter for prompts */
         .method-filter {
             background: #eff6ff;
             border: 1px solid #3b82f6;
@@ -137,21 +137,12 @@
             font-size: 0.9rem;
             color: #1d4ed8;
             font-weight: 600;
-        }
-
-        .prompt-item {
-            transition: all 0.3s ease;
+            display: none;
         }
 
         .prompt-item.method-filtered {
             background: #eff6ff;
             border-color: #3b82f6;
-        }
-
-        @media (max-width: 768px) {
-            .method-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            }
         }
     </style>
 </head>
@@ -237,15 +228,15 @@
             </div>
         </div>
 
-        <!-- Coaching Tab -->
+        <!-- Coaching Tab - EXACTLY like the original -->
         <div id="coachingTab" class="tab-content">
             <div class="coaching-layout">
-                <!-- Prompt Repository (Enhanced with Method Filtering) -->
+                <!-- Prompt Repository - Original Structure -->
                 <div class="prompt-repository">
                     <h3 style="margin-bottom: 20px; color: #1e293b;">🧰 Prompt Repository</h3>
                     
                     <!-- Method Filter Display -->
-                    <div id="methodFilterDisplay" class="method-filter" style="display: none;">
+                    <div id="methodFilterDisplay" class="method-filter">
                         Gefiltert nach: <span id="currentMethodFilter"></span>
                         <button onclick="clearMethodFilter()" style="float: right; background: none; border: none; color: #1d4ed8; cursor: pointer;">✕ Alle anzeigen</button>
                     </div>
@@ -264,10 +255,10 @@
                     </div>
                 </div>
 
-                <!-- Prompt Editor -->
+                <!-- Prompt Editor - Original Structure -->
                 <div class="prompt-editor">
-                    <h3 style="margin-bottom: 20px; color: #1e293b;">✏️ Session Führung</h3>
-                    <textarea id="promptEditor" placeholder="Wählen Sie einen Prompt aus dem Repository oder geben Sie einen eigenen Coaching-Impuls ein..."></textarea>
+                    <h3 style="margin-bottom: 20px; color: #1e293b;">✏️ Prompt Editor</h3>
+                    <textarea id="promptEditor" placeholder="Wählen Sie einen Prompt aus dem Repository oder geben Sie einen eigenen ein..."></textarea>
                     <div class="editor-actions">
                         <button class="send-btn" onclick="sendToCollaboration()">📤 An Coachee senden</button>
                         <button class="send-btn" onclick="openCollaborationWindow()">🔗 Kollaborations-Fenster öffnen</button>
@@ -277,20 +268,20 @@
             </div>
         </div>
 
-        <!-- Kollaboration Tab -->
+        <!-- Kollaboration Tab - Original Structure -->
         <div id="collaborationTab" class="tab-content">
-            <h2 style="margin-bottom: 25px; color: #1e293b;">🤝 Live Session Monitor</h2>
+            <h2 style="margin-bottom: 25px; color: #1e293b;">🤝 Kollaboration Monitor</h2>
             <div class="collaboration-monitor">
                 <div class="monitor-header">
                     <span>Status: <span id="connectionStatus">Bereit</span></span>
                     <button onclick="openCollaborationWindow()" class="open-collab-btn">
-                        🔗 Coachee-Fenster öffnen
+                        🔗 Kollaborations-Fenster öffnen
                     </button>
                 </div>
                 <div class="collaboration-messages" id="collaborationMessages">
                     <div style="text-align: center; color: #64748b; padding: 40px;">
-                        Hier sehen Sie den Live-Dialog mit dem Coachee.<br>
-                        Öffnen Sie das Coachee-Fenster für die Session.
+                        Hier sehen Sie den Dialog zwischen Coach und Coachee.<br>
+                        Öffnen Sie das Kollaborations-Fenster für den Coachee.
                     </div>
                 </div>
                 <div id="collaborationActions" style="display: none;">
@@ -299,12 +290,12 @@
             </div>
         </div>
 
-        <!-- Coach-KI Tab -->
+        <!-- Coach-KI Tab - Original Structure -->
         <div id="coachkiTab" class="tab-content">
             <div class="coachki-container">
                 <h2 style="color: #1e293b; margin-bottom: 25px; display: flex; align-items: center;">
-                    🧠 Coach-KI Assistance
-                    <span style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; margin-left: 15px;">Live Support</span>
+                    🧠 Coach-KI Kommunikation
+                    <span style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; margin-left: 15px;">Prozess & Methoden</span>
                 </h2>
                 
                 <!-- Schnellzugriff Bereiche -->
@@ -326,9 +317,9 @@
                 <!-- Coach-Eingabe -->
                 <div class="coach-input-section">
                     <label class="input-label">
-                        💬 Session-Situation beschreiben:
+                        💬 Coaching-Situation beschreiben:
                     </label>
-                    <textarea id="coachInput" placeholder="Beschreiben Sie die aktuelle Session-Situation, Herausforderung oder benötigte Intervention..."></textarea>
+                    <textarea id="coachInput" placeholder="Beschreiben Sie Ihre aktuelle Coaching-Situation, Herausforderung oder methodische Frage..."></textarea>
                 </div>
 
                 <!-- Kontext-Info -->
@@ -401,10 +392,8 @@
     <script>
         let currentClient = null;
         let currentMethod = null;
-        let allPrompts = [];
-        let filteredPrompts = [];
 
-        // Method configurations with corresponding prompt keywords
+        // Method configurations for filtering
         const methodConfigs = {
             'solution-focused': {
                 name: 'Lösungsorientiertes Coaching',
@@ -414,7 +403,7 @@
                 categoryMapping: ['Lösungsorientierte Fragen', 'Ressourcenaktivierung', 'Zielfindung']
             },
             'systemic': {
-                name: 'Systemisches Coaching',
+                name: 'Systemisches Coaching',  
                 icon: '🔄',
                 short: 'Systemisch',
                 keywords: ['Systemisch', 'zirkulär', 'Perspektiv', 'System', 'Beziehung', 'Muster'],
@@ -471,8 +460,8 @@
             currentMethod = method;
             updateMethodDisplay();
             
-            // Apply method filter to prompts
-            applyMethodFilter(method);
+            // Show method filter in coaching tab
+            showMethodFilter(method);
             
             // Hide method selection, show client info if client is selected
             document.getElementById('methodSelection').style.display = 'none';
@@ -485,165 +474,27 @@
             if (!currentMethod) return;
             
             const config = methodConfigs[currentMethod];
-            document.getElementById('selectedMethodName').textContent = config.short;
+            const methodNameEl = document.getElementById('selectedMethodName');
+            if (methodNameEl) {
+                methodNameEl.textContent = config.short;
+            }
         }
 
-        function applyMethodFilter(method) {
-            console.log('Applying method filter:', method);
-            
-            if (!method || !methodConfigs[method]) {
-                console.log('❌ Invalid method for filtering:', method);
-                return;
-            }
-            
+        function showMethodFilter(method) {
             const config = methodConfigs[method];
             const methodFilter = document.getElementById('methodFilterDisplay');
             const currentFilter = document.getElementById('currentMethodFilter');
             
-            if (methodFilter && currentFilter) {
-                // Show method filter
+            if (methodFilter && currentFilter && config) {
                 methodFilter.style.display = 'block';
                 currentFilter.textContent = config.name;
-                console.log('✅ Method filter display updated');
             }
-            
-            // Filter prompts based on keywords and categories
-            filterPromptsByMethod(config);
-        }
-
-        function filterPromptsByMethod(config) {
-            console.log('Filtering prompts by method:', config.name);
-            console.log('Available prompts:', allPrompts ? allPrompts.length : 0);
-            
-            // Safety check: ensure allPrompts is an array
-            if (!allPrompts || !Array.isArray(allPrompts) || allPrompts.length === 0) {
-                console.log('❌ No prompts available for filtering - initializing fallback');
-                
-                // Initialize with fallback prompts immediately
-                allPrompts = [
-                    {
-                        id: 'solution-1',
-                        title: 'Wunderfrage klassisch',
-                        category: 'Lösungsorientierte Fragen',
-                        text: 'Angenommen, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie am nächsten Morgen merken, dass das Wunder geschehen ist?',
-                        rating: 5
-                    },
-                    {
-                        id: 'solution-2',
-                        title: 'Skalierungsfrage',
-                        category: 'Lösungsorientierte Fragen',
-                        text: 'Auf einer Skala von 1 bis 10: Wo stehen Sie heute mit Ihrem Problem? Was müsste passieren, damit Sie einen Punkt höher kommen?',
-                        rating: 5
-                    },
-                    {
-                        id: 'systemic-1',
-                        title: 'Zirkuläre Frage',
-                        category: 'Systemische Fragen',
-                        text: 'Was würde Ihr Partner/Team/Familie über diese Situation sagen? Welche Sichtweise hätten sie auf das Problem?',
-                        rating: 4
-                    },
-                    {
-                        id: 'values-1',
-                        title: 'Kernwerte identifizieren',
-                        category: 'Wertearbeit',
-                        text: 'Welche 3-5 Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
-                        rating: 5
-                    },
-                    {
-                        id: 'gestalt-1',
-                        title: 'Hier und Jetzt',
-                        category: 'Hier-und-Jetzt',
-                        text: 'Was nehmen Sie in diesem Moment in Ihrem Körper wahr? Welche Empfindungen, Spannungen oder Gefühle sind da?',
-                        rating: 4
-                    },
-                    {
-                        id: 'ai-1',
-                        title: 'Strukturierte Reflexion',
-                        category: 'Reflexion',
-                        text: 'Reflektieren wir systematisch: Was ist faktisch passiert? Wie haben Sie reagiert? Was würden Sie beim nächsten Mal anders machen?',
-                        rating: 5
-                    },
-                    {
-                        id: 'resource-1',
-                        title: 'Stärkenanalyse',
-                        category: 'Stärkenarbeit',
-                        text: 'Welche Ihrer Stärken und Talente können Sie in dieser Situation einsetzen? Was haben Sie schon oft erfolgreich gemacht?',
-                        rating: 5
-                    }
-                ];
-                console.log('✅ Fallback prompts initialized:', allPrompts.length);
-            }
-            
-            const keywords = config.keywords.map(k => k.toLowerCase());
-            const categories = config.categoryMapping;
-            
-            filteredPrompts = allPrompts.filter(prompt => {
-                // Ensure prompt has required properties
-                if (!prompt || typeof prompt !== 'object') return false;
-                
-                // Check if prompt matches any keyword
-                const textMatch = keywords.some(keyword => 
-                    (prompt.text || '').toLowerCase().includes(keyword) ||
-                    (prompt.title || '').toLowerCase().includes(keyword)
-                );
-                
-                // Check if prompt is in relevant category
-                const categoryMatch = categories.some(category => 
-                    (prompt.category || '') === category
-                );
-                
-                return textMatch || categoryMatch;
-            });
-            
-            console.log('✅ Filtered prompts:', filteredPrompts.length);
-            
-            // Re-render prompts
-            renderPrompts(filteredPrompts);
-            updatePromptStats();
         }
 
         function clearMethodFilter() {
-            document.getElementById('methodFilterDisplay').style.display = 'none';
-            filteredPrompts = allPrompts;
-            renderPrompts(allPrompts);
-            updatePromptStats();
-        }
-
-        function renderPrompts(prompts) {
-            const container = document.getElementById('promptsContainer');
-            if (!container) return;
-            
-            // Safety check: ensure prompts is an array
-            if (!prompts || !Array.isArray(prompts) || prompts.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 20px;">Keine Prompts verfügbar. Lade prompts.js...</div>';
-                return;
-            }
-            
-            container.innerHTML = prompts.map(prompt => `
-                <div class="prompt-item ${currentMethod ? 'method-filtered' : ''}" onclick="selectPrompt('${prompt.id}')">
-                    <div class="prompt-header">
-                        <span class="prompt-category">${prompt.category || 'Allgemein'}</span>
-                        <span class="prompt-rating">${'⭐'.repeat(prompt.rating || 3)}</span>
-                    </div>
-                    <h4 class="prompt-title">${prompt.title || 'Unbenannt'}</h4>
-                    <p class="prompt-preview">${(prompt.text || '').substring(0, 100)}...</p>
-                </div>
-            `).join('');
-        }
-
-        function updatePromptStats() {
-            const stats = document.getElementById('promptStats');
-            if (stats) {
-                const count = filteredPrompts.length || allPrompts.length || 0;
-                stats.textContent = `Prompts verfügbar: ${count}`;
-            }
-        }
-
-        function selectPrompt(promptId) {
-            const prompt = allPrompts.find(p => p.id === promptId);
-            if (prompt) {
-                document.getElementById('promptEditor').value = prompt.text;
-                document.getElementById('promptEditor').focus();
+            const methodFilter = document.getElementById('methodFilterDisplay');
+            if (methodFilter) {
+                methodFilter.style.display = 'none';
             }
         }
 
@@ -670,79 +521,29 @@
         function updateClientDisplay() {
             if (!currentClient) return;
             
-            document.getElementById('clientAvatar').textContent = currentClient.avatar;
-            document.getElementById('clientName').textContent = currentClient.name;
-            document.getElementById('clientRole').textContent = currentClient.role;
+            const elements = {
+                clientAvatar: document.getElementById('clientAvatar'),
+                clientName: document.getElementById('clientName'),
+                clientRole: document.getElementById('clientRole')
+            };
+            
+            if (elements.clientAvatar) elements.clientAvatar.textContent = currentClient.avatar;
+            if (elements.clientName) elements.clientName.textContent = currentClient.name;
+            if (elements.clientRole) elements.clientRole.textContent = currentClient.role;
             
             if (currentMethod) {
                 document.getElementById('clientInfoPanel').style.display = 'block';
             }
         }
 
-        // Enhanced collaboration functions
-        function sendToCollaboration() {
-            const content = document.getElementById('promptEditor').value;
-            if (!content.trim()) {
-                alert('Bitte geben Sie einen Coaching-Impuls ein.');
-                return;
-            }
-            
-            // Use existing communication functionality if available
-            if (typeof window.sendMessage === 'function') {
-                window.sendMessage(content);
-            } else if (typeof sendMessage === 'function') {
-                sendMessage(content);
-            } else {
-                // Fallback: simulate message sending
-                addCollaborationMessage('coach', content);
-                document.getElementById('connectionStatus').textContent = 'Nachricht gesendet';
-                setTimeout(() => {
-                    document.getElementById('connectionStatus').textContent = 'Bereit';
-                }, 2000);
-            }
-            
-            // Clear editor after sending
-            document.getElementById('promptEditor').value = '';
-        }
-
-        function openCollaborationWindow() {
-            // Use existing functionality if available
-            if (typeof window.openCollaborationWindow === 'function') {
-                window.openCollaborationWindow();
-            } else if (typeof openCollaborationWindow === 'function') {
-                openCollaborationWindow();
-            } else {
-                // Fallback: open in new window
-                const collabUrl = window.location.origin + '/collaboration.html';
-                const collabWindow = window.open(collabUrl, 'CollaborationWindow', 
-                    'width=800,height=600,scrollbars=yes,resizable=yes');
-                
-                if (collabWindow) {
-                    document.getElementById('connectionStatus').textContent = 'Fenster geöffnet';
-                } else {
-                    alert('Kollaborations-Fenster konnte nicht geöffnet werden. Bitte Popup-Blocker prüfen.');
-                }
-            }
-        }
-
-        function addCollaborationMessage(sender, message) {
-            const messagesContainer = document.getElementById('collaborationMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `collaboration-message ${sender}`;
-            messageDiv.innerHTML = `
-                <div class="message-sender">${sender === 'coach' ? 'Coach' : 'Coachee'}</div>
-                <div class="message-content">${message}</div>
-                <div class="message-time">${new Date().toLocaleTimeString()}</div>
-            `;
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
         function clearEditor() {
-            document.getElementById('promptEditor').value = '';
+            const editor = document.getElementById('promptEditor');
+            if (editor) {
+                editor.value = '';
+            }
         }
 
-        // Original coach.js functions
+        // Original coach.js functions placeholders - will be overridden by actual coach.js
         function startSession() {
             if (currentClient && currentMethod) {
                 alert(`Session startet mit ${currentClient.name} - ${methodConfigs[currentMethod].name}`);
@@ -753,8 +554,6 @@
         }
 
         function showTab(tabName) {
-            console.log('Switching to tab:', tabName);
-            
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -771,27 +570,9 @@
             
             if (targetTab) {
                 targetTab.classList.add('active');
-                console.log('✅ Tab activated:', tabName);
-            } else {
-                console.error('❌ Tab not found:', tabName + 'Tab');
             }
-            
             if (targetBtn) {
                 targetBtn.classList.add('active');
-            }
-            
-            // If switching to coaching tab, ensure prompts are loaded
-            if (tabName === 'coaching') {
-                console.log('🔄 Coaching tab opened, ensuring prompts are loaded...');
-                setTimeout(() => {
-                    if (allPrompts && allPrompts.length > 0) {
-                        console.log('✅ Re-rendering prompts for coaching tab:', allPrompts.length);
-                        renderPrompts(filteredPrompts.length > 0 ? filteredPrompts : allPrompts);
-                        updatePromptStats();
-                    } else {
-                        console.log('❌ No prompts available when opening coaching tab');
-                    }
-                }, 100);
             }
         }
 
@@ -803,199 +584,13 @@
             });
         });
 
-        // Coach-KI functions (placeholders - integrate with existing)
-        function loadProcessSupport() { 
-            if (typeof window.loadProcessSupport === 'function') {
-                window.loadProcessSupport();
-            } else {
-                alert('Prozess-Support wird geladen...');
-            }
-        }
-        
-        function loadMethodenBeratung() { 
-            if (typeof window.loadMethodenBeratung === 'function') {
-                window.loadMethodenBeratung();
-            } else {
-                alert('Methoden-Beratung wird geladen...');
-            }
-        }
-        
-        function loadInterventionshilfe() { 
-            if (typeof window.loadInterventionshilfe === 'function') {
-                window.loadInterventionshilfe();
-            } else {
-                alert('Interventionshilfe wird geladen...');
-            }
-        }
-        
-        function loadNotfallSupport() { 
-            if (typeof window.loadNotfallSupport === 'function') {
-                window.loadNotfallSupport();
-            } else {
-                alert('Notfall-Support wird geladen...');
-            }
-        }
-        
-        function askCoachKI() { 
-            if (typeof window.askCoachKI === 'function') {
-                window.askCoachKI();
-            } else {
-                alert('Coach-KI wird befragt...');
-            }
-        }
-        
-        function clearCoachInput() { 
-            document.getElementById('coachInput').value = '';
-        }
-        
-        function implementSuggestion() { 
-            if (typeof window.implementSuggestion === 'function') {
-                window.implementSuggestion();
-            } else {
-                alert('Empfehlung wird umgesetzt...');
-            }
-        }
-        
-        function getAlternativeAdvice() { 
-            if (typeof window.getAlternativeAdvice === 'function') {
-                window.getAlternativeAdvice();
-            } else {
-                alert('Alternative wird gesucht...');
-            }
-        }
-        
-        function deepDive() { 
-            if (typeof window.deepDive === 'function') {
-                window.deepDive();
-            } else {
-                alert('Vertiefung wird geladen...');
-            }
-        }
-
-        // Category filter functionality
-        function initializeCategoryFilter() {
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter && allPrompts && allPrompts.length > 0) {
-                const categories = [...new Set(allPrompts.map(p => p.category))];
-                categoryFilter.innerHTML = '<option value="">Alle Kategorien</option>' +
-                    categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
-                
-                categoryFilter.addEventListener('change', function() {
-                    const selectedCategory = this.value;
-                    if (selectedCategory) {
-                        const categoryFiltered = (filteredPrompts.length > 0 ? filteredPrompts : allPrompts)
-                            .filter(p => p.category === selectedCategory);
-                        renderPrompts(categoryFiltered);
-                    } else {
-                        renderPrompts(filteredPrompts.length > 0 ? filteredPrompts : allPrompts);
-                    }
-                });
-            }
-        }
-
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing Coach Mission Control...');
-            
             loadClientFromURL();
-            
-            // Load existing functionality
-            if (typeof window.loadClients === 'function') {
-                window.loadClients();
-            }
-            
-            // Force load prompts immediately and with multiple attempts
-            const loadPrompts = () => {
-                console.log('Attempting to load prompts...');
-                
-                // Try different ways to access prompts
-                if (typeof window.prompts !== 'undefined' && Array.isArray(window.prompts)) {
-                    allPrompts = window.prompts;
-                    console.log('✅ Loaded prompts from window.prompts:', allPrompts.length);
-                } else if (typeof prompts !== 'undefined' && Array.isArray(prompts)) {
-                    allPrompts = prompts;
-                    console.log('✅ Loaded prompts from global prompts:', allPrompts.length);
-                } else {
-                    console.log('⚠️ No prompts.js found, using fallback prompts');
-                    // Use the comprehensive fallback prompts we defined above
-                    allPrompts = [
-                        // ... (the 30+ prompts we defined earlier)
-                        {
-                            id: 'solution-1',
-                            title: 'Wunderfrage klassisch',
-                            category: 'Lösungsorientierte Fragen',
-                            text: 'Angenommen, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie am nächsten Morgen merken, dass das Wunder geschehen ist?',
-                            rating: 5
-                        },
-                        {
-                            id: 'solution-2',
-                            title: 'Skalierungsfrage',
-                            category: 'Lösungsorientierte Fragen',
-                            text: 'Auf einer Skala von 1 bis 10: Wo stehen Sie heute mit Ihrem Problem? Was müsste passieren, damit Sie einen Punkt höher kommen?',
-                            rating: 5
-                        },
-                        {
-                            id: 'systemic-1',
-                            title: 'Zirkuläre Frage',
-                            category: 'Systemische Fragen',
-                            text: 'Was würde Ihr Partner/Team/Familie über diese Situation sagen? Welche Sichtweise hätten sie auf das Problem?',
-                            rating: 4
-                        },
-                        {
-                            id: 'values-1',
-                            title: 'Kernwerte identifizieren',
-                            category: 'Wertearbeit',
-                            text: 'Welche 3-5 Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
-                            rating: 5
-                        },
-                        {
-                            id: 'gestalt-1',
-                            title: 'Hier und Jetzt',
-                            category: 'Hier-und-Jetzt',
-                            text: 'Was nehmen Sie in diesem Moment in Ihrem Körper wahr? Welche Empfindungen, Spannungen oder Gefühle sind da?',
-                            rating: 4
-                        },
-                        {
-                            id: 'ai-1',
-                            title: 'Strukturierte Reflexion',
-                            category: 'Reflexion',
-                            text: 'Reflektieren wir systematisch: Was ist faktisch passiert? Wie haben Sie reagiert? Was würden Sie beim nächsten Mal anders machen?',
-                            rating: 5
-                        },
-                        {
-                            id: 'resource-1',
-                            title: 'Stärkenanalyse',
-                            category: 'Stärkenarbeit',
-                            text: 'Welche Ihrer Stärken und Talente können Sie in dieser Situation einsetzen? Was haben Sie schon oft erfolgreich gemacht?',
-                            rating: 5
-                        }
-                    ];
-                }
-                
-                filteredPrompts = allPrompts;
-                console.log('📊 Total prompts available:', allPrompts.length);
-                
-                // Force render prompts
-                renderPrompts(allPrompts);
-                updatePromptStats();
-                initializeCategoryFilter();
-                
-                console.log('✅ Prompts initialization complete');
-            };
-            
-            // Try loading prompts immediately and after a delay
-            loadPrompts();
-            setTimeout(loadPrompts, 100);
-            setTimeout(loadPrompts, 500);
-            setTimeout(loadPrompts, 1000);
-            
-            // Initialize collaboration if available
-            if (typeof window.initCollaboration === 'function') {
-                window.initCollaboration();
-            }
         });
     </script>
 
+    <!-- Original JavaScript files - these will provide the working functionality -->
     <script src="data/prompts.js"></script>
     <script src="data/clients.js"></script>
     <script src="js/communication.js"></script>
