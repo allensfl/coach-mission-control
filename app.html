@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Mission Control - Standalone Version</title>
+    <meta name="description" content="DSGVO-konforme Kundenverwaltung für professionelle Coaches. Lokale Datenspeicherung, vollständige Kontrolle.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #10b981;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .add-client-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .add-client-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Search */
+        .search-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            z-index: 1;
+        }
+        
+        /* Client Grid */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .client-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .client-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .client-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .client-meta {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .client-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .edit-btn {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .delete-btn {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .client-goals {
+            margin-bottom: 1rem;
+        }
+        
+        .goals-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .goals-list {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        .client-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-active .status-dot {
+            background: #10b981;
+        }
+        
+        .status-pending .status-dot {
+            background: #f59e0b;
+        }
+        
+        .last-session {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #93c5fd;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-box h4 {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-box p {
+            color: #1e40af;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .clients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo-section">
+                <div class="logo">🎯 Coach Mission Control</div>
+                <div class="subtitle">Standalone Version - Vollständige Kundenverwaltung</div>
+            </div>
+            <div class="nav-actions">
+                <a href="/" class="nav-link">🏠 Zur Hauptseite</a>
+                <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="nav-link">🎯 Demo testen</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content container">
+        <!-- Info Box -->
+        <div class="info-box">
+            <h4>🔒 DSGVO-konforme Standalone-Version</h4>
+            <p>Ihre Klientendaten werden ausschließlich lokal in Ihrem Browser gespeichert. Höchste Datenschutz-Standards, keine Cloud-Speicherung, vollständige Kontrolle über Ihre sensiblen Coaching-Daten.</p>
+        </div>
+
+        <!-- Section Header -->
+        <div class="section-header">
+            <h2 class="section-title">
+                👥 Meine Klienten
+            </h2>
+            <button class="add-client-btn" onclick="addNewClient()">
+                ➕ Neuen Klienten hinzufügen
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Klienten suchen..." id="searchInput">
+        </div>
+
+        <!-- Clients Grid -->
+        <div class="clients-grid" id="clientsGrid">
+            <div class="empty-state">
+                <h3>Noch keine Klienten vorhanden</h3>
+                <p>Klicken Sie auf "Neuen Klienten hinzufügen" um zu beginnen.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Client storage using IndexedDB for GDPR compliance
+        let clients = [];
+
+        // Load clients from localStorage on page load
+        function loadClients() {
+            const stored = localStorage.getItem('coach-mission-control-clients');
+            if (stored) {
+                clients = JSON.parse(stored);
+                renderClients();
+            }
+        }
+
+        // Save clients to localStorage
+        function saveClients() {
+            localStorage.setItem('coach-mission-control-clients', JSON.stringify(clients));
+        }
+
+        // Render clients
+        function renderClients(clientsToRender = clients) {
+            const grid = document.getElementById('clientsGrid');
+            
+            if (clientsToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Noch keine Klienten vorhanden</h3>
+                        <p>Klicken Sie auf "Neuen Klienten hinzufügen" um zu beginnen.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = clientsToRender.map(client => `
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-info">
+                            <h3>${client.name}</h3>
+                            <div class="client-meta">${client.age} Jahre • ${client.profession}</div>
+                        </div>
+                        <div class="client-actions">
+                            <button class="action-btn coach-btn" onclick="startCoaching('${client.id}')" title="KI-Coaching starten">
+                                🤖
+                            </button>
+                            <button class="action-btn edit-btn" onclick="editClient('${client.id}')" title="Bearbeiten">
+                                ✏️
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteClient('${client.id}')" title="Löschen">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="client-goals">
+                        <div class="goals-title">🎯 Coaching-Ziele:</div>
+                        <div class="goals-list">${client.goals}</div>
+                    </div>
+                    
+                    <div class="client-status">
+                        <div class="status-indicator status-${client.status}">
+                            <span class="status-dot"></span>
+                            ${client.status === 'active' ? 'Aktiv' : 'Wartend'}
+                        </div>
+                        <div class="last-session">
+                            ${client.sessionCount || 0} Sessions • Letzte: ${client.lastSession ? new Date(client.lastSession).toLocaleDateString('de-DE') : 'Noch keine'}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm) ||
+                client.profession.toLowerCase().includes(searchTerm) ||
+                client.goals.toLowerCase().includes(searchTerm)
+            );
+            renderClients(filteredClients);
+        });
+
+        // Add new client
+        function addNewClient() {
+            const name = prompt('Name des Klienten:');
+            if (!name) return;
+            
+            const age = prompt('Alter:');
+            const profession = prompt('Beruf:');
+            const goals = prompt('Coaching-Ziele:');
+            
+            const newClient = {
+                id: Date.now().toString(),
+                name: name,
+                age: age || 'Nicht angegeben',
+                profession: profession || 'Nicht angegeben',
+                goals: goals || 'Noch zu definieren',
+                status: 'pending',
+                sessionCount: 0,
+                lastSession: null,
+                notes: ''
+            };
+            
+            clients.push(newClient);
+            saveClients();
+            renderClients();
+        }
+
+        // Start coaching session
+        function startCoaching(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            alert(`🤖 KI-Coaching-Session mit ${client.name} wird gestartet!\n\n` +
+                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface.`);
+        }
+
+        // Edit client
+        function editClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            const newName = prompt('Name:', client.name);
+            if (newName === null) return;
+            
+            const newAge = prompt('Alter:', client.age);
+            const newProfession = prompt('Beruf:', client.profession);
+            const newGoals = prompt('Coaching-Ziele:', client.goals);
+            
+            client.name = newName || client.name;
+            client.age = newAge || client.age;
+            client.profession = newProfession || client.profession;
+            client.goals = newGoals || client.goals;
+            
+            saveClients();
+            renderClients();
+        }
+
+        // Delete client
+        function deleteClient(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (confirm(`Möchten Sie ${client.name} wirklich löschen?`)) {
+                clients = clients.filter(c => c.id !== clientId);
+                saveClients();
+                renderClients();
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadClients();
+        });
+    </script>
+</body>
+</html>
