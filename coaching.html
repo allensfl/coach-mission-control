@@ -6,208 +6,11 @@
     <title>Coach Mission Control</title>
     <link rel="stylesheet" href="css/common-gray.css">
     <link rel="stylesheet" href="css/coach-gray.css">
-    <style>
-        /* Method Integration Styles */
-        .method-selector {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .method-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .method-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .method-option {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .method-option:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-        }
-
-        .method-option.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-
-        .method-icon {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .method-name {
-            font-weight: 600;
-            color: #1e293b;
-            font-size: 0.9rem;
-        }
-
-        .client-info-panel {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .client-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .client-avatar {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
-        .client-details h3 {
-            color: #1e293b;
-            margin-bottom: 5px;
-        }
-
-        .client-role {
-            color: #64748b;
-            font-size: 0.9rem;
-        }
-
-        .session-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .meta-item {
-            text-align: center;
-        }
-
-        .meta-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
-
-        .meta-value {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        /* Method filter for prompts */
-        .method-filter {
-            background: #eff6ff;
-            border: 1px solid #3b82f6;
-            border-radius: 8px;
-            padding: 10px 15px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            color: #1d4ed8;
-            font-weight: 600;
-            display: none;
-        }
-
-        .prompt-item.method-filtered {
-            background: #eff6ff;
-            border-color: #3b82f6;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
         <h1>🎯 Coach Mission Control</h1>
         
-        <!-- Method Selection (only shown if no method selected) -->
-        <div id="methodSelection" class="method-selector">
-            <div class="method-title">
-                🎨 Coaching-Methode wählen
-            </div>
-            <div class="method-grid">
-                <div class="method-option" data-method="solution-focused" onclick="selectMethod('solution-focused')">
-                    <span class="method-icon">🎯</span>
-                    <div class="method-name">Lösungsorientiert</div>
-                </div>
-                <div class="method-option" data-method="systemic" onclick="selectMethod('systemic')">
-                    <span class="method-icon">🔄</span>
-                    <div class="method-name">Systemisch</div>
-                </div>
-                <div class="method-option" data-method="values-meaning" onclick="selectMethod('values-meaning')">
-                    <span class="method-icon">🌟</span>
-                    <div class="method-name">Werteorientiert</div>
-                </div>
-                <div class="method-option" data-method="gestalt" onclick="selectMethod('gestalt')">
-                    <span class="method-icon">🎭</span>
-                    <div class="method-name">Gestalt</div>
-                </div>
-                <div class="method-option" data-method="triadic-ai" onclick="selectMethod('triadic-ai')">
-                    <span class="method-icon">🤖</span>
-                    <div class="method-name">KI-Coaching</div>
-                </div>
-                <div class="method-option" data-method="resource-oriented" onclick="selectMethod('resource-oriented')">
-                    <span class="method-icon">💎</span>
-                    <div class="method-name">Ressourcenorientiert</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Client Info Panel -->
-        <div id="clientInfoPanel" class="client-info-panel" style="display: none;">
-            <div class="client-header">
-                <div class="client-avatar" id="clientAvatar">SW</div>
-                <div class="client-details">
-                    <h3 id="clientName">Sarah Weber</h3>
-                    <div class="client-role" id="clientRole">Marketing Managerin</div>
-                </div>
-            </div>
-            <div class="session-meta">
-                <div class="meta-item">
-                    <div class="meta-label">Methode</div>
-                    <div class="meta-value" id="selectedMethodName">Lösungsorientiert</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Session #</div>
-                    <div class="meta-value" id="sessionNumber">4</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Status</div>
-                    <div class="meta-value" style="color: #059669;">Live</div>
-                </div>
-            </div>
-        </div>
-
         <div class="tab-navigation">
             <button class="tab-btn active" data-tab="clients">👥 Klienten</button>
             <button class="tab-btn" data-tab="coaching">🎯 Coaching</button>
@@ -228,19 +31,12 @@
             </div>
         </div>
 
-        <!-- Coaching Tab - EXACTLY like the original -->
+        <!-- Coaching Tab -->
         <div id="coachingTab" class="tab-content">
             <div class="coaching-layout">
-                <!-- Prompt Repository - Original Structure -->
+                <!-- Prompt Repository -->
                 <div class="prompt-repository">
                     <h3 style="margin-bottom: 20px; color: #1e293b;">🧰 Prompt Repository</h3>
-                    
-                    <!-- Method Filter Display -->
-                    <div id="methodFilterDisplay" class="method-filter">
-                        Gefiltert nach: <span id="currentMethodFilter"></span>
-                        <button onclick="clearMethodFilter()" style="float: right; background: none; border: none; color: #1d4ed8; cursor: pointer;">✕ Alle anzeigen</button>
-                    </div>
-                    
                     <div class="stats">
                         <strong id="promptStats">Prompts verfügbar: 0</strong>
                     </div>
@@ -255,7 +51,7 @@
                     </div>
                 </div>
 
-                <!-- Prompt Editor - Original Structure -->
+                <!-- Prompt Editor -->
                 <div class="prompt-editor">
                     <h3 style="margin-bottom: 20px; color: #1e293b;">✏️ Prompt Editor</h3>
                     <textarea id="promptEditor" placeholder="Wählen Sie einen Prompt aus dem Repository oder geben Sie einen eigenen ein..."></textarea>
@@ -268,7 +64,7 @@
             </div>
         </div>
 
-        <!-- Kollaboration Tab - Original Structure -->
+        <!-- Kollaboration Tab -->
         <div id="collaborationTab" class="tab-content">
             <h2 style="margin-bottom: 25px; color: #1e293b;">🤝 Kollaboration Monitor</h2>
             <div class="collaboration-monitor">
@@ -290,7 +86,7 @@
             </div>
         </div>
 
-        <!-- Coach-KI Tab - Original Structure -->
+        <!-- Coach-KI Tab -->
         <div id="coachkiTab" class="tab-content">
             <div class="coachki-container">
                 <h2 style="color: #1e293b; margin-bottom: 25px; display: flex; align-items: center;">
@@ -389,184 +185,10 @@
         </div>
     </div>
 
-    <!-- Load original JavaScript files FIRST - they provide all functionality -->
     <script src="data/prompts.js"></script>
     <script src="data/clients.js"></script>
     <script src="js/communication.js"></script>
     <script src="js/common.js"></script>
     <script src="js/coach.js"></script>
-
-    <script>
-        // Multi-Method Integration - MINIMAL interference with original functionality
-        let currentClient = null;
-        let currentMethod = null;
-
-        // Method configurations for filtering (only used for demos)
-        const methodConfigs = {
-            'solution-focused': {
-                name: 'Lösungsorientiertes Coaching',
-                icon: '🎯',
-                short: 'Lösungsorientiert'
-            },
-            'systemic': {
-                name: 'Systemisches Coaching',  
-                icon: '🔄',
-                short: 'Systemisch'
-            },
-            'values-meaning': {
-                name: 'Werte- & Sinnorientiertes Coaching',
-                icon: '🌟',
-                short: 'Werteorientiert'
-            },
-            'gestalt': {
-                name: 'Gestalt- & Erlebnisorientiertes Coaching',
-                icon: '🎭',
-                short: 'Gestalt'
-            },
-            'triadic-ai': {
-                name: 'Triadisches KI-Coaching',
-                icon: '🤖',
-                short: 'KI-Coaching'
-            },
-            'resource-oriented': {
-                name: 'Ressourcenorientiertes Coaching',
-                icon: '💎',
-                short: 'Ressourcenorientiert'
-            }
-        };
-
-        // Demo clients data (only used if coming from demo URL)
-        const demoClients = {
-            'demo-1': { name: 'Sarah Weber', role: 'Marketing Managerin', avatar: 'SW' },
-            'demo-2': { name: 'Michael Keller', role: 'IT-Leiter', avatar: 'MK' },
-            'demo-3': { name: 'Anna Zimmermann', role: 'Projektmanagerin', avatar: 'AZ' },
-            'demo-4': { name: 'Thomas Meier', role: 'Geschäftsführer', avatar: 'TM' },
-            'demo-5': { name: 'Lisa Müller', role: 'Vertriebsleiterin', avatar: 'LM' }
-        };
-
-        function selectMethod(method) {
-            // Remove previous selection
-            document.querySelectorAll('.method-option').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Add selection to clicked option
-            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
-            
-            currentMethod = method;
-            updateMethodDisplay();
-            
-            // Show method filter in coaching tab
-            showMethodFilter(method);
-            
-            // Hide method selection, show client info if client is selected
-            document.getElementById('methodSelection').style.display = 'none';
-            if (currentClient) {
-                document.getElementById('clientInfoPanel').style.display = 'block';
-            }
-        }
-
-        function updateMethodDisplay() {
-            if (!currentMethod) return;
-            
-            const config = methodConfigs[currentMethod];
-            const methodNameEl = document.getElementById('selectedMethodName');
-            if (methodNameEl) {
-                methodNameEl.textContent = config.short;
-            }
-        }
-
-        function showMethodFilter(method) {
-            const config = methodConfigs[method];
-            const methodFilter = document.getElementById('methodFilterDisplay');
-            const currentFilter = document.getElementById('currentMethodFilter');
-            
-            if (methodFilter && currentFilter && config) {
-                methodFilter.style.display = 'block';
-                currentFilter.textContent = config.name;
-            }
-        }
-
-        function clearMethodFilter() {
-            const methodFilter = document.getElementById('methodFilterDisplay');
-            if (methodFilter) {
-                methodFilter.style.display = 'none';
-            }
-        }
-
-        function loadClientFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const clientId = urlParams.get('client');
-            const method = urlParams.get('method');
-            
-            // Only show demo-specific features if coming from demo URL
-            if (clientId && clientId.startsWith('demo-') && demoClients[clientId]) {
-                currentClient = demoClients[clientId];
-                updateClientDisplay();
-                console.log('Demo client loaded:', currentClient.name);
-            }
-            
-            if (method && methodConfigs[method]) {
-                selectMethod(method);
-            } else if (!clientId || !clientId.startsWith('demo-')) {
-                // Show method selection only for demo usage
-                document.getElementById('methodSelection').style.display = 'block';
-            }
-        }
-
-        function updateClientDisplay() {
-            if (!currentClient) return;
-            
-            const elements = {
-                clientAvatar: document.getElementById('clientAvatar'),
-                clientName: document.getElementById('clientName'),
-                clientRole: document.getElementById('clientRole')
-            };
-            
-            if (elements.clientAvatar) elements.clientAvatar.textContent = currentClient.avatar;
-            if (elements.clientName) elements.clientName.textContent = currentClient.name;
-            if (elements.clientRole) elements.clientRole.textContent = currentClient.role;
-            
-            if (currentMethod) {
-                document.getElementById('clientInfoPanel').style.display = 'block';
-            }
-        }
-
-        function clearEditor() {
-            const editor = document.getElementById('promptEditor');
-            if (editor) {
-                editor.value = '';
-            }
-        }
-
-        // Initialize on page load - AFTER original scripts have loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait for original scripts to fully initialize
-            setTimeout(() => {
-                loadClientFromURL();
-                
-                // Only modify client loading if NOT coming from demo
-                const urlParams = new URLSearchParams(window.location.search);
-                const clientId = urlParams.get('client');
-                
-                if (!clientId || !clientId.startsWith('demo-')) {
-                    // Let original functionality run, but don't show demo clients
-                    const originalLoadClients = window.loadClients;
-                    if (originalLoadClients) {
-                        // Call original function first
-                        originalLoadClients();
-                        
-                        // Then filter out demo clients after a short delay
-                        setTimeout(() => {
-                            const container = document.getElementById('clientsContainer');
-                            if (container && container.innerHTML.includes('DEMO')) {
-                                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 40px;">Für Demo-Klienten besuchen Sie: <a href="/demo" style="color: #667eea;">Demo-Version</a></div>';
-                            }
-                        }, 100);
-                    }
-                }
-            }, 500);
-        });
-    </script>
 </body>
 </html>
