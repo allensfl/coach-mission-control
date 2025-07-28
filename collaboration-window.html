@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤝 Kollaborations-Fenster - Coach Mission Control</title>
+    <style>
+        body { font-family: system-ui, sans-serif; background: #f8fafc; padding: 20px; }
+        .collaboration-window { max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .window-header { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 20px; text-align: center; border-radius: 12px 12px 0 0; }
+        .collaboration-content { padding: 30px; }
+        .method-info { background: #3b82f6; color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .collaboration-messages { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; height: 400px; padding: 20px; overflow-y: auto; margin-bottom: 20px; }
+        .message { margin-bottom: 15px; padding: 12px 16px; border-radius: 8px; max-width: 80%; }
+        .message.coach { background: #dbeafe; border-left: 4px solid #3b82f6; margin-left: auto; text-align: right; }
+        .message.coachee { background: #f0fdf4; border-left: 4px solid #10b981; }
+        .coachee-input { display: flex; gap: 10px; margin-top: 20px; }
+        .coachee-input textarea { flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; min-height: 60px; }
+        .send-btn { background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="collaboration-window">
+        <div class="window-header">
+            <h1>🤝 Live Kollaboration</h1>
+            <p>Verbunden mit Coach Mission Control</p>
+        </div>
+        <div class="collaboration-content">
+            <div class="method-info">
+                <div><strong>Aktive Methode:</strong> Systemisches Coaching</div>
+                <div><strong>Demo-Klient:</strong> Lisa Müller</div>
+            </div>
+            <div class="collaboration-messages">
+                <div class="message coach">
+                    <div><strong>Coach:</strong> Willkommen zur Coaching-Session! Wie geht es Ihnen heute?</div>
+                </div>
+                <div class="message coachee">
+                    <div><strong>Lisa:</strong> Danke, mir geht es gut. Ich
