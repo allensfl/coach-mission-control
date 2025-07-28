@@ -279,27 +279,65 @@
             }
         });
         
-        // Override loadClients um Demo-Klienten zu kontrollieren
+        // KOMPLETT blockiere Demo-Klienten laden - Override mehrere Funktionen
         const originalLoadClients = window.loadClients;
-        if (typeof originalLoadClients === 'function') {
-            window.loadClients = function() {
-                console.log('🔄 LoadClients aufgerufen');
-                
-                // Bei Demo-URLs: Demo-Klienten erlauben
-                if (window.allowDemoClients) {
-                    console.log('✅ Demo-Klienten werden geladen');
+        
+        // Override loadClients Funktion
+        window.loadClients = function() {
+            console.log('🔄 LoadClients aufgerufen');
+            
+            // Bei Demo-URLs: Demo-Klienten erlauben
+            if (window.allowDemoClients) {
+                console.log('✅ Demo-Klienten werden geladen');
+                if (typeof originalLoadClients === 'function') {
                     return originalLoadClients.call(this);
+                }
+            } else {
+                console.log('❌ Demo-Klienten werden blockiert - Zeige echte Klienten-Interface');
+                // Leere Klienten-Liste für normale Nutzung
+                const container = document.getElementById('clientsContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #64748b;">
+                            <h3 style="color: #1e293b; margin-bottom: 20px;">🏢 Produktive Klienten-Verwaltung</h3>
+                            <p style="margin-bottom: 15px;">Hier verwalten Sie Ihre echten Klienten.</p>
+                            <p style="margin-bottom: 25px;">Demo-Klienten sind nur im <a href="/demo" style="color: #3b82f6;">Demo-Bereich</a> verfügbar.</p>
+                            <button onclick="window.location.href='/app'" style="background: #3b82f6; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer;">
+                                📊 Zur Klienten-Verwaltung
+                            </button>
+                        </div>
+                    `;
+                }
+                return;
+            }
+        };
+        
+        // Override auch die renderClients Funktion falls sie existiert
+        const originalRenderClients = window.renderClients;
+        if (typeof originalRenderClients === 'function') {
+            window.renderClients = function(clients) {
+                console.log('🔄 RenderClients aufgerufen mit', clients ? clients.length : 0, 'clients');
+                
+                if (!window.allowDemoClients) {
+                    console.log('❌ RenderClients blockiert - keine Demo-Klienten');
+                    return; // Blockiere komplett
                 } else {
-                    console.log('❌ Demo-Klienten werden blockiert');
-                    // Leere Klienten-Liste für normale Nutzung
-                    const container = document.getElementById('clientsContainer');
-                    if (container) {
-                        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b;">Keine Demo-Klienten verfügbar.<br>Verwenden Sie Ihre eigenen Klienten-Daten.</div>';
-                    }
-                    return;
+                    console.log('✅ RenderClients erlaubt für Demo');
+                    return originalRenderClients.call(this, clients);
                 }
             };
         }
+        
+        // Override auch setupDemoClients falls es existiert
+        window.setupDemoClients = function() {
+            if (!window.allowDemoClients) {
+                console.log('❌ SetupDemoClients blockiert');
+                return;
+            } else {
+                console.log('✅ SetupDemoClients erlaubt für Demo');
+                // Originale Demo-Client Funktionalität hier
+            }
+        };
         
         // Minimaler Prompt-Filter für Multi-Method (falls gewünscht)
         const originalDisplayPrompts = window.displayPrompts;
