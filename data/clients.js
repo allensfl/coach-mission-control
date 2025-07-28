@@ -1,281 +1,178 @@
-/* ===== CLIENTS.JS - Klienten-Datenbank ===== */
-
+// ===== KLIENTEN-DATENBANK =====
 window.clients = [
     {
-        id: 1,
-        name: "Sarah Müller",
-        age: 42,
-        profession: "Projektmanagerin",
-        topics: ["Work-Life-Balance", "Führung", "Stressmanagement"],
-        background: "Erfahrene Projektmanagerin in einem Tech-Unternehmen. Leitet ein Team von 12 Entwicklern.",
+        id: 'client-001',
+        name: "Alexandra Müller",
+        age: 34,
+        profession: "Marketing Managerin",
+        topics: ["Karriereentwicklung", "Work-Life-Balance", "Führungskompetenzen"],
+        background: "Arbeitet seit 8 Jahren im Marketing, kürzlich zur Teamleiterin befördert. Sucht Unterstützung beim Übergang in die Führungsrolle.",
         challenges: [
-            "Schwierigkeiten beim Delegieren",
-            "Hoher Perfektionismus",
-            "Wenig Zeit für Familie"
+            "Delegation von Aufgaben",
+            "Konflikte im Team lösen",
+            "Zeitmanagement zwischen strategischen und operativen Aufgaben"
         ],
         goals: [
-            "Bessere Work-Life-Balance finden",
-            "Führungsstil weiterentwickeln",
-            "Stressresilienz aufbauen"
+            "Selbstbewusste Führungskraft werden",
+            "Effektive Kommunikation mit dem Team",
+            "Bessere Work-Life-Balance etablieren"
         ],
         sessionHistory: 3,
-        lastSession: "2024-01-15"
+        lastSession: "2024-01-15",
+        notes: "Sehr reflektiert, arbeitet gerne mit praktischen Übungen. Bevorzugt strukturierte Ansätze.",
+        status: "Aktiv"
     },
     {
-        id: 2,
-        name: "Michael Chen",
-        age: 35,
-        profession: "Startup-Gründer",
-        topics: ["Entrepreneurship", "Risikomanagement", "Vision"],
-        background: "Serienunternehmer, der sein drittes Startup aufbaut. Spezialisiert auf KI-Lösungen für Gesundheitswesen.",
+        id: 'client-002', 
+        name: "Thomas Weber",
+        age: 42,
+        profession: "IT-Projektmanager",
+        topics: ["Stressmanagement", "Burnout-Prävention", "Karriereplanung"],
+        background: "Erfahrener Projektmanager mit 15 Jahren Berufserfahrung. Fühlt sich zunehmend ausgebrannt und sucht neue Perspektiven.",
         challenges: [
-            "Unsicherheit bei strategischen Entscheidungen",
-            "Team-Aufbau und Mitarbeitermotivation", 
-            "Investoren-Kommunikation"
+            "Ständiger Zeitdruck in Projekten",
+            "Schwierigkeiten beim 'Nein-Sagen'",
+            "Fehlende langfristige Karrierevision"
         ],
         goals: [
-            "Klarere Unternehmensvision entwickeln",
-            "Entscheidungsprozesse optimieren",
-            "Führungsqualitäten stärken"
-        ],
-        sessionHistory: 1,
-        lastSession: "2024-01-22"
-    },
-    {
-        id: 3,
-        name: "Dr. Anna Richter",
-        age: 51,
-        profession: "Ärztin/Klinikdirektorin",
-        topics: ["Leadership", "Change Management"],
-        background: "Leitende Ärztin und Direktorin einer mittelgroßen Klinik. Verantwortlich für 200+ Mitarbeiter.",
-        challenges: [
-            "Widerstand gegen Digitalisierungsmaßnahmen",
-            "Generationenkonflikte im Team",
-            "Burnout-Prävention bei sich und anderen"
-        ],
-        goals: [
-            "Change-Prozesse erfolgreich gestalten",
-            "Teamkommunikation verbessern",
-            "Nachhaltige Arbeitsstrukturen etablieren"
+            "Gesündere Arbeitsgewohnheiten entwickeln",
+            "Klarheit über berufliche Zukunft gewinnen",
+            "Resilienz aufbauen"
         ],
         sessionHistory: 5,
-        lastSession: "2024-01-18"
+        lastSession: "2024-01-12",
+        notes: "Analytischer Typ, schätzt datenbasierte Ansätze. Braucht konkrete Handlungsschritte.",
+        status: "Aktiv"
     },
     {
-        id: 4,
-        name: "Thomas Weber",
-        age: 58,
-        profession: "Senior Manager",
-        topics: ["Ruhestand", "Sinnfindung", "Neuorientierung"],
-        background: "Langjähriger Manager in der Automobilindustrie. Steht vor dem Übergang in den Ruhestand.",
+        id: 'client-003',
+        name: "Sarah Hoffmann",
+        age: 29,
+        profession: "Grafikdesignerin",
+        topics: ["Selbstständigkeit", "Kreativitätsblockaden", "Selbstvertrauen"],
+        background: "Freiberufliche Designerin seit 3 Jahren. Kämpft mit Unsicherheiten bezüglich ihrer Fähigkeiten und Preisgestaltung.",
         challenges: [
-            "Angst vor dem Bedeutungsverlust",
-            "Unklare Vorstellungen über die Zukunft",
-            "Identität jenseits der Arbeit finden"
+            "Imposter-Syndrom",
+            "Schwierigkeiten bei der Kundenakquise",
+            "Unregelmäßige Einnahmen"
         ],
         goals: [
-            "Sinnvolle Beschäftigung für den Ruhestand finden",
-            "Neue Identität entwickeln",
-            "Übergang erfolgreich gestalten"
+            "Selbstvertrauen in die eigenen Fähigkeiten stärken",
+            "Nachhaltige Kundenbeziehungen aufbauen",
+            "Stabile Einkommensquelle etablieren"
         ],
         sessionHistory: 2,
-        lastSession: "2024-01-20"
+        lastSession: "2024-01-10",
+        notes: "Kreativ und intuitiv, reagiert gut auf visuelle Methoden. Eher emotionaler Zugang.",
+        status: "Aktiv"
     },
     {
-        id: 5,
-        name: "Lisa Rodriguez",
-        age: 29,
-        profession: "Marketing-Spezialistin",
-        topics: ["Karriereentwicklung", "Selbstvertrauen", "Networking"],
-        background: "Ambitionierte Marketing-Expertin in einer Beratungsfirma. Möchte den nächsten Karriereschritt machen.",
+        id: 'client-004',
+        name: "Michael Schmidt",
+        age: 38,
+        profession: "Vertriebsleiter",
+        topics: ["Teamführung", "Motivation", "Veränderungsmanagement"],
+        background: "Leitet ein 12-köpfiges Vertriebsteam. Das Unternehmen durchläuft gerade eine Digitalisierungsphase.",
         challenges: [
-            "Impostor-Syndrom in Senior-Meetings",
-            "Schwierigkeiten beim Selbstmarketing",
-            "Work-Life-Integration als Alleinerziehende"
+            "Widerstand des Teams gegen neue Prozesse",
+            "Motivation des Teams aufrechterhalten",
+            "Eigene Unsicherheit bei technischen Neuerungen"
         ],
         goals: [
-            "Selbstvertrauen in der Kommunikation stärken",
-            "Netzwerk strategisch ausbauen",
-            "Beförderung zur Senior-Position erreichen"
-        ],
-        sessionHistory: 0,
-        lastSession: null
-    },
-    {
-        id: 6,
-        name: "Robert Kim",
-        age: 44,
-        profession: "IT-Architect",
-        topics: ["Teamführung", "Kommunikation", "Agilität"],
-        background: "Technischer Leiter eines agilen Entwicklungsteams. Wechsel von reiner Technik zur Personalführung.",
-        challenges: [
-            "Übergang von Fachexperte zu Führungskraft",
-            "Konflikte im Team moderieren",
-            "Agile Methoden erfolgreich implementieren"
-        ],
-        goals: [
-            "Führungskompetenzen entwickeln",
-            "Kommunikationsfähigkeiten verbessern",
-            "Team-Performance steigern"
+            "Change-Prozess erfolgreich begleiten",
+            "Teamzusammenhalt stärken",
+            "Digitale Kompetenzen ausbauen"
         ],
         sessionHistory: 4,
-        lastSession: "2024-01-16"
+        lastSession: "2024-01-08",
+        notes: "Pragmatisch orientiert, schätzt Erfahrungsaustausch. Lernt gerne von Best Practices.",
+        status: "Aktiv"
+    },
+    {
+        id: 'client-005',
+        name: "Julia Becker",
+        age: 31,
+        profession: "Personalreferentin",
+        topics: ["Kommunikation", "Konfliktlösung", "Persönlichkeitsentwicklung"],
+        background: "Arbeitet in der HR-Abteilung eines mittelständischen Unternehmens. Möchte ihre Beratungskompetenzen für interne Klienten verbessern.",
+        challenges: [
+            "Schwierige Gespräche mit Mitarbeitern führen",
+            "Objektivität in emotionalen Situationen bewahren",
+            "Grenzen zwischen Unterstützung und Therapie"
+        ],
+        goals: [
+            "Professionelle Gesprächsführung meistern",
+            "Konfliktmediationstechniken erlernen",
+            "Persönliche Resilienz stärken"
+        ],
+        sessionHistory: 6,
+        lastSession: "2024-01-05",
+        notes: "Empathisch und hilfsbereit, manchmal zu emotional involviert. Arbeitet gerne systemisch.",
+        status: "Aktiv"
     }
 ];
 
-// Hilfsfunktionen für Klienten-Management
+// ===== KLIENTEN-VERWALTUNG UTILITIES =====
 window.ClientUtils = {
     // Klient nach ID finden
-    findById(id) {
+    findById: function(id) {
         return window.clients.find(client => client.id === id);
     },
-
+    
+    // Aktive Klienten filtern
+    getActiveClients: function() {
+        return window.clients.filter(client => client.status === "Aktiv");
+    },
+    
     // Klienten nach Thema filtern
-    filterByTopic(topic) {
+    getByTopic: function(topic) {
         return window.clients.filter(client => 
             client.topics.some(t => t.toLowerCase().includes(topic.toLowerCase()))
         );
     },
-
-    // Klienten nach Profession filtern
-    filterByProfession(profession) {
-        return window.clients.filter(client => 
-            client.profession.toLowerCase().includes(profession.toLowerCase())
-        );
-    },
-
-    // Alle verfügbaren Topics extrahieren
-    getAllTopics() {
-        const topics = new Set();
-        window.clients.forEach(client => {
-            client.topics.forEach(topic => topics.add(topic));
-        });
-        return Array.from(topics).sort();
-    },
-
-    // Alle verfügbaren Professionen extrahieren
-    getAllProfessions() {
-        return [...new Set(window.clients.map(client => client.profession))].sort();
-    },
-
-    // Klient-Statistiken
-    getStats() {
-        const totalClients = window.clients.length;
-        const avgAge = window.clients.reduce((sum, client) => sum + client.age, 0) / totalClients;
-        const totalSessions = window.clients.reduce((sum, client) => sum + client.sessionHistory, 0);
+    
+    // Statistiken generieren
+    getStats: function() {
+        const total = window.clients.length;
+        const active = this.getActiveClients().length;
+        const avgSessions = window.clients.reduce((sum, client) => sum + client.sessionHistory, 0) / total;
         
         return {
-            totalClients,
-            avgAge: Math.round(avgAge),
-            totalSessions,
-            avgSessionsPerClient: Math.round(totalSessions / totalClients * 10) / 10
+            total: total,
+            active: active,
+            averageSessions: Math.round(avgSessions * 100) / 100
         };
     },
-
-    // Aktuelle Klienten (letzte Session < 30 Tage)
-    getActiveClients() {
-        const thirtyDaysAgo = new Date();
-        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        
-        return window.clients.filter(client => {
-            if (!client.lastSession) return false;
-            const lastSessionDate = new Date(client.lastSession);
-            return lastSessionDate > thirtyDaysAgo;
-        });
+    
+    // Neuen Klient hinzufügen
+    addClient: function(clientData) {
+        const newId = 'client-' + String(Date.now()).slice(-6);
+        const newClient = {
+            id: newId,
+            sessionHistory: 0,
+            lastSession: null,
+            status: "Aktiv",
+            ...clientData
+        };
+        window.clients.push(newClient);
+        return newClient;
     },
-
-    // Neue Klienten (keine Sessions)
-    getNewClients() {
-        return window.clients.filter(client => client.sessionHistory === 0);
-    },
-
-    // Klient-Profil HTML generieren
-    generateProfileHTML(clientId) {
-        const client = this.findById(clientId);
-        if (!client) return '';
-
-        return `
-            <div class="client-profile">
-                <div class="profile-header">
-                    <h3>${client.name}</h3>
-                    <span class="age-badge">${client.age} Jahre</span>
-                </div>
-                <div class="profile-info">
-                    <p><strong>Beruf:</strong> ${client.profession}</p>
-                    <p><strong>Sessions:</strong> ${client.sessionHistory}</p>
-                    ${client.lastSession ? `<p><strong>Letzte Session:</strong> ${new Date(client.lastSession).toLocaleDateString('de-DE')}</p>` : '<p><em>Neuer Klient</em></p>'}
-                </div>
-                <div class="profile-topics">
-                    <h4>Coaching-Themen:</h4>
-                    <div class="topics-tags">
-                        ${client.topics.map(topic => `<span class="topic-tag">${topic}</span>`).join('')}
-                    </div>
-                </div>
-                <div class="profile-challenges">
-                    <h4>Herausforderungen:</h4>
-                    <ul>
-                        ${client.challenges.map(challenge => `<li>${challenge}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="profile-goals">
-                    <h4>Ziele:</h4>
-                    <ul>
-                        ${client.goals.map(goal => `<li>${goal}</li>`).join('')}
-                    </ul>
-                </div>
-            </div>
-        `;
-    },
-
-    // Empfohlene Prompts für Klienten
-    getRecommendedPrompts(clientId) {
-        const client = this.findById(clientId);
-        if (!client) return [];
-
-        const recommendations = [];
-
-        // Neue Klienten starten mit GT1
-        if (client.sessionHistory === 0) {
-            recommendations.push('GT1', 'SF1', 'ZIEL');
+    
+    // Klient aktualisieren
+    updateClient: function(id, updates) {
+        const clientIndex = window.clients.findIndex(client => client.id === id);
+        if (clientIndex !== -1) {
+            window.clients[clientIndex] = { ...window.clients[clientIndex], ...updates };
+            return window.clients[clientIndex];
         }
-
-        // Topic-basierte Empfehlungen
-        if (client.topics.includes('Leadership') || client.topics.includes('Führung')) {
-            recommendations.push('DIAG3', 'STÄRKE1');
-        }
-
-        if (client.topics.includes('Work-Life-Balance')) {
-            recommendations.push('WERTE1', 'LÖS1');
-        }
-
-        if (client.topics.includes('Karriereentwicklung')) {
-            recommendations.push('RESSOURCEN', 'LÖS2');
-        }
-
-        if (client.topics.includes('Change Management')) {
-            recommendations.push('AVA1', 'DIAG2');
-        }
-
-        // Alter-basierte Empfehlungen
-        if (client.age > 50) {
-            recommendations.push('WERTE1', 'GT8');
-        }
-
-        if (client.age < 35) {
-            recommendations.push('STÄRKE2', 'LÖS2');
-        }
-
-        // Session-History basierte Empfehlungen
-        if (client.sessionHistory > 3) {
-            recommendations.push('META1', 'GT12');
-        }
-
-        return [...new Set(recommendations)]; // Duplikate entfernen
+        return null;
     }
 };
 
-console.log('👥 Klienten geladen:', window.clients.length, 'Klienten verfügbar');
+// ===== INITIALISIERUNG =====
+console.log('👥 Klienten-Datenbank geladen:', window.clients.length, 'Klienten verfügbar');
 console.log('📊 Klienten-Statistiken:', window.ClientUtils.getStats());
+
 // ===== DEMO-KLIENTEN FÜR MULTI-METHOD SUPPORT =====
 const demoClients = [
     {
@@ -290,7 +187,8 @@ const demoClients = [
         sessionHistory: 0,
         lastSession: null,
         method: 'solution',
-        isDemo: true
+        isDemo: true,
+        status: "Demo-Klient"
     },
     {
         id: 'demo-2',
@@ -304,7 +202,8 @@ const demoClients = [
         sessionHistory: 0,
         lastSession: null,
         method: 'values',
-        isDemo: true
+        isDemo: true,
+        status: "Demo-Klient"
     },
     {
         id: 'demo-3',
@@ -314,3 +213,47 @@ const demoClients = [
         topics: ["Gestalt", "Erlebnisorientierung"],
         background: "Demo-Klient für Gestalt-/Erlebnisorientiertes Coaching",
         challenges: ["Hier-und-jetzt", "Bewusstsein"],
+        goals: ["Mehr Bewusstsein", "Authentizität"],
+        sessionHistory: 0,
+        lastSession: null,
+        method: 'gestalt',
+        isDemo: true,
+        status: "Demo-Klient"
+    },
+    {
+        id: 'demo-4',
+        name: "Anna Schmidt",
+        age: 33,
+        profession: "Beraterin",
+        topics: ["KI-Coaching", "Triadisch"],
+        background: "Demo-Klient für Triadisches KI-Coaching",
+        challenges: ["KI-Integration", "Digitale Zusammenarbeit"],
+        goals: ["KI-Kompetenz", "Digitale Balance"],
+        sessionHistory: 0,
+        lastSession: null,
+        method: 'triadic',
+        isDemo: true,
+        status: "Demo-Klient"
+    },
+    {
+        id: 'demo-5',
+        name: "Lisa Müller",
+        age: 36,
+        profession: "Projektleiterin",
+        topics: ["Systemisches Coaching", "Beziehungen"],
+        background: "Demo-Klient für Systemisches Coaching",
+        challenges: ["Systemdenken", "Beziehungsgestaltung"],
+        goals: ["Systemverständnis", "Bessere Kommunikation"],
+        sessionHistory: 0,
+        lastSession: null,
+        method: 'systemic',
+        isDemo: true,
+        status: "Demo-Klient"
+    }
+];
+
+// Demo-Klienten zu bestehenden Klienten hinzufügen
+window.clients = [...window.clients, ...demoClients];
+
+console.log('🎯 Demo-Klienten hinzugefügt:', demoClients.length, 'Demo-Klienten verfügbar');
+console.log('📊 Gesamt-Klienten:', window.clients.length, 'Klienten (davon', demoClients.length, 'Demo-Klienten)');
