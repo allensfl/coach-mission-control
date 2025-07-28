@@ -229,6 +229,7 @@
             border: 1px solid #e2e8f0;
             transition: all 0.3s;
             position: relative;
+            cursor: pointer;
         }
         
         .client-card::before {
@@ -244,9 +245,30 @@
             border-radius: 6px;
         }
         
+        .client-card::after {
+            content: "Klicken für Live-Coaching";
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
         .client-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-color: #6366f1;
+        }
+        
+        .client-card:hover::after {
+            opacity: 1;
         }
         
         .client-header {
@@ -326,6 +348,7 @@
             align-items: center;
             padding-top: 1rem;
             border-top: 1px solid #f1f5f9;
+            margin-bottom: 2rem;
         }
         
         .status-indicator {
@@ -458,7 +481,7 @@
     <div class="demo-banner">
         <div class="demo-banner-content">
             <span class="demo-badge">🎯 DEMO-VERSION</span>
-            <span>Erleben Sie Coach Mission Control mit 5 vorinstallierten Test-Klienten</span>
+            <span>Klicken Sie auf einen Klienten für Live-Coaching</span>
             <span class="demo-badge">Vollständig funktionsfähig</span>
         </div>
     </div>
@@ -468,7 +491,7 @@
         <nav class="nav">
             <div class="logo-section">
                 <div class="logo">🎯 Coach Mission Control</div>
-                <div class="subtitle">Demo Version - Vollständige Kundenverwaltung</div>
+                <div class="subtitle">Demo Version - Live-Coaching verfügbar</div>
             </div>
             <div class="nav-actions">
                 <a href="/" class="nav-link">🏠 Zur Hauptseite</a>
@@ -482,8 +505,8 @@
     <main class="main-content">
         <!-- Demo Info -->
         <div class="demo-info">
-            <h4>🚀 Demo-Hinweis</h4>
-            <p>Sie sehen hier 5 realistische Test-Klienten. Klicken Sie auf "KI-Coaching starten" bei einem Klienten, um die vollständige Coaching-Funktionalität zu erleben. Alle Features sind vollständig funktionsfähig!</p>
+            <h4>🚀 Live-Coaching Demo</h4>
+            <p><strong>Klicken Sie auf eine Klient-Card</strong> um eine Live-Coaching-Session zu starten! Sie erleben das komplette KI-gestützte Mission Control Interface mit Geissler-Methodik, Echtzeit-Chat und professioneller Session-Dokumentation.</p>
         </div>
 
         <!-- Section Header -->
@@ -580,25 +603,30 @@
             }
         ];
 
+        // Select client for coaching
+        function selectClient(clientId) {
+            window.location.href = `/coaching?client=${clientId}`;
+        }
+
         // Render clients
         function renderClients(clients = demoClients) {
             const grid = document.getElementById('clientsGrid');
             
             grid.innerHTML = clients.map(client => `
-                <div class="client-card">
+                <div class="client-card" onclick="selectClient('${client.id}')">
                     <div class="client-header">
                         <div class="client-info">
                             <h3>${client.name}</h3>
                             <div class="client-meta">${client.age} Jahre • ${client.profession}</div>
                         </div>
                         <div class="client-actions">
-                            <button class="action-btn coach-btn" onclick="startCoaching('${client.id}')" title="KI-Coaching starten">
+                            <button class="action-btn coach-btn" onclick="event.stopPropagation(); startCoaching('${client.id}')" title="KI-Coaching starten">
                                 🤖
                             </button>
-                            <button class="action-btn edit-btn" onclick="editClient('${client.id}')" title="Bearbeiten">
+                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); editClient('${client.id}')" title="Bearbeiten">
                                 ✏️
                             </button>
-                            <button class="action-btn delete-btn" onclick="deleteClient('${client.id}')" title="Löschen">
+                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteClient('${client.id}')" title="Löschen">
                                 🗑️
                             </button>
                         </div>
@@ -635,14 +663,7 @@
 
         // Demo functions
         function startCoaching(clientId) {
-            const client = demoClients.find(c => c.id === clientId);
-            alert(`🤖 KI-Coaching würde jetzt mit ${client.name} starten!\n\n` +
-                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface mit:\n` +
-                  `• Geissler-Methodik Integration\n` +
-                  `• Intelligente Gesprächsführung\n` +
-                  `• Automatische Fortschrittsdokumentation\n` +
-                  `• Personalisierte Coaching-Strategien\n\n` +
-                  `Möchten Sie Coach Mission Control jetzt kaufen?`);
+            window.location.href = `/coaching?client=${clientId}`;
         }
 
         function editClient(clientId) {
@@ -653,7 +674,7 @@
                   `• Coaching-Ziele\n` +
                   `• Notizen und Fortschritte\n` +
                   `• Session-Planung\n\n` +
-                  `Demo-Modus: Bearbeitung nur in der Vollversion verfügbar.`);
+                  `Demo-Modus: Klicken Sie auf die Card für Live-Coaching!`);
         }
 
         function deleteClient(clientId) {
@@ -680,8 +701,7 @@
                   `• Coaching-Ziele definieren\n` +
                   `• Erste Einschätzung\n` +
                   `• Terminplanung\n\n` +
-                  `Demo-Modus: Die 5 Beispiel-Klienten zeigen bereits alle Funktionen.\n` +
-                  `Möchten Sie Coach Mission Control jetzt kaufen?`);
+                  `Demo-Modus: Klicken Sie auf eine der 5 Test-Klienten für Live-Coaching!`);
         }
 
         // Initialize demo
@@ -691,13 +711,14 @@
             setTimeout(() => {
                 if (!sessionStorage.getItem('demo-welcome-shown')) {
                     alert(`🎯 Willkommen zur Coach Mission Control Demo!\n\n` +
+                          `🚀 NEU: Klicken Sie auf eine Klient-Card für Live-Coaching!\n\n` +
                           `Sie sehen hier 5 realistische Test-Klienten:\n` +
                           `• Sarah Weber (Marketing Managerin)\n` +
                           `• Michael Keller (IT-Abteilungsleiter)\n` +
                           `• Anna Schneider (Projektmanagerin)\n` +
                           `• Thomas Müller (Vertriebsleiter)\n` +
                           `• Lisa Hoffmann (Rechtsanwältin)\n\n` +
-                          `Klicken Sie auf die 🤖 Buttons um das KI-Coaching zu testen!`);
+                          `Klicken Sie auf eine Card um das komplette Mission Control Interface zu erleben!`);
                     
                     sessionStorage.setItem('demo-welcome-shown', 'true');
                 }

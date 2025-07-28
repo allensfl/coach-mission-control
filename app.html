@@ -174,11 +174,34 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid #e2e8f0;
             transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .client-card::after {
+            content: "Klicken für Live-Coaching";
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         
         .client-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border-color: #6366f1;
+        }
+        
+        .client-card:hover::after {
+            opacity: 1;
         }
         
         .client-header {
@@ -258,6 +281,7 @@
             align-items: center;
             padding-top: 1rem;
             border-top: 1px solid #f1f5f9;
+            margin-bottom: 2rem;
         }
         
         .status-indicator {
@@ -435,8 +459,8 @@
     <main class="main-content container">
         <!-- Info Box -->
         <div class="info-box">
-            <h4>🔒 DSGVO-konforme Live Coaching App</h4>
-            <p>Ihre Klientendaten werden ausschließlich lokal in Ihrem Browser gespeichert. Höchste Datenschutz-Standards, keine Cloud-Speicherung, vollständige Kontrolle über Ihre sensiblen Coaching-Daten.</p>
+            <h4>🚀 Live Coaching verfügbar</h4>
+            <p><strong>Klicken Sie auf eine Klient-Card</strong> um eine Live-Coaching-Session zu starten! Ihre Klientendaten werden ausschließlich lokal in Ihrem Browser gespeichert. Höchste Datenschutz-Standards, keine Cloud-Speicherung.</p>
         </div>
 
         <!-- Quick Actions -->
@@ -480,8 +504,11 @@
                 <h3>Noch keine Klienten vorhanden</h3>
                 <p>Klicken Sie auf "Neuen Klienten hinzufügen" um zu beginnen.</p>
                 <div style="margin-top: 1.5rem;">
-                    <a href="/demo" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600;">
+                    <a href="/demo" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600; margin-right: 1rem;">
                         🎯 Erst Demo mit Test-Klienten testen
+                    </a>
+                    <a href="/admin" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600;">
+                        📊 Admin Dashboard
                     </a>
                 </div>
             </div>
@@ -504,6 +531,11 @@
         // Save clients to localStorage
         function saveClients() {
             localStorage.setItem('coach-mission-control-clients', JSON.stringify(clients));
+        }
+
+        // Select client for coaching
+        function selectClient(clientId) {
+            window.location.href = `/coaching?client=${clientId}`;
         }
 
         // Render clients
@@ -529,20 +561,20 @@
             }
 
             grid.innerHTML = clientsToRender.map(client => `
-                <div class="client-card">
+                <div class="client-card" onclick="selectClient('${client.id}')">
                     <div class="client-header">
                         <div class="client-info">
                             <h3>${client.name}</h3>
                             <div class="client-meta">${client.age} Jahre • ${client.profession}</div>
                         </div>
                         <div class="client-actions">
-                            <button class="action-btn coach-btn" onclick="startCoaching('${client.id}')" title="KI-Coaching starten">
+                            <button class="action-btn coach-btn" onclick="event.stopPropagation(); startCoaching('${client.id}')" title="KI-Coaching starten">
                                 🤖
                             </button>
-                            <button class="action-btn edit-btn" onclick="editClient('${client.id}')" title="Bearbeiten">
+                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); editClient('${client.id}')" title="Bearbeiten">
                                 ✏️
                             </button>
-                            <button class="action-btn delete-btn" onclick="deleteClient('${client.id}')" title="Löschen">
+                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteClient('${client.id}')" title="Löschen">
                                 🗑️
                             </button>
                         </div>
@@ -602,29 +634,12 @@
             saveClients();
             renderClients();
             
-            alert(`✅ ${newClient.name} wurde erfolgreich hinzugefügt!\n\nSie können jetzt eine KI-Coaching-Session starten.`);
+            alert(`✅ ${newClient.name} wurde erfolgreich hinzugefügt!\n\nKlicken Sie auf die Klient-Card um eine Live-Coaching-Session zu starten.`);
         }
 
         // Start coaching session
         function startCoaching(clientId) {
-            const client = clients.find(c => c.id === clientId);
-            
-            // Update session count and last session date
-            client.sessionCount = (client.sessionCount || 0) + 1;
-            client.lastSession = new Date().toISOString().split('T')[0];
-            client.status = 'active';
-            
-            saveClients();
-            renderClients();
-            
-            alert(`🤖 KI-Coaching-Session mit ${client.name} wird gestartet!\n\n` +
-                  `Session #${client.sessionCount}\n` +
-                  `Ziele: ${client.goals}\n\n` +
-                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface mit:\n` +
-                  `• Geissler-Methodik Integration\n` +
-                  `• Intelligente Gesprächsführung\n` +
-                  `• Automatische Fortschrittsdokumentation\n` +
-                  `• Personalisierte Coaching-Strategien`);
+            window.location.href = `/coaching?client=${clientId}`;
         }
 
         // Edit client
@@ -668,12 +683,14 @@
             setTimeout(() => {
                 if (clients.length === 0 && !sessionStorage.getItem('app-welcome-shown')) {
                     alert(`🎯 Willkommen in der Coach Mission Control Live App!\n\n` +
+                          `🚀 NEU: Live-Coaching verfügbar!\n\n` +
                           `Dies ist Ihre persönliche DSGVO-konforme Coaching-Software:\n` +
                           `• 🔒 Lokale Datenspeicherung (kein Cloud-Upload)\n` +
                           `• 👥 Unbegrenzte Klientenverwaltung\n` +
-                          `• 🤖 KI-gestütztes Coaching (Vollversion)\n` +
+                          `• 🤖 KI-gestütztes Live-Coaching Interface\n` +
                           `• 📊 Vollständige Session-Dokumentation\n\n` +
-                          `Tipp: Testen Sie erst die Demo mit 5 Beispiel-Klienten!`);
+                          `Tipp: Testen Sie erst die Demo mit 5 Beispiel-Klienten!\n` +
+                          `Klicken Sie einfach auf eine Klient-Card für Live-Coaching.`);
                     
                     sessionStorage.setItem('app-welcome-shown', 'true');
                 }

@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Mission Control - Live Coaching Session</title>
+    <meta name="description" content="KI-gestütztes Live Coaching Interface mit Geissler-Methodik. Professionelle Coaching-Sessions in Echtzeit.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .client-badge {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .session-timer {
+            background: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-weight: 600;
+            color: #059669;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-end {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-end:hover {
+            background: #dc2626;
+        }
+        
+        .btn-back {
+            background: #64748b;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #475569;
+        }
+        
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        
+        /* Client Sidebar */
+        .client-sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+        }
+        
+        .client-profile {
+            padding: 2rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .client-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .client-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .client-meta {
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+        
+        .client-goals {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #93c5fd;
+        }
+        
+        .goals-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .goals-text {
+            color: #1e40af;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Session Notes */
+        .session-notes {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .notes-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .notes-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .notes-area:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        
+        /* Geissler Tools */
+        .geissler-tools {
+            padding: 1.5rem;
+        }
+        
+        .tools-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tool-btn {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tool-btn:hover {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-color: #0ea5e9;
+        }
+        
+        .tool-btn.active {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border-color: #4f46e5;
+        }
+        
+        /* Coaching Interface */
+        .coaching-interface {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* AI Assistant */
+        .ai-assistant {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+        
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .ai-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .ai-text {
+            font-weight: 600;
+        }
+        
+        .ai-suggestion {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            margin-bottom: 2rem;
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message.coach {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .message.client .message-avatar {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .message.coach .message-avatar {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .message-content {
+            flex: 1;
+            max-width: 70%;
+        }
+        
+        .message-bubble {
+            padding: 1rem 1.5rem;
+            border-radius: 18px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .message.client .message-bubble {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .message.coach .message-bubble {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .message-meta {
+            font-size: 0.8rem;
+            color: #64748b;
+            padding: 0 1.5rem;
+        }
+        
+        .message.coach .message-meta {
+            text-align: right;
+        }
+        
+        /* Input Area */
+        .input-area {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .input-area:focus-within {
+            border-color: #6366f1;
+        }
+        
+        .message-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            min-height: 60px;
+        }
+        
+        .input-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .send-btn:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .ai-assist-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .ai-assist-btn:hover {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: #f59e0b;
+        }
+        
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #64748b;
+        }
+        
+        .welcome-message h3 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .client-sidebar {
+                width: 250px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .client-sidebar {
+                width: 100%;
+                height: 200px;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .client-profile {
+                padding: 1rem;
+            }
+            
+            .session-notes, .geissler-tools {
+                display: none;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .session-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .chat-area {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="session-info">
+            <div class="logo">🎯 Mission Control</div>
+            <div class="client-badge" id="clientBadge">Klient wird geladen...</div>
+            <div class="session-timer" id="sessionTimer">00:00:00</div>
+        </div>
+        <div class="header-actions">
+            <button class="action-btn btn-end" onclick="endSession()">
+                ⏹️ Session beenden
+            </button>
+            <a href="/app" class="action-btn btn-back">
+                ← Zurück zur Übersicht
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Client Sidebar -->
+        <aside class="client-sidebar">
+            <div class="client-profile">
+                <div class="client-avatar" id="clientAvatar">?</div>
+                <div class="client-name" id="clientName">Klient wird geladen...</div>
+                <div class="client-meta" id="clientMeta">-</div>
+                <div class="client-goals">
+                    <div class="goals-title">🎯 Coaching-Ziele</div>
+                    <div class="goals-text" id="clientGoals">Ziele werden geladen...</div>
+                </div>
+            </div>
+
+            <div class="session-notes">
+                <div class="notes-title">📝 Session-Notizen</div>
+                <textarea class="notes-area" id="sessionNotes" placeholder="Notizen zu dieser Session..."></textarea>
+            </div>
+
+            <div class="geissler-tools">
+                <div class="tools-title">🧠 Geissler-Methodik</div>
+                <button class="tool-btn" onclick="activateTool('wahrnehmung')">👁️ Wahrnehmung</button>
+                <button class="tool-btn" onclick="activateTool('reflektion')">🤔 Reflektion</button>
+                <button class="tool-btn" onclick="activateTool('zielsetzung')">🎯 Zielsetzung</button>
+                <button class="tool-btn" onclick="activateTool('handlung')">⚡ Handlung</button>
+                <button class="tool-btn" onclick="activateTool('evaluation')">📊 Evaluation</button>
+            </div>
+        </aside>
+
+        <!-- Coaching Interface -->
+        <main class="coaching-interface">
+            <!-- AI Assistant Bar -->
+            <div class="ai-assistant">
+                <div class="ai-status">
+                    <div class="ai-indicator"></div>
+                    <div class="ai-text">KI-Assistent aktiv</div>
+                </div>
+                <div class="ai-suggestion" id="aiSuggestion">Bereit für Coaching-Session</div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-area">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <h3>🚀 Session gestartet</h3>
+                        <p>Willkommen zur KI-gestützten Coaching-Session. Der KI-Assistent unterstützt Sie mit der bewährten Geissler-Methodik.</p>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-area">
+                    <textarea class="message-input" id="messageInput" placeholder="Was möchten Sie heute besprechen?"></textarea>
+                    <div class="input-actions">
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">Senden</button>
+                        <button class="ai-assist-btn" onclick="getAISuggestion()">🤖 KI-Hilfe</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Global variables
+        let currentClient = null;
+        let sessionStartTime = new Date();
+        let chatHistory = [];
+        let activeGeisslerTool = null;
+
+        // Get client from URL parameters
+        function getClientFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientId = urlParams.get('client');
+            
+            if (!clientId) {
+                alert('Kein Klient ausgewählt. Weiterleitung zur Übersicht...');
+                window.location.href = '/app';
+                return;
+            }
+            
+            loadClient(clientId);
+        }
+
+        // Load client data
+        function loadClient(clientId) {
+            // Try to load from demo clients first
+            const demoClients = [
+                {
+                    id: 'demo-1',
+                    name: 'Sarah Weber',
+                    age: 34,
+                    profession: 'Marketing Managerin',
+                    goals: 'Führungskompetenzen entwickeln, Work-Life-Balance verbessern, Selbstvertrauen stärken',
+                    status: 'active',
+                    sessionCount: 8
+                },
+                {
+                    id: 'demo-2',
+                    name: 'Michael Keller',
+                    age: 42,
+                    profession: 'IT-Abteilungsleiter',
+                    goals: 'Stress-Management, Kommunikation im Team verbessern, Burn-out Prävention',
+                    status: 'active',
+                    sessionCount: 12
+                },
+                {
+                    id: 'demo-3',
+                    name: 'Anna Schneider',
+                    age: 29,
+                    profession: 'Projektmanagerin',
+                    goals: 'Karriereplanung, Verhandlungsgeschick, Networking aufbauen',
+                    status: 'active',
+                    sessionCount: 5
+                },
+                {
+                    id: 'demo-4',
+                    name: 'Thomas Müller',
+                    age: 38,
+                    profession: 'Vertriebsleiter',
+                    goals: 'Teamführung optimieren, Konflikte lösen, Motivation des Teams steigern',
+                    status: 'pending',
+                    sessionCount: 3
+                },
+                {
+                    id: 'demo-5',
+                    name: 'Lisa Hoffmann',
+                    age: 31,
+                    profession: 'Rechtsanwältin',
+                    goals: 'Selbstständigkeit vorbereiten, Kundenakquise lernen, Ängste überwinden',
+                    status: 'active',
+                    sessionCount: 6
+                }
+            ];
+
+            // Check demo clients
+            let client = demoClients.find(c => c.id === clientId);
+            
+            // If not found, try localStorage clients
+            if (!client) {
+                const stored = localStorage.getItem('coach-mission-control-clients');
+                if (stored) {
+                    const localClients = JSON.parse(stored);
+                    client = localClients.find(c => c.id === clientId);
+                }
+            }
+            
+            if (!client) {
+                alert('Klient nicht gefunden. Weiterleitung zur Übersicht...');
+                window.location.href = '/app';
+                return;
+            }
+            
+            currentClient = client;
+            displayClient(client);
+        }
+
+        // Display client information
+        function displayClient(client) {
+            document.getElementById('clientBadge').textContent = `Session mit ${client.name}`;
+            document.getElementById('clientAvatar').textContent = client.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('clientName').textContent = client.name;
+            document.getElementById('clientMeta').textContent = `${client.age} Jahre • ${client.profession}`;
+            document.getElementById('clientGoals').textContent = client.goals;
+            
+            document.title = `Mission Control - Session mit ${client.name}`;
+        }
+
+        // Session timer
+        function updateTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - sessionStartTime) / 1000);
+            const hours = Math.floor(diff / 3600);
+            const minutes = Math.floor((diff % 3600) / 60);
+            const seconds = diff % 60;
+            
+            document.getElementById('sessionTimer').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add message to chat
+            addMessage('coach', message);
+            input.value = '';
+            
+            // Simulate client response after delay
+            setTimeout(() => {
+                simulateClientResponse(message);
+            }, 1000 + Math.random() * 2000);
+            
+            // Update AI suggestion
+            updateAISuggestion(message);
+        }
+
+        // Add message to chat
+        function addMessage(sender, content) {
+            const chatMessages = document.getElementById('chatMessages');
+            const welcomeMessage = chatMessages.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.remove();
+            }
+            
+            const timestamp = new Date().toLocaleTimeString('de-DE', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${sender === 'coach' ? 'C' : currentClient.name.split(' ').map(n => n[0]).join('')}</div>
+                <div class="message-content">
+                    <div class="message-bubble">${content}</div>
+                    <div class="message-meta">${timestamp}</div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add to history
+            chatHistory.push({ sender, content, timestamp });
+        }
+
+        // Simulate client response
+        function simulateClientResponse(coachMessage) {
+            const responses = [
+                "Das ist ein interessanter Punkt. Können Sie mir dabei helfen, das genauer zu verstehen?",
+                "Ich sehe das Problem, aber bin unsicher, wie ich es angehen soll.",
+                "Das macht Sinn. Was wäre der erste Schritt, den ich unternehmen könnte?",
+                "Ja, das kenne ich. In ähnlichen Situationen reagiere ich oft emotional.",
+                "Das ist herausfordernd für mich. Haben Sie konkrete Strategien dafür?",
+                "Ich merke, dass mir das schwerfällt. Wie kann ich das besser machen?",
+                "Das ist ein guter Ansatz. Wie würden Sie das in meiner Situation umsetzen?"
+            ];
+            
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            addMessage('client', response);
+        }
+
+        // Activate Geissler tool
+        function activateTool(tool) {
+            // Remove active state from all tools
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active state to clicked tool
+            event.target.classList.add('active');
+            activeGeisslerTool = tool;
+            
+            // Update AI suggestion based on tool
+            const toolSuggestions = {
+                'wahrnehmung': 'Fragen Sie: "Was nehmen Sie in dieser Situation wahr?"',
+                'reflektion': 'Leiten Sie zur Selbstreflexion an: "Was denken Sie darüber?"',
+                'zielsetzung': 'Fokus auf Ziele: "Was möchten Sie erreichen?"',
+                'handlung': 'Handlungsplanung: "Welche Schritte sind nötig?"',
+                'evaluation': 'Bewertung: "Wie bewerten Sie das Ergebnis?"'
+            };
+            
+            document.getElementById('aiSuggestion').textContent = toolSuggestions[tool];
+        }
+
+        // Get AI suggestion
+        function getAISuggestion() {
+            const suggestions = [
+                "Versuchen Sie eine offene Frage zu stellen",
+                "Reflektieren Sie gemeinsam die Situation",
+                "Fokussieren Sie auf konkrete Ziele",
+                "Entwickeln Sie einen Handlungsplan",
+                "Erfragen Sie die Emotionen dahinter",
+                "Arbeiten Sie mit Ressourcen des Klienten",
+                "Nutzen Sie die Geissler-Methodik Tools"
+            ];
+            
+            const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+            document.getElementById('aiSuggestion').textContent = suggestion;
+            
+            // Brief highlight effect
+            const suggestionEl = document.getElementById('aiSuggestion');
+            suggestionEl.style.animation = 'none';
+            setTimeout(() => {
+                suggestionEl.style.animation = 'pulse 1s ease-in-out';
+            }, 10);
+        }
+
+        // Update AI suggestion based on context
+        function updateAISuggestion(message) {
+            if (message.includes('?')) {
+                document.getElementById('aiSuggestion').textContent = 'Gute Frage! Lassen Sie den Klienten antworten.';
+            } else if (message.includes('ziel') || message.includes('Ziel')) {
+                document.getElementById('aiSuggestion').textContent = 'Vertiefen Sie die Ziele mit der Zielsetzungs-Methodik';
+            } else {
+                document.getElementById('aiSuggestion').textContent = 'Bleiben Sie neugierig und stellen Sie Fragen';
+            }
+        }
+
+        // End session
+        function endSession() {
+            const sessionDuration = Math.floor((new Date() - sessionStartTime) / 1000 / 60);
+            const notes = document.getElementById('sessionNotes').value;
+            
+            if (confirm(`Session mit ${currentClient.name} beenden?\n\nDauer: ${sessionDuration} Minuten\nNotizen: ${notes ? 'Gespeichert' : 'Keine'}`)) {
+                // Save session data (in real app, this would go to backend)
+                const sessionData = {
+                    clientId: currentClient.id,
+                    duration: sessionDuration,
+                    notes: notes,
+                    chatHistory: chatHistory,
+                    geisslerTool: activeGeisslerTool,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Store in localStorage for demo purposes
+                const existingSessions = JSON.parse(localStorage.getItem('coaching-sessions') || '[]');
+                existingSessions.push(sessionData);
+                localStorage.setItem('coaching-sessions', JSON.stringify(existingSessions));
+                
+                alert(`✅ Session erfolgreich beendet!\n\nDauer: ${sessionDuration} Minuten\nDaten wurden gespeichert.`);
+                
+                // Redirect back to app
+                window.location.href = '/app';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                sendMessage();
+            }
+            
+            if (e.key === 'Escape') {
+                endSession();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            getClientFromURL();
+            setInterval(updateTimer, 1000);
+            
+            // Auto-focus message input
+            document.getElementById('messageInput').focus();
+            
+            // Welcome message
+            setTimeout(() => {
+                if (currentClient) {
+                    addMessage('client', `Hallo! Ich freue mich auf unser Coaching heute. ${currentClient.goals.split(',')[0]} ist mir besonders wichtig.`);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
