@@ -11,6 +11,16 @@
     <div class="container">
         <h1>🎯 Coach Mission Control</h1>
         
+        <!-- Multi-Method Info Panel (nur bei Demo-URLs sichtbar) -->
+        <div id="methodInfoPanel" style="display: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <span style="font-weight: bold;">🎯 Aktive Methode:</span>
+                <span id="currentMethodDisplay" style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px; font-weight: bold;"></span>
+                <span style="font-weight: bold;">👤 Demo-Klient:</span>
+                <span id="currentClientDisplay" style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 8px; font-weight: bold;"></span>
+            </div>
+        </div>
+        
         <div class="tab-navigation">
             <button class="tab-btn active" data-tab="clients">👥 Klienten</button>
             <button class="tab-btn" data-tab="coaching">🎯 Coaching</button>
@@ -37,6 +47,18 @@
                 <!-- Prompt Repository -->
                 <div class="prompt-repository">
                     <h3 style="margin-bottom: 20px; color: #1e293b;">🧰 Prompt Repository</h3>
+                    
+                    <!-- Method Filter (nur bei Multi-Method Demo sichtbar) -->
+                    <div id="methodFilterSection" style="display: none; margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #3b82f6;">🎯 Methoden-Filter:</label>
+                        <div style="font-size: 0.9em; color: #64748b; margin-bottom: 8px;">
+                            Zeigt Prompts gefiltert nach gewählter Coaching-Methode
+                        </div>
+                        <div id="methodFilterDisplay" style="background: white; padding: 10px; border-radius: 6px; border: 2px solid #e2e8f0; font-weight: bold; color: #1e293b;">
+                            Alle Prompts werden angezeigt
+                        </div>
+                    </div>
+                    
                     <div class="stats">
                         <strong id="promptStats">Prompts verfügbar: 0</strong>
                     </div>
@@ -185,10 +207,144 @@
         </div>
     </div>
 
+    <!-- Original JavaScript-Dateien in der richtigen Reihenfolge -->
     <script src="data/prompts.js"></script>
     <script src="data/clients.js"></script>
     <script src="js/communication.js"></script>
     <script src="js/common.js"></script>
     <script src="js/coach.js"></script>
+
+    <!-- Minimaler Multi-Method Support Script -->
+    <script>
+        // Multi-Method Support - NUR FÜR DEMO-URLS
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Multi-Method Support initialisiert');
+            
+            // URL-Parameter checken
+            const urlParams = new URLSearchParams(window.location.search);
+            const client = urlParams.get('client');
+            const method = urlParams.get('method');
+            
+            // Method-Mapping für Anzeige
+            const methodNames = {
+                'solution-focused': 'Lösungsorientiertes Coaching',
+                'systemic': 'Systemisches Coaching',
+                'values': 'Werteorientiertes Coaching',
+                'gestalt': 'Gestalt-Coaching',
+                'triadic-ai': 'KI-Coaching (Triadisch)',
+                'resource': 'Ressourcenorientiertes Coaching'
+            };
+            
+            // Client-Mapping für Anzeige
+            const clientNames = {
+                'demo-1': 'Sarah Weber',
+                'demo-2': 'Michael Schmidt', 
+                'demo-3': 'Anna Kaufmann',
+                'demo-4': 'Thomas Meyer',
+                'demo-5': 'Lisa Müller'
+            };
+            
+            // Nur bei Demo-URLs Multi-Method Features anzeigen
+            if (client && client.startsWith('demo-') && method) {
+                console.log(`🎯 Demo-Modus: ${method} mit ${client}`);
+                
+                // Method Info Panel anzeigen
+                const methodPanel = document.getElementById('methodInfoPanel');
+                const methodDisplay = document.getElementById('currentMethodDisplay');
+                const clientDisplay = document.getElementById('currentClientDisplay');
+                
+                if (methodPanel && methodDisplay && clientDisplay) {
+                    methodPanel.style.display = 'block';
+                    methodDisplay.textContent = methodNames[method] || method;
+                    clientDisplay.textContent = clientNames[client] || client;
+                }
+                
+                // Method Filter Section anzeigen
+                const methodFilterSection = document.getElementById('methodFilterSection');
+                const methodFilterDisplay = document.getElementById('methodFilterDisplay');
+                
+                if (methodFilterSection && methodFilterDisplay) {
+                    methodFilterSection.style.display = 'block';
+                    methodFilterDisplay.textContent = `Gefiltert nach: ${methodNames[method] || method}`;
+                }
+                
+                // Demo-Klienten nur bei Demo-URLs erlauben
+                window.allowDemoClients = true;
+                window.demoClient = client;
+                window.demoMethod = method;
+                
+            } else {
+                console.log('🏠 Normal-Modus: Keine Demo-Features');
+                window.allowDemoClients = false;
+            }
+        });
+        
+        // Override loadClients um Demo-Klienten zu kontrollieren
+        const originalLoadClients = window.loadClients;
+        if (typeof originalLoadClients === 'function') {
+            window.loadClients = function() {
+                console.log('🔄 LoadClients aufgerufen');
+                
+                // Bei Demo-URLs: Demo-Klienten erlauben
+                if (window.allowDemoClients) {
+                    console.log('✅ Demo-Klienten werden geladen');
+                    return originalLoadClients.call(this);
+                } else {
+                    console.log('❌ Demo-Klienten werden blockiert');
+                    // Leere Klienten-Liste für normale Nutzung
+                    const container = document.getElementById('clientsContainer');
+                    if (container) {
+                        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #64748b;">Keine Demo-Klienten verfügbar.<br>Verwenden Sie Ihre eigenen Klienten-Daten.</div>';
+                    }
+                    return;
+                }
+            };
+        }
+        
+        // Minimaler Prompt-Filter für Multi-Method (falls gewünscht)
+        const originalDisplayPrompts = window.displayPrompts;
+        if (typeof originalDisplayPrompts === 'function') {
+            window.displayPrompts = function(prompts) {
+                console.log('🔄 DisplayPrompts aufgerufen', prompts ? prompts.length : 0);
+                
+                // Bei Demo mit Methode: Optionales Filtern
+                if (window.demoMethod && prompts) {
+                    console.log(`🎯 Filtering prompts for method: ${window.demoMethod}`);
+                    
+                    // Method-Keywords für Filterung
+                    const methodKeywords = {
+                        'solution-focused': ['Lösungsorientiert', 'Wunderfrage', 'Skalierung', 'Ausnahme', 'Ziel'],
+                        'systemic': ['Systemisch', 'zirkulär', 'Perspektiv', 'System', 'Muster'],
+                        'values': ['Werte', 'Sinn', 'Bedeutung', 'Vision', 'Biografie'],
+                        'gestalt': ['Gestalt', 'Hier und Jetzt', 'Körper', 'Kontakt', 'Polarität'],
+                        'triadic-ai': ['KI', 'Triadik', 'Reflexion', 'Wahrnehmung', 'Intervention'],
+                        'resource': ['Ressource', 'Stärke', 'Erfolg', 'Potential', 'Positiv']
+                    };
+                    
+                    const keywords = methodKeywords[window.demoMethod];
+                    if (keywords) {
+                        const filteredPrompts = prompts.filter(prompt => 
+                            keywords.some(keyword => 
+                                prompt.title?.includes(keyword) || 
+                                prompt.category?.includes(keyword) ||
+                                prompt.content?.includes(keyword)
+                            )
+                        );
+                        
+                        console.log(`🔍 Gefilterte Prompts: ${filteredPrompts.length} von ${prompts.length}`);
+                        
+                        if (filteredPrompts.length > 0) {
+                            return originalDisplayPrompts.call(this, filteredPrompts);
+                        }
+                    }
+                }
+                
+                // Standard-Verhalten: Alle Prompts anzeigen
+                return originalDisplayPrompts.call(this, prompts);
+            };
+        }
+        
+        console.log('✅ Multi-Method Support geladen');
+    </script>
 </body>
 </html>
