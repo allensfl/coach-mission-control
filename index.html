@@ -492,6 +492,72 @@
     <!-- ORIGINAL JAVASCRIPT IMPORTS (DEINE FUNKTIONIERENDE BASIS) -->
     <script src="data/prompts.js"></script>
     <script src="data/clients.js"></script>
+    <script>
+// DEMO-KLIENTEN DIREKT HINZUFÜGEN
+document.addEventListener('DOMContentLoaded', function() {
+    const demoClients = [
+        {
+            id: 'demo-1',
+            name: "Marcus Weber",
+            age: 45,
+            profession: "Führungskraft",  
+            topics: ["Lösungsorientierung", "Entscheidungsfindung"],
+            method: 'solution',
+            isDemo: true
+        },
+        {
+            id: 'demo-2',
+            name: "Sarah Klein", 
+            age: 38,
+            profession: "Managerin",
+            topics: ["Werte", "Sinnorientierung"],
+            method: 'values',
+            isDemo: true
+        },
+        {
+            id: 'demo-3',
+            name: "Thomas Müller",
+            age: 41,
+            profession: "Team Lead", 
+            topics: ["Gestalt", "Erlebnisorientierung"],
+            method: 'gestalt',
+            isDemo: true
+        },
+        {
+            id: 'demo-4',
+            name: "Anna Schmidt",
+            age: 33,
+            profession: "Beraterin",
+            topics: ["KI-Coaching", "Triadisch"], 
+            method: 'triadic',
+            isDemo: true
+        },
+        {
+            id: 'demo-5',
+            name: "Lisa Müller",
+            age: 36,
+            profession: "Projektleiterin",
+            topics: ["Systemisches Coaching", "Beziehungen"],
+            method: 'systemic', 
+            isDemo: true
+        }
+    ];
+    
+    // Demo-Klienten hinzufügen
+    if (typeof window.clients !== 'undefined') {
+        window.clients = [...window.clients, ...demoClients];
+    } else {
+        window.clients = demoClients;
+    }
+    
+    console.log('🎯 DEMO-KLIENTEN HINZUGEFÜGT:', demoClients.length);
+    
+    // Klienten-Anzeige neu laden falls bereits geladen
+    if (typeof renderClients === 'function') {
+        renderClients();
+    }
+});
+</script>
     <script src="js/communication.js"></script>
     <script src="js/common.js"></script>
     <script src="js/coach.js"></script>
