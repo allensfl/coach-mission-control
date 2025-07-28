@@ -3,7 +3,7 @@
 
 // Demo-Konfiguration
 const DEMO_CONFIG = {
-    maxSessions: 3,
+    maxSessions: 103,
     maxClients: 5,
     maxPrompts: 8,
     upgradePrice: 197,
