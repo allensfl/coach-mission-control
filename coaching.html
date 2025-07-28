@@ -389,57 +389,53 @@
         </div>
     </div>
 
+    <!-- Load original JavaScript files FIRST - they provide all functionality -->
+    <script src="data/prompts.js"></script>
+    <script src="data/clients.js"></script>
+    <script src="js/communication.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/coach.js"></script>
+
     <script>
+        // Multi-Method Integration - MINIMAL interference with original functionality
         let currentClient = null;
         let currentMethod = null;
 
-        // Method configurations for filtering
+        // Method configurations for filtering (only used for demos)
         const methodConfigs = {
             'solution-focused': {
                 name: 'Lösungsorientiertes Coaching',
                 icon: '🎯',
-                short: 'Lösungsorientiert',
-                keywords: ['Lösungsorientiert', 'Wunderfrage', 'Skalierung', 'Ressourcen', 'Ausnahme', 'Ziel'],
-                categoryMapping: ['Lösungsorientierte Fragen', 'Ressourcenaktivierung', 'Zielfindung']
+                short: 'Lösungsorientiert'
             },
             'systemic': {
                 name: 'Systemisches Coaching',  
                 icon: '🔄',
-                short: 'Systemisch',
-                keywords: ['Systemisch', 'zirkulär', 'Perspektiv', 'System', 'Beziehung', 'Muster'],
-                categoryMapping: ['Systemische Fragen', 'Perspektivwechsel', 'Beziehungsarbeit']
+                short: 'Systemisch'
             },
             'values-meaning': {
                 name: 'Werte- & Sinnorientiertes Coaching',
                 icon: '🌟',
-                short: 'Werteorientiert',
-                keywords: ['Werte', 'Sinn', 'Bedeutung', 'Vision', 'Biografie', 'Identität'],
-                categoryMapping: ['Wertearbeit', 'Sinnfindung', 'Biografische Arbeit']
+                short: 'Werteorientiert'
             },
             'gestalt': {
                 name: 'Gestalt- & Erlebnisorientiertes Coaching',
                 icon: '🎭',
-                short: 'Gestalt',
-                keywords: ['Gestalt', 'Hier und Jetzt', 'Körper', 'Emotion', 'Polarität', 'Kontakt'],
-                categoryMapping: ['Körperarbeit', 'Emotionsarbeit', 'Hier-und-Jetzt']
+                short: 'Gestalt'
             },
             'triadic-ai': {
                 name: 'Triadisches KI-Coaching',
                 icon: '🤖',
-                short: 'KI-Coaching',
-                keywords: ['KI', 'Triade', 'Reflektion', 'Wahrnehmung', 'Intervention', 'Muster'],
-                categoryMapping: ['KI-Integration', 'Reflexion', 'Wahrnehmungsschulung']
+                short: 'KI-Coaching'
             },
             'resource-oriented': {
                 name: 'Ressourcenorientiertes Coaching',
                 icon: '💎',
-                short: 'Ressourcenorientiert',
-                keywords: ['Ressource', 'Stärke', 'Erfolg', 'Potenzial', 'Positive', 'Unterstützung'],
-                categoryMapping: ['Stärkenarbeit', 'Ressourcenaktivierung', 'Positive Psychologie']
+                short: 'Ressourcenorientiert'
             }
         };
 
-        // Demo clients data
+        // Demo clients data (only used if coming from demo URL)
         const demoClients = {
             'demo-1': { name: 'Sarah Weber', role: 'Marketing Managerin', avatar: 'SW' },
             'demo-2': { name: 'Michael Keller', role: 'IT-Leiter', avatar: 'MK' },
@@ -503,7 +499,7 @@
             const clientId = urlParams.get('client');
             const method = urlParams.get('method');
             
-            // Only load demo clients if coming from demo URL
+            // Only show demo-specific features if coming from demo URL
             if (clientId && clientId.startsWith('demo-') && demoClients[clientId]) {
                 currentClient = demoClients[clientId];
                 updateClientDisplay();
@@ -513,7 +509,7 @@
             if (method && methodConfigs[method]) {
                 selectMethod(method);
             } else if (!clientId || !clientId.startsWith('demo-')) {
-                // Show method selection only for non-demo usage
+                // Show method selection only for demo usage
                 document.getElementById('methodSelection').style.display = 'block';
             }
         }
@@ -543,58 +539,34 @@
             }
         }
 
-        // Original coach.js functions placeholders - will be overridden by actual coach.js
-        function startSession() {
-            if (currentClient && currentMethod) {
-                alert(`Session startet mit ${currentClient.name} - ${methodConfigs[currentMethod].name}`);
-                showTab('coaching');
-            } else {
-                alert('Bitte wählen Sie einen Klienten und eine Methode.');
-            }
-        }
-
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Hide all tab buttons active state
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected tab
-            const targetTab = document.getElementById(tabName + 'Tab');
-            const targetBtn = document.querySelector(`[data-tab="${tabName}"]`);
-            
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
-            if (targetBtn) {
-                targetBtn.classList.add('active');
-            }
-        }
-
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.getAttribute('data-tab');
-                showTab(tab);
-            });
-        });
-
-        // Initialize on page load
+        // Initialize on page load - AFTER original scripts have loaded
         document.addEventListener('DOMContentLoaded', function() {
-            loadClientFromURL();
+            // Wait for original scripts to fully initialize
+            setTimeout(() => {
+                loadClientFromURL();
+                
+                // Only modify client loading if NOT coming from demo
+                const urlParams = new URLSearchParams(window.location.search);
+                const clientId = urlParams.get('client');
+                
+                if (!clientId || !clientId.startsWith('demo-')) {
+                    // Let original functionality run, but don't show demo clients
+                    const originalLoadClients = window.loadClients;
+                    if (originalLoadClients) {
+                        // Call original function first
+                        originalLoadClients();
+                        
+                        // Then filter out demo clients after a short delay
+                        setTimeout(() => {
+                            const container = document.getElementById('clientsContainer');
+                            if (container && container.innerHTML.includes('DEMO')) {
+                                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 40px;">Für Demo-Klienten besuchen Sie: <a href="/demo" style="color: #667eea;">Demo-Version</a></div>';
+                            }
+                        }, 100);
+                    }
+                }
+            }, 500);
         });
     </script>
-
-    <!-- Original JavaScript files - these will provide the working functionality -->
-    <script src="data/prompts.js"></script>
-    <script src="data/clients.js"></script>
-    <script src="js/communication.js"></script>
-    <script src="js/common.js"></script>
-    <script src="js/coach.js"></script>
 </body>
 </html>
