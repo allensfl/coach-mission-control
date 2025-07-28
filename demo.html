@@ -3,726 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Mission Control - Demo mit Test-Klienten</title>
-    <meta name="description" content="Erleben Sie Coach Mission Control mit 5 vorinstallierten Test-Klienten. Vollständige Demo der KI-gestützten Coaching-Software.">
-    
+    <title>Coach Mission Control - Demo</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #1e293b;
-            background: #f8fafc;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            color: #333;
         }
-        
-        /* Demo Banner */
+
         .demo-banner {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+            background: rgba(255, 193, 7, 0.9);
+            color: #000;
             text-align: center;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+            padding: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        .demo-banner-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .demo-badge {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 60px;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
+
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding: 20px;
         }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1e293b;
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        
-        .subtitle {
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 0.25rem;
-        }
-        
+
         .nav-actions {
             display: flex;
-            gap: 1rem;
-            align-items: center;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
-        
+
         .nav-link {
-            color: #64748b;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
-        
+
         .nav-link:hover {
-            color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
-        }
-        
-        /* Main Content */
-        .main-content {
-            padding: 2rem 0;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-        
-        /* Demo Info */
-        .demo-info {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border: 1px solid #93c5fd;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-info h4 {
-            color: #1e40af;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .demo-info p {
-            color: #1e40af;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        /* Section Header */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .client-count {
-            background: #10b981;
+            background: #667eea;
             color: white;
-            font-size: 0.7rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            margin-left: 0.5rem;
-        }
-        
-        .add-client-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .add-client-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
-        
-        /* Search */
-        .search-container {
-            margin-bottom: 2rem;
-            position: relative;
-        }
-        
-        .search-input {
-            width: 100%;
-            max-width: 400px;
-            padding: 0.75rem 1rem 0.75rem 3rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: white;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #10b981;
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-            z-index: 1;
-        }
-        
-        /* Client Grid */
-        .clients-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .client-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .client-card::before {
-            content: "DEMO";
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 6px;
-        }
-        
-        .client-card::after {
-            content: "Klicken für Live-Coaching";
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .client-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-            border-color: #6366f1;
-        }
-        
-        .client-card:hover::after {
-            opacity: 1;
-        }
-        
-        .client-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-        
-        .client-info h3 {
-            font-size: 1.3rem;
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
             font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.25rem;
         }
-        
-        .client-meta {
-            font-size: 0.9rem;
-            color: #64748b;
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
         }
-        
-        .client-actions {
-            display: flex;
-            gap: 0.5rem;
+
+        /* Method Selection Styles */
+        .method-selection {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        
-        .action-btn {
-            padding: 0.5rem;
-            border: none;
-            border-radius: 8px;
+
+        .method-selection h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .method-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .coach-btn {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
         }
-        
-        .edit-btn {
-            background: #f1f5f9;
-            color: #64748b;
-        }
-        
-        .delete-btn {
-            background: #fef2f2;
-            color: #ef4444;
-        }
-        
-        .action-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .client-goals {
-            margin-bottom: 1rem;
-        }
-        
-        .goals-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
-        }
-        
-        .goals-list {
-            font-size: 0.9rem;
-            color: #64748b;
-            line-height: 1.5;
-        }
-        
-        .client-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid #f1f5f9;
-            margin-bottom: 2rem;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        
-        .status-active .status-dot {
-            background: #10b981;
-        }
-        
-        .status-pending .status-dot {
-            background: #f59e0b;
-        }
-        
-        .last-session {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-        
-        /* CTA Section */
-        .cta-section {
+
+        .method-card.selected {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
-            margin-top: 3rem;
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
-        
+
+        .method-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .method-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .method-card.selected .method-title {
+            color: white;
+        }
+
+        .method-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .method-card.selected .method-description {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .method-founders {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .method-card.selected .method-founders {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .continue-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .continue-btn.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .continue-btn:hover.active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Client Selection Styles */
+        .client-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .client-section.show {
+            display: block;
+        }
+
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .client-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .client-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .demo-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .client-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .client-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .client-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .client-goals {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .client-goals h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .client-goals p {
+            color: #555;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .client-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-sessions {
+            color: #28a745;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .client-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+        }
+
         .cta-section h3 {
             font-size: 1.8rem;
-            margin-bottom: 1rem;
+            margin-bottom: 10px;
         }
-        
+
         .cta-section p {
             font-size: 1.1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 30px;
             opacity: 0.9;
         }
-        
+
         .cta-buttons {
             display: flex;
+            gap: 15px;
             justify-content: center;
-            gap: 1rem;
             flex-wrap: wrap;
         }
-        
+
         .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
             font-size: 1.1rem;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-            margin: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
-        
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+
+        .cta-primary {
+            background: white;
+            color: #667eea;
         }
-        
+
         .cta-secondary {
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid white;
         }
-        
-        .cta-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
-        
-        .cta-admin {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-        }
-        
-        .cta-admin:hover {
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
-        }
-        
-        /* Responsive */
+
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-actions {
+                justify-content: center;
+            }
+
             .clients-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .section-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
-            }
-            
-            .demo-banner-content {
-                font-size: 0.9rem;
-            }
-            
-            .nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
+
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
             }
-            
-            .cta-button {
-                width: 100%;
-                max-width: 300px;
+
+            .methods-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Demo Banner -->
     <div class="demo-banner">
-        <div class="demo-banner-content">
-            <span class="demo-badge">🎯 DEMO-VERSION</span>
-            <span>Klicken Sie auf einen Klienten für Live-Coaching</span>
-            <span class="demo-badge">Vollständig funktionsfähig</span>
-        </div>
+        🎯 DEMO-MODUS: Testen Sie alle Coaching-Methoden mit vorkonfigurierten Test-Klienten
     </div>
 
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav">
-            <div class="logo-section">
-                <div class="logo">🎯 Coach Mission Control</div>
-                <div class="subtitle">Demo Version - Live-Coaching verfügbar</div>
-            </div>
+    <div class="container">
+        <div class="header">
             <div class="nav-actions">
                 <a href="/" class="nav-link">🏠 Zur Hauptseite</a>
                 <a href="/admin" class="nav-link">📊 Admin Dashboard</a>
                 <a href="/app" class="nav-link">💼 Zur App</a>
             </div>
-        </nav>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Demo Info -->
-        <div class="demo-info">
-            <h4>🚀 Live-Coaching Demo</h4>
-            <p><strong>Klicken Sie auf eine Klient-Card</strong> um eine Live-Coaching-Session zu starten! Sie erleben das komplette KI-gestützte Mission Control Interface mit Geissler-Methodik, Echtzeit-Chat und professioneller Session-Dokumentation.</p>
+            
+            <h1>🎯 Coach Mission Control</h1>
+            <p class="subtitle">Demo - Alle Coaching-Methoden testen</p>
         </div>
 
-        <!-- Section Header -->
-        <div class="section-header">
-            <h2 class="section-title">
-                👥 Meine Klienten
-                <span class="client-count">5 Demo-Klienten</span>
-            </h2>
-            <button class="add-client-btn" onclick="addNewClient()">
-                ➕ Neuen Klienten hinzufügen
+        <!-- Method Selection -->
+        <div class="method-selection" id="methodSelection">
+            <h2>🎨 Wählen Sie Ihre Coaching-Methode</h2>
+            <div class="methods-grid">
+                <div class="method-card" data-method="solution-focused" onclick="selectMethod('solution-focused')">
+                    <span class="method-icon">🎯</span>
+                    <div class="method-title">Lösungsorientiertes Coaching</div>
+                    <div class="method-description">Fokus auf Lösungen statt Probleme. Ressourcenstärkend und kurzzeitorientiert.</div>
+                    <div class="method-founders">Steve de Shazer, Insoo Kim Berg</div>
+                </div>
+
+                <div class="method-card" data-method="systemic" onclick="selectMethod('systemic')">
+                    <span class="method-icon">🔄</span>
+                    <div class="method-title">Systemisches Coaching</div>
+                    <div class="method-description">Der Mensch als Teil sozialer Systeme. Perspektivwechsel und Beziehungsdynamiken.</div>
+                    <div class="method-founders">Familientherapie, Kybernetik</div>
+                </div>
+
+                <div class="method-card" data-method="values-meaning" onclick="selectMethod('values-meaning')">
+                    <span class="method-icon">🌟</span>
+                    <div class="method-title">Werte- & Sinnorientiertes Coaching</div>
+                    <div class="method-description">Sinn als Triebkraft für Entwicklung. Klarheit und Orientierung in Übergängen.</div>
+                    <div class="method-founders">Viktor Frankl, Logotherapie</div>
+                </div>
+
+                <div class="method-card" data-method="gestalt" onclick="selectMethod('gestalt')">
+                    <span class="method-icon">🎭</span>
+                    <div class="method-title">Gestalt- & Erlebnisorientiertes Coaching</div>
+                    <div class="method-description">Erfahrung im Hier und Jetzt. Tiefer Zugang zu Emotionen und Identitätsarbeit.</div>
+                    <div class="method-founders">Gestalttherapie, Humanistische Psychologie</div>
+                </div>
+
+                <div class="method-card" data-method="triadic-ai" onclick="selectMethod('triadic-ai')">
+                    <span class="method-icon">🤖</span>
+                    <div class="method-title">Triadisches KI-Coaching</div>
+                    <div class="method-description">KI als Reflexionspartnerin im Coaching-Prozess. Strukturierte Geissler-Methodik.</div>
+                    <div class="method-founders">Geissler, KI-gestützte Prozesse</div>
+                </div>
+
+                <div class="method-card" data-method="resource-oriented" onclick="selectMethod('resource-oriented')">
+                    <span class="method-icon">💎</span>
+                    <div class="method-title">Ressourcenorientiertes Coaching</div>
+                    <div class="method-description">Stärken und vorhandene Ressourcen aktivieren. Positive Psychologie im Fokus.</div>
+                    <div class="method-founders">Positive Psychologie, Stärkenansatz</div>
+                </div>
+            </div>
+            
+            <button class="continue-btn" id="continueBtn" onclick="showClientSelection()">
+                🚀 Weiter zu Test-Klienten
             </button>
         </div>
 
-        <!-- Search -->
-        <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" placeholder="Klienten suchen..." id="searchInput">
+        <!-- Client Selection -->
+        <div class="client-section" id="clientSection">
+            <h2>👥 Wählen Sie einen Test-Klienten</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                Starten Sie eine Demo-Session mit einem unserer vorkonfigurierten Test-Klienten
+            </p>
+
+            <div class="search-container">
+                <input type="text" 
+                       class="search-input" 
+                       placeholder="Klienten durchsuchen..." 
+                       id="searchInput"
+                       onkeyup="filterClients()">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="clients-grid" id="clientsGrid">
+                <!-- Clients will be rendered here -->
+            </div>
         </div>
 
-        <!-- Clients Grid -->
-        <div class="clients-grid" id="clientsGrid">
-            <!-- Test clients will be populated here by JavaScript -->
-        </div>
-
-        <!-- CTA Section -->
         <div class="cta-section">
             <h3>Überzeugt von Coach Mission Control?</h3>
-            <p>Starten Sie jetzt mit Ihrer eigenen DSGVO-konformen Coaching-Software!</p>
+            <p>Starten Sie jetzt mit Ihrer eigenen DSGVO-konformen Universal Coaching-Software!</p>
             <div class="cta-buttons">
-                <a href="/#pricing" class="cta-button">💳 Jetzt für €197 kaufen</a>
-                <a href="/admin" class="cta-button cta-admin">📊 Admin Dashboard</a>
+                <a href="/#pricing" class="cta-button cta-primary">💳 Jetzt für €497 kaufen</a>
+                <a href="/admin" class="cta-button cta-secondary">📊 Admin Dashboard</a>
                 <a href="/app" class="cta-button cta-secondary">💼 Direkt zur App</a>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
-        // Demo Test Clients Data
+        let selectedMethod = null;
+        
+        // Demo clients data
         const demoClients = [
             {
                 id: 'demo-1',
                 name: 'Sarah Weber',
-                age: 34,
-                profession: 'Marketing Managerin',
-                goals: 'Führungskompetenzen entwickeln, Work-Life-Balance verbessern, Selbstvertrauen stärken',
+                role: 'Marketing Managerin',
+                avatar: 'SW',
+                goals: 'Work-Life-Balance verbessern und Stress reduzieren',
+                sessions: 3,
+                lastSession: '2024-07-25',
                 status: 'active',
-                lastSession: '2025-07-25',
-                sessionCount: 8,
-                notes: 'Sehr motiviert, macht gute Fortschritte bei Zeitmanagement'
+                statusText: 'Aktiv'
             },
             {
                 id: 'demo-2',
                 name: 'Michael Keller',
-                age: 42,
-                profession: 'IT-Abteilungsleiter',
-                goals: 'Stress-Management, Kommunikation im Team verbessern, Burn-out Prävention',
+                role: 'IT-Leiter',
+                avatar: 'MK',
+                goals: 'Führungskompetenzen stärken und Team-Kommunikation verbessern',
+                sessions: 2,
+                lastSession: '2024-07-23',
                 status: 'active',
-                lastSession: '2025-07-23',
-                sessionCount: 12,
-                notes: 'Arbeitet an Delegationsfähigkeiten, erste Erfolge sichtbar'
+                statusText: 'Aktiv'
             },
             {
                 id: 'demo-3',
-                name: 'Anna Schneider',
-                age: 29,
-                profession: 'Projektmanagerin',
-                goals: 'Karriereplanung, Verhandlungsgeschick, Networking aufbauen',
-                status: 'active',
-                lastSession: '2025-07-26',
-                sessionCount: 5,
-                notes: 'Sehr zielstrebig, benötigt Unterstützung bei Prioritätensetzung'
+                name: 'Anna Zimmermann',
+                role: 'Projektmanagerin',
+                avatar: 'AZ',
+                goals: 'Karriereentwicklung planen und Selbstvertrauen aufbauen',
+                sessions: 4,
+                lastSession: '2024-07-24',
+                status: 'waiting',
+                statusText: 'Wartend'
             },
             {
                 id: 'demo-4',
-                name: 'Thomas Müller',
-                age: 38,
-                profession: 'Vertriebsleiter',
-                goals: 'Teamführung optimieren, Konflikte lösen, Motivation des Teams steigern',
-                status: 'pending',
-                lastSession: '2025-07-20',
-                sessionCount: 3,
-                notes: 'Erste Session verlief sehr gut, nächster Termin steht bevor'
+                name: 'Thomas Meier',
+                role: 'Geschäftsführer',
+                avatar: 'TM',
+                goals: 'Delegation verbessern und strategisches Denken entwickeln',
+                sessions: 1,
+                lastSession: '2024-07-22',
+                status: 'active',
+                statusText: 'Aktiv'
             },
             {
                 id: 'demo-5',
-                name: 'Lisa Hoffmann',
-                age: 31,
-                profession: 'Rechtsanwältin',
-                goals: 'Selbstständigkeit vorbereiten, Kundenakquise lernen, Ängste überwinden',
+                name: 'Lisa Müller',
+                role: 'Vertriebsleiterin',
+                avatar: 'LM',
+                goals: 'Konfliktmanagement und emotionale Intelligenz stärken',
+                sessions: 5,
+                lastSession: '2024-07-26',
                 status: 'active',
-                lastSession: '2025-07-27',
-                sessionCount: 6,
-                notes: 'Macht sehr gute Fortschritte, plant Kanzlei-Gründung für 2026'
+                statusText: 'Aktiv'
             }
         ];
 
-        // Select client for coaching
-        function selectClient(clientId) {
-            window.location.href = `/coaching?client=${clientId}`;
+        function selectMethod(method) {
+            // Remove previous selection
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            
+            selectedMethod = method;
+            
+            // Enable continue button
+            const continueBtn = document.getElementById('continueBtn');
+            continueBtn.classList.add('active');
         }
 
-        // Render clients
+        function showClientSelection() {
+            if (!selectedMethod) return;
+            
+            // Hide method selection
+            document.getElementById('methodSelection').style.display = 'none';
+            
+            // Show client selection
+            document.getElementById('clientSection').classList.add('show');
+            
+            // Render clients
+            renderClients();
+        }
+
         function renderClients(clients = demoClients) {
             const grid = document.getElementById('clientsGrid');
             
             grid.innerHTML = clients.map(client => `
-                <div class="client-card" onclick="selectClient('${client.id}')">
+                <div class="client-card" onclick="selectClient('${client.id}')" style="cursor: pointer;">
+                    <div class="demo-badge">DEMO</div>
                     <div class="client-header">
+                        <div class="client-avatar">${client.avatar}</div>
                         <div class="client-info">
                             <h3>${client.name}</h3>
-                            <div class="client-meta">${client.age} Jahre • ${client.profession}</div>
-                        </div>
-                        <div class="client-actions">
-                            <button class="action-btn coach-btn" onclick="event.stopPropagation(); startCoaching('${client.id}')" title="KI-Coaching starten">
-                                🤖
-                            </button>
-                            <button class="action-btn edit-btn" onclick="event.stopPropagation(); editClient('${client.id}')" title="Bearbeiten">
-                                ✏️
-                            </button>
-                            <button class="action-btn delete-btn" onclick="event.stopPropagation(); deleteClient('${client.id}')" title="Löschen">
-                                🗑️
-                            </button>
+                            <div class="client-role">${client.role}</div>
                         </div>
                     </div>
-                    
                     <div class="client-goals">
-                        <div class="goals-title">🎯 Coaching-Ziele:</div>
-                        <div class="goals-list">${client.goals}</div>
+                        <h4>🎯 Coaching-Ziele:</h4>
+                        <p>${client.goals}</p>
                     </div>
-                    
-                    <div class="client-status">
-                        <div class="status-indicator status-${client.status}">
-                            <span class="status-dot"></span>
-                            ${client.status === 'active' ? 'Aktiv' : 'Wartend'}
-                        </div>
-                        <div class="last-session">
-                            ${client.sessionCount} Sessions • Letzte: ${new Date(client.lastSession).toLocaleDateString('de-DE')}
-                        </div>
+                    <div class="client-stats">
+                        <span class="client-sessions">${client.sessions} Sessions</span>
+                        <span class="client-status status-${client.status}">${client.statusText}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
+        function selectClient(clientId) {
+            window.location.href = `/coaching?client=${clientId}&method=${selectedMethod}`;
+        }
+
+        function filterClients() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const filteredClients = demoClients.filter(client => 
                 client.name.toLowerCase().includes(searchTerm) ||
-                client.profession.toLowerCase().includes(searchTerm) ||
+                client.role.toLowerCase().includes(searchTerm) ||
                 client.goals.toLowerCase().includes(searchTerm)
             );
             renderClients(filteredClients);
-        });
-
-        // Demo functions
-        function startCoaching(clientId) {
-            window.location.href = `/coaching?client=${clientId}`;
         }
 
-        function editClient(clientId) {
-            const client = demoClients.find(c => c.id === clientId);
-            alert(`✏️ Klient bearbeiten: ${client.name}\n\n` +
-                  `In der Vollversion öffnet sich hier ein Bearbeitungsformular für:\n` +
-                  `• Persönliche Daten\n` +
-                  `• Coaching-Ziele\n` +
-                  `• Notizen und Fortschritte\n` +
-                  `• Session-Planung\n\n` +
-                  `Demo-Modus: Klicken Sie auf die Card für Live-Coaching!`);
-        }
-
-        function deleteClient(clientId) {
-            const client = demoClients.find(c => c.id === clientId);
-            if (confirm(`Möchten Sie ${client.name} wirklich aus der Demo entfernen?`)) {
-                const index = demoClients.findIndex(c => c.id === clientId);
-                if (index > -1) {
-                    demoClients.splice(index, 1);
-                    renderClients();
-                    
-                    setTimeout(() => {
-                        alert(`${client.name} wurde aus der Demo entfernt.\n\n` +
-                              `In der Vollversion werden gelöschte Klienten dauerhaft entfernt.\n` +
-                              `Demo-Modus: Änderungen sind nur temporär.`);
-                    }, 500);
-                }
-            }
-        }
-
-        function addNewClient() {
-            alert(`➕ Neuen Klienten hinzufügen\n\n` +
-                  `In der Vollversion öffnet sich hier ein Formular zum Anlegen neuer Klienten mit:\n` +
-                  `• Persönliche Informationen\n` +
-                  `• Coaching-Ziele definieren\n` +
-                  `• Erste Einschätzung\n` +
-                  `• Terminplanung\n\n` +
-                  `Demo-Modus: Klicken Sie auf eine der 5 Test-Klienten für Live-Coaching!`);
-        }
-
-        // Initialize demo
-        document.addEventListener('DOMContentLoaded', () => {
-            renderClients();
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if method is passed via URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const methodParam = urlParams.get('method');
             
-            setTimeout(() => {
-                if (!sessionStorage.getItem('demo-welcome-shown')) {
-                    alert(`🎯 Willkommen zur Coach Mission Control Demo!\n\n` +
-                          `🚀 NEU: Klicken Sie auf eine Klient-Card für Live-Coaching!\n\n` +
-                          `Sie sehen hier 5 realistische Test-Klienten:\n` +
-                          `• Sarah Weber (Marketing Managerin)\n` +
-                          `• Michael Keller (IT-Abteilungsleiter)\n` +
-                          `• Anna Schneider (Projektmanagerin)\n` +
-                          `• Thomas Müller (Vertriebsleiter)\n` +
-                          `• Lisa Hoffmann (Rechtsanwältin)\n\n` +
-                          `Klicken Sie auf eine Card um das komplette Mission Control Interface zu erleben!`);
-                    
-                    sessionStorage.setItem('demo-welcome-shown', 'true');
-                }
-            }, 1500);
+            if (methodParam) {
+                selectMethod(methodParam);
+                showClientSelection();
+            }
         });
     </script>
 </body>
