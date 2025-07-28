@@ -115,6 +115,14 @@
             50% { transform: scale(1.05); }
         }
         
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
         .cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -142,6 +150,15 @@
         .cta-secondary:hover {
             background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
+        }
+        
+        .cta-admin {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .cta-admin:hover {
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
         }
         
         /* Features Section */
@@ -330,10 +347,15 @@
                 grid-template-columns: 1fr;
             }
             
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
             .cta-button {
-                display: block;
-                margin: 0.5rem auto;
+                width: 100%;
                 max-width: 300px;
+                margin: 0.25rem 0;
             }
         }
     </style>
@@ -347,7 +369,8 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#pricing">Preise</a></li>
-                <li><a href="/app">Zur App</a></li>
+                <li><a href="/admin">📊 Admin</a></li>
+                <li><a href="/app">💼 App</a></li>
             </ul>
         </nav>
     </header>
@@ -362,9 +385,12 @@
                     Revolutionäres KI-gestütztes Coaching-System mit der bewährten Geissler-Methodik. 
                     Erleben Sie professionelles Coaching neu definiert.
                 </p>
-                <div>
+                <div class="cta-buttons">
                     <a href="/demo" class="cta-button">
                         🎯 Jetzt 3 Sessions kostenlos testen
+                    </a>
+                    <a href="/admin" class="cta-button cta-admin">
+                        📊 Admin Dashboard
                     </a>
                     <a href="/app" class="cta-button cta-secondary">
                         💼 Direkt zur App
@@ -503,7 +529,6 @@
         document.querySelectorAll('a[href="/demo"]').forEach(link => {
             link.addEventListener('click', () => {
                 console.log('Demo-Link geklickt: Interne /demo Route');
-                // Hier können Sie Analytics-Code hinzufügen
             });
         });
         
@@ -511,7 +536,13 @@
         document.querySelectorAll('a[href="/app"]').forEach(link => {
             link.addEventListener('click', () => {
                 console.log('App-Link geklickt: Interne /app Route');
-                // Hier können Sie Analytics-Code hinzufügen
+            });
+        });
+        
+        // Admin-Button Tracking
+        document.querySelectorAll('a[href="/admin"]').forEach(link => {
+            link.addEventListener('click', () => {
+                console.log('Admin-Link geklickt: Interne /admin Route');
             });
         });
         
@@ -519,7 +550,6 @@
         document.querySelectorAll('a[href*="paypal"]').forEach(link => {
             link.addEventListener('click', () => {
                 console.log('Kauf-Link geklickt:', link.href);
-                // Hier können Sie Conversion-Tracking hinzufügen
             });
         });
         

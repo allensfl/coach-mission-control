@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Mission Control - Standalone Version</title>
-    <meta name="description" content="DSGVO-konforme Kundenverwaltung für professionelle Coaches. Lokale Datenspeicherung, vollständige Kontrolle.">
+    <title>Coach Mission Control - Live Coaching App</title>
+    <meta name="description" content="DSGVO-konforme Live Coaching Anwendung für professionelle Coaches. Lokale Datenspeicherung, vollständige Kontrolle.">
     
     <style>
         * {
@@ -67,11 +67,24 @@
             color: #64748b;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
         }
         
         .nav-link:hover {
-            color: #10b981;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .nav-link.admin {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .nav-link.admin:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            color: white;
         }
         
         /* Main Content */
@@ -311,6 +324,74 @@
             line-height: 1.5;
         }
         
+        /* Quick Actions */
+        .quick-actions {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-actions h4 {
+            margin-bottom: 1rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .action-item:hover {
+            border-color: #0ea5e9;
+            background: #f0f9ff;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .action-icon.demo {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .action-icon.admin {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .action-icon.home {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .clients-grid {
@@ -327,6 +408,10 @@
                 flex-direction: column;
                 gap: 1rem;
             }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -336,11 +421,12 @@
         <nav class="nav container">
             <div class="logo-section">
                 <div class="logo">🎯 Coach Mission Control</div>
-                <div class="subtitle">Standalone Version - Vollständige Kundenverwaltung</div>
+                <div class="subtitle">Live Coaching App - DSGVO-konforme Kundenverwaltung</div>
             </div>
             <div class="nav-actions">
                 <a href="/" class="nav-link">🏠 Zur Hauptseite</a>
-                <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="nav-link">🎯 Demo testen</a>
+                <a href="/demo" class="nav-link">🎯 Demo testen</a>
+                <a href="/admin" class="nav-link admin">📊 Admin Dashboard</a>
             </div>
         </nav>
     </header>
@@ -349,8 +435,27 @@
     <main class="main-content container">
         <!-- Info Box -->
         <div class="info-box">
-            <h4>🔒 DSGVO-konforme Standalone-Version</h4>
+            <h4>🔒 DSGVO-konforme Live Coaching App</h4>
             <p>Ihre Klientendaten werden ausschließlich lokal in Ihrem Browser gespeichert. Höchste Datenschutz-Standards, keine Cloud-Speicherung, vollständige Kontrolle über Ihre sensiblen Coaching-Daten.</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h4>🚀 Schnellzugriff</h4>
+            <div class="actions-grid">
+                <a href="/demo" class="action-item">
+                    <div class="action-icon demo">🎯</div>
+                    <span>Demo mit Test-Klienten</span>
+                </a>
+                <a href="/admin" class="action-item">
+                    <div class="action-icon admin">📊</div>
+                    <span>Admin Dashboard</span>
+                </a>
+                <a href="/" class="action-item">
+                    <div class="action-icon home">🏠</div>
+                    <span>Zur Hauptseite</span>
+                </a>
+            </div>
         </div>
 
         <!-- Section Header -->
@@ -374,12 +479,17 @@
             <div class="empty-state">
                 <h3>Noch keine Klienten vorhanden</h3>
                 <p>Klicken Sie auf "Neuen Klienten hinzufügen" um zu beginnen.</p>
+                <div style="margin-top: 1.5rem;">
+                    <a href="/demo" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600;">
+                        🎯 Erst Demo mit Test-Klienten testen
+                    </a>
+                </div>
             </div>
         </div>
     </main>
 
     <script>
-        // Client storage using IndexedDB for GDPR compliance
+        // Client storage using localStorage for GDPR compliance
         let clients = [];
 
         // Load clients from localStorage on page load
@@ -405,6 +515,14 @@
                     <div class="empty-state">
                         <h3>Noch keine Klienten vorhanden</h3>
                         <p>Klicken Sie auf "Neuen Klienten hinzufügen" um zu beginnen.</p>
+                        <div style="margin-top: 1.5rem;">
+                            <a href="/demo" style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600; margin-right: 1rem;">
+                                🎯 Erst Demo mit Test-Klienten testen
+                            </a>
+                            <a href="/admin" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 12px; text-decoration: none; font-weight: 600;">
+                                📊 Admin Dashboard
+                            </a>
+                        </div>
                     </div>
                 `;
                 return;
@@ -483,13 +601,30 @@
             clients.push(newClient);
             saveClients();
             renderClients();
+            
+            alert(`✅ ${newClient.name} wurde erfolgreich hinzugefügt!\n\nSie können jetzt eine KI-Coaching-Session starten.`);
         }
 
         // Start coaching session
         function startCoaching(clientId) {
             const client = clients.find(c => c.id === clientId);
+            
+            // Update session count and last session date
+            client.sessionCount = (client.sessionCount || 0) + 1;
+            client.lastSession = new Date().toISOString().split('T')[0];
+            client.status = 'active';
+            
+            saveClients();
+            renderClients();
+            
             alert(`🤖 KI-Coaching-Session mit ${client.name} wird gestartet!\n\n` +
-                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface.`);
+                  `Session #${client.sessionCount}\n` +
+                  `Ziele: ${client.goals}\n\n` +
+                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface mit:\n` +
+                  `• Geissler-Methodik Integration\n` +
+                  `• Intelligente Gesprächsführung\n` +
+                  `• Automatische Fortschrittsdokumentation\n` +
+                  `• Personalisierte Coaching-Strategien`);
         }
 
         // Edit client
@@ -509,21 +644,40 @@
             
             saveClients();
             renderClients();
+            
+            alert(`✅ ${client.name} wurde erfolgreich aktualisiert!`);
         }
 
         // Delete client
         function deleteClient(clientId) {
             const client = clients.find(c => c.id === clientId);
-            if (confirm(`Möchten Sie ${client.name} wirklich löschen?`)) {
+            if (confirm(`Möchten Sie ${client.name} wirklich dauerhaft löschen?\n\nAlle Session-Daten gehen verloren!`)) {
                 clients = clients.filter(c => c.id !== clientId);
                 saveClients();
                 renderClients();
+                
+                alert(`${client.name} wurde dauerhaft gelöscht.`);
             }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadClients();
+            
+            // Welcome message for new users
+            setTimeout(() => {
+                if (clients.length === 0 && !sessionStorage.getItem('app-welcome-shown')) {
+                    alert(`🎯 Willkommen in der Coach Mission Control Live App!\n\n` +
+                          `Dies ist Ihre persönliche DSGVO-konforme Coaching-Software:\n` +
+                          `• 🔒 Lokale Datenspeicherung (kein Cloud-Upload)\n` +
+                          `• 👥 Unbegrenzte Klientenverwaltung\n` +
+                          `• 🤖 KI-gestütztes Coaching (Vollversion)\n` +
+                          `• 📊 Vollständige Session-Dokumentation\n\n` +
+                          `Tipp: Testen Sie erst die Demo mit 5 Beispiel-Klienten!`);
+                    
+                    sessionStorage.setItem('app-welcome-shown', 'true');
+                }
+            }, 1000);
         });
     </script>
 </body>
