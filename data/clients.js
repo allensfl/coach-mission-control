@@ -257,3 +257,34 @@ window.clients = [...window.clients, ...demoClients];
 
 console.log('🎯 Demo-Klienten hinzugefügt:', demoClients.length, 'Demo-Klienten verfügbar');
 console.log('📊 Gesamt-Klienten:', window.clients.length, 'Klienten (davon', demoClients.length, 'Demo-Klienten)');
+// ===== DEMO-KLIENTEN FÜR MULTI-METHOD SUPPORT =====
+const demoClients = [
+  {
+    id: 'demo-1',
+    name: "Marcus Weber",
+    age: 45,
+    profession: "Führungskraft",
+    topics: ["Lösungsorientierung", "Entscheidungsfindung"],
+    background: "Demo-Klient für Lösungsorientiertes Coaching",
+    challenges: ["Entscheidungen treffen", "Lösungen finden"],
+    goals: ["Klarere Entscheidungen", "Effektivere Problemlösung"],
+    sessionHistory: 0,
+    lastSession: null,
+    method: 'solution',
+    isDemo: true,
+    status: "Demo-Klient"
+  },
+  {
+    id: 'demo-2',
+    name: "Sarah Klein",
+    age: 38,
+    profession: "Managerin",
+    topics: ["Werte", "Sinnorientierung"],
+    background: "Demo-Klient für Werte- & Sinnorientiertes Coaching",
+    challenges: ["Werte definieren", "Sinn finden"],
+    goals: ["Klare Werte", "Sinnvolle Arbeit"],
+    sessionHistory: 0,
+    lastSession: null,
+    method: 'values',
+    isDemo: true,
+    status: "Dem
