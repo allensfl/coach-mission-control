@@ -10,7 +10,7 @@
     <meta property="og:title" content="Coach Mission Control - Die Zukunft des Coachings">
     <meta property="og:description" content="Revolutionäres KI-gestütztes Coaching-System mit Geissler-Methodik. 3 kostenlose Demo-Sessions verfügbar.">
     <meta property="og:image" content="/og-image.jpg">
-    <meta property="og:url" content="https://coach-mission-control-4k6j3wxj1-ki-coaching.vercel.app">
+    <meta property="og:url" content="https://coach-mission-control-6l4gbay0c-ki-coaching.vercel.app">
     
     <style>
         * {
@@ -301,6 +301,21 @@
             padding: 2rem 0;
         }
         
+        /* Success Banner */
+        .success-banner {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            text-align: center;
+            padding: 0.75rem;
+            font-weight: 600;
+            animation: slideDown 0.5s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .hero-content h1 {
@@ -313,6 +328,12 @@
             
             .features-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .cta-button {
+                display: block;
+                margin: 0.5rem auto;
+                max-width: 300px;
             }
         }
     </style>
@@ -342,7 +363,7 @@
                     Erleben Sie professionelles Coaching neu definiert.
                 </p>
                 <div>
-                    <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="cta-button">
+                    <a href="/demo" class="cta-button">
                         🎯 Jetzt 3 Sessions kostenlos testen
                     </a>
                     <a href="/app" class="cta-button cta-secondary">
@@ -384,8 +405,8 @@
                 
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
-                    <h3>Datenschutz</h3>
-                    <p>Höchste Sicherheitsstandards und vollständige DSGVO-Konformität für den Schutz sensibler Coaching-Daten.</p>
+                    <h3>DSGVO-Datenschutz</h3>
+                    <p>Höchste Sicherheitsstandards und vollständige DSGVO-Konformität für den Schutz sensibler Coaching-Daten. Lokale Speicherung, keine Cloud.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -406,7 +427,7 @@
             <div class="demo-features">
                 <div class="demo-feature">
                     <h4>👥 5 Demo-Klienten</h4>
-                    <p>Realistische Coaching-Szenarien mit Sarah, Michael, Lisa und anderen</p>
+                    <p>Realistische Coaching-Szenarien mit Sarah Weber, Michael Keller, Anna Schneider und anderen</p>
                 </div>
                 
                 <div class="demo-feature">
@@ -425,7 +446,7 @@
                 </div>
             </div>
             
-            <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="cta-button">
+            <a href="/demo" class="cta-button">
                 🚀 Demo jetzt starten
             </a>
         </div>
@@ -479,9 +500,9 @@
     <!-- Analytics & Tracking -->
     <script>
         // Demo-Button Tracking
-        document.querySelectorAll('a[href*="demo"]').forEach(link => {
+        document.querySelectorAll('a[href="/demo"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('Demo-Link geklickt:', link.href);
+                console.log('Demo-Link geklickt: Interne /demo Route');
                 // Hier können Sie Analytics-Code hinzufügen
             });
         });
@@ -489,7 +510,7 @@
         // App-Button Tracking
         document.querySelectorAll('a[href="/app"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('App-Link geklickt:', link.href);
+                console.log('App-Link geklickt: Interne /app Route');
                 // Hier können Sie Analytics-Code hinzufügen
             });
         });
@@ -515,6 +536,26 @@
                 }
             });
         });
+
+        // Success message if coming from demo
+        if (window.location.hash === '#success' || document.referrer.includes('/demo')) {
+            const banner = document.createElement('div');
+            banner.className = 'success-banner';
+            banner.innerHTML = '🎉 Demo erfolgreich getestet! Bereit für Coach Mission Control?';
+            document.body.insertBefore(banner, document.body.firstChild);
+            
+            setTimeout(() => {
+                banner.style.animation = 'slideUp 0.5s ease-out forwards';
+                setTimeout(() => banner.remove(), 500);
+            }, 4000);
+        }
     </script>
+
+    <style>
+        @keyframes slideUp {
+            from { transform: translateY(0); }
+            to { transform: translateY(-100%); }
+        }
+    </style>
 </body>
 </html>

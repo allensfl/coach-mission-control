@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Mission Control - KI-gestütztes Coaching-System Demo</title>
-    <meta name="description" content="Erleben Sie die Zukunft des Coachings! KI-gestützte Geissler-Methodik mit 5 Demo-Klienten. Jetzt 3 Sessions kostenlos testen.">
-    
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Coach Mission Control - KI-Coaching Demo">
-    <meta property="og:description" content="Revolutionäres KI-gestütztes Coaching-System mit Geissler-Methodik. 3 kostenlose Demo-Sessions verfügbar.">
-    <meta property="og:image" content="/og-image.jpg">
-    <meta property="og:url" content="https://ki-online.coach">
+    <title>Coach Mission Control - Demo mit Test-Klienten</title>
+    <meta name="description" content="Erleben Sie Coach Mission Control mit 5 vorinstallierten Test-Klienten. Vollständige Demo der KI-gestützten Coaching-Software.">
     
     <style>
         * {
@@ -23,14 +17,36 @@
             font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             color: #1e293b;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8fafc;
             min-height: 100vh;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Demo Banner */
+        .demo-banner {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+        
+        .demo-banner-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .demo-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
         
         /* Header */
@@ -39,7 +55,7 @@
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             position: sticky;
-            top: 0;
+            top: 60px;
             z-index: 1000;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -49,6 +65,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
         }
         
         .logo {
@@ -57,62 +77,303 @@
             color: #1e293b;
         }
         
-        .nav-links {
+        .subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.25rem;
+        }
+        
+        .nav-actions {
             display: flex;
-            gap: 2rem;
-            list-style: none;
+            gap: 1rem;
+            align-items: center;
         }
         
-        .nav-links a {
+        .nav-link {
+            color: #64748b;
             text-decoration: none;
-            color: #1e293b;
-            font-weight: 600;
+            font-weight: 500;
             transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
         }
         
-        .nav-links a:hover {
-            color: #6366f1;
+        .nav-link:hover {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
         }
         
-        /* Hero Section */
-        .hero {
-            padding: 4rem 0;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
         }
         
-        .hero-content h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero-content .subtitle {
-            font-size: 1.25rem;
-            color: #f1f5f9;
+        /* Demo Info */
+        .demo-info {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid #93c5fd;
+            border-radius: 12px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
         
-        .demo-badge {
-            display: inline-block;
+        .demo-info h4 {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .demo-info p {
+            color: #1e40af;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .client-count {
+            background: #10b981;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+        }
+        
+        .add-client-btn {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             font-weight: 600;
-            margin-bottom: 2rem;
-            animation: pulse 2s infinite;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .add-client-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Search */
+        .search-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            z-index: 1;
+        }
+        
+        /* Client Grid */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .client-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .client-card::before {
+            content: "DEMO";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+        }
+        
+        .client-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .client-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .client-meta {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .client-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .coach-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .edit-btn {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .delete-btn {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .client-goals {
+            margin-bottom: 1rem;
+        }
+        
+        .goals-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .goals-list {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+        
+        .client-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-active .status-dot {
+            background: #10b981;
+        }
+        
+        .status-pending .status-dot {
+            background: #f59e0b;
+        }
+        
+        .last-session {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .cta-section h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
         }
         
         .cta-button {
@@ -126,6 +387,7 @@
             font-size: 1.1rem;
             transition: all 0.3s;
             box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            margin: 0.5rem;
         }
         
         .cta-button:hover {
@@ -133,363 +395,276 @@
             box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
         }
         
-        /* Features Section */
-        .features {
-            padding: 4rem 0;
-            background: white;
-        }
-        
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1e293b;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .feature-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #1e293b;
-        }
-        
-        .feature-card p {
-            color: #64748b;
-            line-height: 1.6;
-        }
-        
-        /* Demo Section */
-        .demo-section {
-            padding: 4rem 0;
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .demo-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .demo-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-        
-        .demo-feature {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .demo-feature h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: #fbbf24;
-        }
-        
-        /* Pricing Section */
-        .pricing {
-            padding: 4rem 0;
-            background: #f8fafc;
-            text-align: center;
-        }
-        
-        .pricing h2 {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
-            color: #1e293b;
-        }
-        
-        .pricing-card {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: 0 auto;
-            border: 2px solid #10b981;
-        }
-        
-        .price-badge {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-        
-        .price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-        
-        .price-old {
-            color: #94a3b8;
-            text-decoration: line-through;
-            font-size: 1.5rem;
-            margin-left: 1rem;
-        }
-        
-        .price-description {
-            color: #64748b;
-            margin-bottom: 2rem;
-        }
-        
-        .features-list {
-            text-align: left;
-            margin-bottom: 2rem;
-        }
-        
-        .features-list li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-        }
-        
-        .features-list li::before {
-            content: "✅";
-            margin-right: 0.5rem;
-        }
-        
-        /* Footer */
-        .footer {
-            background: #1e293b;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-        }
-        
         /* Responsive */
         @media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .features-grid {
+            .clients-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .demo-banner-content {
+                font-size: 0.9rem;
+            }
+            
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Demo Banner -->
+    <div class="demo-banner">
+        <div class="demo-banner-content">
+            <span class="demo-badge">🎯 DEMO-VERSION</span>
+            <span>Erleben Sie Coach Mission Control mit 5 vorinstallierten Test-Klienten</span>
+            <span class="demo-badge">Vollständig funktionsfähig</span>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
-        <nav class="nav container">
-            <div class="logo">🎯 Coach Mission Control</div>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#demo">Demo</a></li>
-                <li><a href="#pricing">Preise</a></li>
-                <li><a href="#contact">Kontakt</a></li>
-            </ul>
+        <nav class="nav">
+            <div class="logo-section">
+                <div class="logo">🎯 Coach Mission Control</div>
+                <div class="subtitle">Demo Version - Vollständige Kundenverwaltung</div>
+            </div>
+            <div class="nav-actions">
+                <a href="/" class="nav-link">🏠 Zur Hauptseite</a>
+                <a href="/app" class="nav-link">💼 Zur App</a>
+            </div>
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="demo-badge">🚀 KOSTENLOSE DEMO VERFÜGBAR</div>
-                <h1>Die Zukunft des Coachings</h1>
-                <p class="subtitle">
-                    Revolutionäres KI-gestütztes Coaching-System mit der bewährten Geissler-Methodik. 
-                    Erleben Sie professionelles Coaching neu definiert.
-                </p>
-                <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="cta-button">
-                    🎯 Jetzt 3 Sessions kostenlos testen
-                </a>
-            </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Demo Info -->
+        <div class="demo-info">
+            <h4>🚀 Demo-Hinweis</h4>
+            <p>Sie sehen hier 5 realistische Test-Klienten. Klicken Sie auf "KI-Coaching starten" bei einem Klienten, um die vollständige Coaching-Funktionalität zu erleben. Alle Features sind vollständig funktionsfähig!</p>
         </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2>Warum Coach Mission Control?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3>KI-gestützte Beratung</h3>
-                    <p>Fortschrittliche Künstliche Intelligenz analysiert Klientenbedürfnisse und schlägt maßgeschneiderte Coaching-Strategien vor.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Geissler-Methodik</h3>
-                    <p>Bewährte psychologische Coaching-Methoden, systematisch digitalisiert und durch KI optimiert für maximale Wirksamkeit.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3>Klienten-Management</h3>
-                    <p>Vollständige Verwaltung Ihrer Coaching-Klienten mit Fortschrittstracking, Notizen und automatischen Erinnerungen.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Erfolgs-Tracking</h3>
-                    <p>Detaillierte Analysen und Reports über Coaching-Fortschritte, Zielerreichung und Klientenzufriedenheit.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Datenschutz</h3>
-                    <p>Höchste Sicherheitsstandards und vollständige DSGVO-Konformität für den Schutz sensibler Coaching-Daten.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Einfache Bedienung</h3>
-                    <p>Intuitive Benutzeroberfläche, die es Coaches ermöglicht, sich auf das Wesentliche zu konzentrieren: ihre Klienten.</p>
-                </div>
-            </div>
+        <!-- Section Header -->
+        <div class="section-header">
+            <h2 class="section-title">
+                👥 Meine Klienten
+                <span class="client-count">5 Demo-Klienten</span>
+            </h2>
+            <button class="add-client-btn" onclick="addNewClient()">
+                ➕ Neuen Klienten hinzufügen
+            </button>
         </div>
-    </section>
 
-    <!-- Demo Section -->
-    <section class="demo-section" id="demo">
-        <div class="container">
-            <h2>🎯 Live-Demo erleben</h2>
-            <p>Testen Sie Coach Mission Control mit echten Demo-Szenarien</p>
-            
-            <div class="demo-features">
-                <div class="demo-feature">
-                    <h4>👥 5 Demo-Klienten</h4>
-                    <p>Realistische Coaching-Szenarien mit Sarah, Michael, Lisa und anderen</p>
-                </div>
-                
-                <div class="demo-feature">
-                    <h4>🤖 KI-Coaching</h4>
-                    <p>Erleben Sie KI-gestützte Gesprächsführung und Strategieentwicklung</p>
-                </div>
-                
-                <div class="demo-feature">
-                    <h4>📊 Geissler-Methodik</h4>
-                    <p>Bewährte psychologische Coaching-Techniken in digitaler Form</p>
-                </div>
-                
-                <div class="demo-feature">
-                    <h4>⚡ 3 kostenlose Sessions</h4>
-                    <p>Vollzugriff auf alle Features ohne Einschränkungen</p>
-                </div>
-            </div>
-            
-            <a href="https://coach-mission-control-demo-af4m822t1-ki-coaching.vercel.app" class="cta-button">
-                🚀 Demo jetzt starten
-            </a>
+        <!-- Search -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Klienten suchen..." id="searchInput">
         </div>
-    </section>
 
-    <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <h2>Investition in Ihre Coaching-Zukunft</h2>
-            
-            <div class="pricing-card">
-                <div class="price-badge">🔥 EINFÜHRUNGSANGEBOT</div>
-                <div class="price">
-                    €197
-                    <span class="price-old">€297</span>
-                </div>
-                <p class="price-description">Einmalige Zahlung • Vollversion • Sofortiger Zugang</p>
-                
-                <ul class="features-list">
-                    <li>Unbegrenzte Klienten</li>
-                    <li>Alle KI-Coaching-Features</li>
-                    <li>Geissler-Methodik komplett</li>
-                    <li>Fortschrittstracking & Analytics</li>
-                    <li>DSGVO-konforme Datenhaltung</li>
-                    <li>Email-Support</li>
-                    <li>Regelmäßige Updates</li>
-                    <li>30 Tage Geld-zurück-Garantie</li>
-                </ul>
-                
-                <a href="https://paypal.me/allensfl/197" class="cta-button">
-                    💳 Jetzt für €197 kaufen
-                </a>
-                
-                <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b;">
-                    💡 <strong>Tipp:</strong> Testen Sie erst die kostenlose Demo oben!
-                </p>
-            </div>
+        <!-- Clients Grid -->
+        <div class="clients-grid" id="clientsGrid">
+            <!-- Test clients will be populated here by JavaScript -->
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Coach Mission Control. Entwickelt für professionelle Coaches.</p>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
-                KI-gestütztes Coaching • Geissler-Methodik • DSGVO-konform
-            </p>
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h3>Überzeugt von Coach Mission Control?</h3>
+            <p>Starten Sie jetzt mit Ihrer eigenen DSGVO-konformen Coaching-Software!</p>
+            <a href="/#pricing" class="cta-button">💳 Jetzt für €197 kaufen</a>
+            <a href="/app" class="cta-button" style="background: rgba(255,255,255,0.2);">💼 Direkt zur App</a>
         </div>
-    </footer>
+    </main>
 
-    <!-- Analytics & Tracking -->
     <script>
-        // Demo-Button Tracking
-        document.querySelectorAll('a[href*="demo"]').forEach(link => {
-            link.addEventListener('click', () => {
-                console.log('Demo-Link geklickt:', link.href);
-                // Hier können Sie Analytics-Code hinzufügen
-            });
+        // Demo Test Clients Data
+        const demoClients = [
+            {
+                id: 'demo-1',
+                name: 'Sarah Weber',
+                age: 34,
+                profession: 'Marketing Managerin',
+                goals: 'Führungskompetenzen entwickeln, Work-Life-Balance verbessern, Selbstvertrauen stärken',
+                status: 'active',
+                lastSession: '2025-07-25',
+                sessionCount: 8,
+                notes: 'Sehr motiviert, macht gute Fortschritte bei Zeitmanagement'
+            },
+            {
+                id: 'demo-2',
+                name: 'Michael Keller',
+                age: 42,
+                profession: 'IT-Abteilungsleiter',
+                goals: 'Stress-Management, Kommunikation im Team verbessern, Burn-out Prävention',
+                status: 'active',
+                lastSession: '2025-07-23',
+                sessionCount: 12,
+                notes: 'Arbeitet an Delegationsfähigkeiten, erste Erfolge sichtbar'
+            },
+            {
+                id: 'demo-3',
+                name: 'Anna Schneider',
+                age: 29,
+                profession: 'Projektmanagerin',
+                goals: 'Karriereplanung, Verhandlungsgeschick, Networking aufbauen',
+                status: 'active',
+                lastSession: '2025-07-26',
+                sessionCount: 5,
+                notes: 'Sehr zielstrebig, benötigt Unterstützung bei Prioritätensetzung'
+            },
+            {
+                id: 'demo-4',
+                name: 'Thomas Müller',
+                age: 38,
+                profession: 'Vertriebsleiter',
+                goals: 'Teamführung optimieren, Konflikte lösen, Motivation des Teams steigern',
+                status: 'pending',
+                lastSession: '2025-07-20',
+                sessionCount: 3,
+                notes: 'Erste Session verlief sehr gut, nächster Termin steht bevor'
+            },
+            {
+                id: 'demo-5',
+                name: 'Lisa Hoffmann',
+                age: 31,
+                profession: 'Rechtsanwältin',
+                goals: 'Selbstständigkeit vorbereiten, Kundenakquise lernen, Ängste überwinden',
+                status: 'active',
+                lastSession: '2025-07-27',
+                sessionCount: 6,
+                notes: 'Macht sehr gute Fortschritte, plant Kanzlei-Gründung für 2026'
+            }
+        ];
+
+        // Render clients
+        function renderClients(clients = demoClients) {
+            const grid = document.getElementById('clientsGrid');
+            
+            grid.innerHTML = clients.map(client => `
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-info">
+                            <h3>${client.name}</h3>
+                            <div class="client-meta">${client.age} Jahre • ${client.profession}</div>
+                        </div>
+                        <div class="client-actions">
+                            <button class="action-btn coach-btn" onclick="startCoaching('${client.id}')" title="KI-Coaching starten">
+                                🤖
+                            </button>
+                            <button class="action-btn edit-btn" onclick="editClient('${client.id}')" title="Bearbeiten">
+                                ✏️
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteClient('${client.id}')" title="Löschen">
+                                🗑️
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="client-goals">
+                        <div class="goals-title">🎯 Coaching-Ziele:</div>
+                        <div class="goals-list">${client.goals}</div>
+                    </div>
+                    
+                    <div class="client-status">
+                        <div class="status-indicator status-${client.status}">
+                            <span class="status-dot"></span>
+                            ${client.status === 'active' ? 'Aktiv' : 'Wartend'}
+                        </div>
+                        <div class="last-session">
+                            ${client.sessionCount} Sessions • Letzte: ${new Date(client.lastSession).toLocaleDateString('de-DE')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredClients = demoClients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm) ||
+                client.profession.toLowerCase().includes(searchTerm) ||
+                client.goals.toLowerCase().includes(searchTerm)
+            );
+            renderClients(filteredClients);
         });
-        
-        // Kauf-Button Tracking
-        document.querySelectorAll('a[href*="paypal"]').forEach(link => {
-            link.addEventListener('click', () => {
-                console.log('Kauf-Link geklickt:', link.href);
-                // Hier können Sie Conversion-Tracking hinzufügen
-            });
-        });
-        
-        // Smooth Scrolling für Navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+
+        // Demo functions
+        function startCoaching(clientId) {
+            const client = demoClients.find(c => c.id === clientId);
+            alert(`🤖 KI-Coaching würde jetzt mit ${client.name} starten!\n\n` +
+                  `In der Vollversion öffnet sich hier das KI-gestützte Coaching-Interface mit:\n` +
+                  `• Geissler-Methodik Integration\n` +
+                  `• Intelligente Gesprächsführung\n` +
+                  `• Automatische Fortschrittsdokumentation\n` +
+                  `• Personalisierte Coaching-Strategien\n\n` +
+                  `Möchten Sie Coach Mission Control jetzt kaufen?`);
+        }
+
+        function editClient(clientId) {
+            const client = demoClients.find(c => c.id === clientId);
+            alert(`✏️ Klient bearbeiten: ${client.name}\n\n` +
+                  `In der Vollversion öffnet sich hier ein Bearbeitungsformular für:\n` +
+                  `• Persönliche Daten\n` +
+                  `• Coaching-Ziele\n` +
+                  `• Notizen und Fortschritte\n` +
+                  `• Session-Planung\n\n` +
+                  `Demo-Modus: Bearbeitung nur in der Vollversion verfügbar.`);
+        }
+
+        function deleteClient(clientId) {
+            const client = demoClients.find(c => c.id === clientId);
+            if (confirm(`Möchten Sie ${client.name} wirklich aus der Demo entfernen?`)) {
+                const index = demoClients.findIndex(c => c.id === clientId);
+                if (index > -1) {
+                    demoClients.splice(index, 1);
+                    renderClients();
+                    
+                    // Show message after deletion
+                    setTimeout(() => {
+                        alert(`${client.name} wurde aus der Demo entfernt.\n\n` +
+                              `In der Vollversion werden gelöschte Klienten dauerhaft entfernt.\n` +
+                              `Demo-Modus: Änderungen sind nur temporär.`);
+                    }, 500);
                 }
-            });
+            }
+        }
+
+        function addNewClient() {
+            alert(`➕ Neuen Klienten hinzufügen\n\n` +
+                  `In der Vollversion öffnet sich hier ein Formular zum Anlegen neuer Klienten mit:\n` +
+                  `• Persönliche Informationen\n` +
+                  `• Coaching-Ziele definieren\n` +
+                  `• Erste Einschätzung\n` +
+                  `• Terminplanung\n\n` +
+                  `Demo-Modus: Die 5 Beispiel-Klienten zeigen bereits alle Funktionen.\n` +
+                  `Möchten Sie Coach Mission Control jetzt kaufen?`);
+        }
+
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', () => {
+            renderClients();
+            
+            // Demo welcome message after short delay
+            setTimeout(() => {
+                if (!sessionStorage.getItem('demo-welcome-shown')) {
+                    alert(`🎯 Willkommen zur Coach Mission Control Demo!\n\n` +
+                          `Sie sehen hier 5 realistische Test-Klienten:\n` +
+                          `• Sarah Weber (Marketing Managerin)\n` +
+                          `• Michael Keller (IT-Abteilungsleiter)\n` +
+                          `• Anna Schneider (Projektmanagerin)\n` +
+                          `• Thomas Müller (Vertriebsleiter)\n` +
+                          `• Lisa Hoffmann (Rechtsanwältin)\n\n` +
+                          `Klicken Sie auf die 🤖 Buttons um das KI-Coaching zu testen!`);
+                    
+                    sessionStorage.setItem('demo-welcome-shown', 'true');
+                }
+            }, 1500);
         });
     </script>
 </body>
