@@ -5,6 +5,10 @@
       "dest": "/index.html"
     },
     {
+      "src": "/landing",
+      "dest": "/landing.html"
+    },
+    {
       "src": "/coaching",
       "dest": "/coaching.html"
     },
