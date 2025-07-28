@@ -489,25 +489,89 @@
         }
 
         function applyMethodFilter(method) {
-            if (!method || !methodConfigs[method]) return;
+            console.log('Applying method filter:', method);
+            
+            if (!method || !methodConfigs[method]) {
+                console.log('❌ Invalid method for filtering:', method);
+                return;
+            }
             
             const config = methodConfigs[method];
             const methodFilter = document.getElementById('methodFilterDisplay');
             const currentFilter = document.getElementById('currentMethodFilter');
             
-            // Show method filter
-            methodFilter.style.display = 'block';
-            currentFilter.textContent = config.name;
+            if (methodFilter && currentFilter) {
+                // Show method filter
+                methodFilter.style.display = 'block';
+                currentFilter.textContent = config.name;
+                console.log('✅ Method filter display updated');
+            }
             
             // Filter prompts based on keywords and categories
             filterPromptsByMethod(config);
         }
 
         function filterPromptsByMethod(config) {
+            console.log('Filtering prompts by method:', config.name);
+            console.log('Available prompts:', allPrompts ? allPrompts.length : 0);
+            
             // Safety check: ensure allPrompts is an array
             if (!allPrompts || !Array.isArray(allPrompts) || allPrompts.length === 0) {
-                console.log('No prompts available for filtering');
-                return;
+                console.log('❌ No prompts available for filtering - initializing fallback');
+                
+                // Initialize with fallback prompts immediately
+                allPrompts = [
+                    {
+                        id: 'solution-1',
+                        title: 'Wunderfrage klassisch',
+                        category: 'Lösungsorientierte Fragen',
+                        text: 'Angenommen, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie am nächsten Morgen merken, dass das Wunder geschehen ist?',
+                        rating: 5
+                    },
+                    {
+                        id: 'solution-2',
+                        title: 'Skalierungsfrage',
+                        category: 'Lösungsorientierte Fragen',
+                        text: 'Auf einer Skala von 1 bis 10: Wo stehen Sie heute mit Ihrem Problem? Was müsste passieren, damit Sie einen Punkt höher kommen?',
+                        rating: 5
+                    },
+                    {
+                        id: 'systemic-1',
+                        title: 'Zirkuläre Frage',
+                        category: 'Systemische Fragen',
+                        text: 'Was würde Ihr Partner/Team/Familie über diese Situation sagen? Welche Sichtweise hätten sie auf das Problem?',
+                        rating: 4
+                    },
+                    {
+                        id: 'values-1',
+                        title: 'Kernwerte identifizieren',
+                        category: 'Wertearbeit',
+                        text: 'Welche 3-5 Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
+                        rating: 5
+                    },
+                    {
+                        id: 'gestalt-1',
+                        title: 'Hier und Jetzt',
+                        category: 'Hier-und-Jetzt',
+                        text: 'Was nehmen Sie in diesem Moment in Ihrem Körper wahr? Welche Empfindungen, Spannungen oder Gefühle sind da?',
+                        rating: 4
+                    },
+                    {
+                        id: 'ai-1',
+                        title: 'Strukturierte Reflexion',
+                        category: 'Reflexion',
+                        text: 'Reflektieren wir systematisch: Was ist faktisch passiert? Wie haben Sie reagiert? Was würden Sie beim nächsten Mal anders machen?',
+                        rating: 5
+                    },
+                    {
+                        id: 'resource-1',
+                        title: 'Stärkenanalyse',
+                        category: 'Stärkenarbeit',
+                        text: 'Welche Ihrer Stärken und Talente können Sie in dieser Situation einsetzen? Was haben Sie schon oft erfolgreich gemacht?',
+                        rating: 5
+                    }
+                ];
+                console.log('✅ Fallback prompts initialized:', allPrompts.length);
             }
             
             const keywords = config.keywords.map(k => k.toLowerCase());
@@ -530,6 +594,8 @@
                 
                 return textMatch || categoryMatch;
             });
+            
+            console.log('✅ Filtered prompts:', filteredPrompts.length);
             
             // Re-render prompts
             renderPrompts(filteredPrompts);
@@ -687,6 +753,8 @@
         }
 
         function showTab(tabName) {
+            console.log('Switching to tab:', tabName);
+            
             // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -698,8 +766,33 @@
             });
             
             // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            const targetTab = document.getElementById(tabName + 'Tab');
+            const targetBtn = document.querySelector(`[data-tab="${tabName}"]`);
+            
+            if (targetTab) {
+                targetTab.classList.add('active');
+                console.log('✅ Tab activated:', tabName);
+            } else {
+                console.error('❌ Tab not found:', tabName + 'Tab');
+            }
+            
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+            
+            // If switching to coaching tab, ensure prompts are loaded
+            if (tabName === 'coaching') {
+                console.log('🔄 Coaching tab opened, ensuring prompts are loaded...');
+                setTimeout(() => {
+                    if (allPrompts && allPrompts.length > 0) {
+                        console.log('✅ Re-rendering prompts for coaching tab:', allPrompts.length);
+                        renderPrompts(filteredPrompts.length > 0 ? filteredPrompts : allPrompts);
+                        updatePromptStats();
+                    } else {
+                        console.log('❌ No prompts available when opening coaching tab');
+                    }
+                }, 100);
+            }
         }
 
         // Tab switching
