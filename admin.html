@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Mission Control - Admin Dashboard</title>
+    <meta name="description" content="Professionelles Admin Dashboard für Coaches. Klientenverwaltung, Analytics, Session-Planung und mehr.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Sidebar */
+        .layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 2rem 0;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+        }
+        
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 2rem;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-right: 3px solid #0ea5e9;
+            color: #0ea5e9;
+        }
+        
+        .sidebar-nav .icon {
+            font-size: 1.1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+        
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon.clients {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+        
+        .stat-icon.sessions {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+        }
+        
+        .stat-icon.revenue {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        }
+        
+        .stat-icon.growth {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .stat-change {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        
+        .stat-change.positive {
+            color: #059669;
+        }
+        
+        .stat-change.negative {
+            color: #dc2626;
+        }
+        
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        /* Recent Clients */
+        .client-list {
+            list-style: none;
+        }
+        
+        .client-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .client-item:last-child {
+            border-bottom: none;
+        }
+        
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .client-info {
+            flex: 1;
+        }
+        
+        .client-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .client-meta {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .client-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .action-btn:hover {
+            border-color: #0ea5e9;
+            background: #f0f9ff;
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .action-icon.add {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .action-icon.session {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+        }
+        
+        .action-icon.report {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .action-icon.settings {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+        
+        /* Calendar Widget */
+        .calendar-widget {
+            text-align: center;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .calendar-nav {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+        
+        .calendar-nav:hover {
+            background: #f1f5f9;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .calendar-day:hover {
+            background: #f1f5f9;
+        }
+        
+        .calendar-day.today {
+            background: #0ea5e9;
+            color: white;
+        }
+        
+        .calendar-day.has-session {
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                order: 2;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .sidebar-nav a {
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                🎯 Coach Mission Control
+                <span style="font-size: 0.8rem; color: #64748b; font-weight: 500;">Admin</span>
+            </div>
+            <div class="nav-actions">
+                <a href="/" class="nav-link">🏠 Hauptseite</a>
+                <a href="/demo" class="nav-link">🎯 Demo</a>
+                <a href="/app" class="nav-link">💼 Live Coaching</a>
+                <div class="user-profile">
+                    <div class="user-avatar">CK</div>
+                    <span>Coach Klaus</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-nav">
+                <li><a href="#dashboard" class="active" onclick="showSection('dashboard')">
+                    <span class="icon">📊</span> Dashboard
+                </a></li>
+                <li><a href="#clients" onclick="showSection('clients')">
+                    <span class="icon">👥</span> Klienten
+                </a></li>
+                <li><a href="#sessions" onclick="showSection('sessions')">
+                    <span class="icon">📅</span> Sessions
+                </a></li>
+                <li><a href="#analytics" onclick="showSection('analytics')">
+                    <span class="icon">📈</span> Analytics
+                </a></li>
+                <li><a href="#calendar" onclick="showSection('calendar')">
+                    <span class="icon">🗓️</span> Kalender
+                </a></li>
+                <li><a href="#notes" onclick="showSection('notes')">
+                    <span class="icon">📝</span> Notizen
+                </a></li>
+                <li><a href="#settings" onclick="showSection('settings')">
+                    <span class="icon">⚙️</span> Einstellungen
+                </a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Überblick über Ihre Coaching-Praxis</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon clients">👥</div>
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Aktive Klienten</div>
+                        <div class="stat-change positive">+3 diese Woche</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon sessions">📅</div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Sessions diesen Monat</div>
+                        <div class="stat-change positive">+12% vs. letzten Monat</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon revenue">💰</div>
+                        <div class="stat-value">€12.840</div>
+                        <div class="stat-label">Umsatz diesen Monat</div>
+                        <div class="stat-change positive">+8% vs. letzten Monat</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon growth">📈</div>
+                        <div class="stat-value">94%</div>
+                        <div class="stat-label">Klientenzufriedenheit</div>
+                        <div class="stat-change positive">+2% vs. letzten Monat</div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Recent Clients -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Neue Klienten</h3>
+                            <a href="#clients" onclick="showSection('clients')" style="color: #0ea5e9; text-decoration: none;">Alle anzeigen</a>
+                        </div>
+                        <div class="card-content">
+                            <ul class="client-list">
+                                <li class="client-item">
+                                    <div class="client-avatar">SW</div>
+                                    <div class="client-info">
+                                        <div class="client-name">Sarah Weber</div>
+                                        <div class="client-meta">Marketing Managerin • Vor 2 Tagen</div>
+                                    </div>
+                                    <div class="client-status status-active">Aktiv</div>
+                                </li>
+                                <li class="client-item">
+                                    <div class="client-avatar">MK</div>
+                                    <div class="client-info">
+                                        <div class="client-name">Michael Keller</div>
+                                        <div class="client-meta">IT-Abteilungsleiter • Vor 1 Woche</div>
+                                    </div>
+                                    <div class="client-status status-pending">Termin ausstehend</div>
+                                </li>
+                                <li class="client-item">
+                                    <div class="client-avatar">AS</div>
+                                    <div class="client-info">
+                                        <div class="client-name">Anna Schneider</div>
+                                        <div class="client-meta">Projektmanagerin • Vor 1 Woche</div>
+                                    </div>
+                                    <div class="client-status status-active">Aktiv</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Schnellzugriff</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="quick-actions">
+                                <button class="action-btn" onclick="showSection('clients')">
+                                    <div class="action-icon add">➕</div>
+                                    <span>Neuer Klient</span>
+                                </button>
+                                <a href="/app" class="action-btn">
+                                    <div class="action-icon session">🤖</div>
+                                    <span>Session starten</span>
+                                </a>
+                                <button class="action-btn" onclick="showSection('analytics')">
+                                    <div class="action-icon report">📊</div>
+                                    <span>Report erstellen</span>
+                                </button>
+                                <button class="action-btn" onclick="showSection('settings')">
+                                    <div class="action-icon settings">⚙️</div>
+                                    <span>Einstellungen</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mini Calendar -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kalender</h3>
+                            <button onclick="showSection('calendar')" style="color: #0ea5e9; background: none; border: none; cursor: pointer;">Vollansicht</button>
+                        </div>
+                        <div class="card-content">
+                            <div class="calendar-widget">
+                                <div class="calendar-header">
+                                    <button class="calendar-nav">‹</button>
+                                    <span style="font-weight: 600;">Juli 2025</span>
+                                    <button class="calendar-nav">›</button>
+                                </div>
+                                <div class="calendar-grid">
+                                    <div style="font-weight: 600; color: #64748b;">Mo</div>
+                                    <div style="font-weight: 600; color: #64748b;">Di</div>
+                                    <div style="font-weight: 600; color: #64748b;">Mi</div>
+                                    <div style="font-weight: 600; color: #64748b;">Do</div>
+                                    <div style="font-weight: 600; color: #64748b;">Fr</div>
+                                    <div style="font-weight: 600; color: #64748b;">Sa</div>
+                                    <div style="font-weight: 600; color: #64748b;">So</div>
+                                    
+                                    <div class="calendar-day">23</div>
+                                    <div class="calendar-day">24</div>
+                                    <div class="calendar-day has-session">25</div>
+                                    <div class="calendar-day">26</div>
+                                    <div class="calendar-day">27</div>
+                                    <div class="calendar-day today">28</div>
+                                    <div class="calendar-day has-session">29</div>
+                                    <div class="calendar-day has-session">30</div>
+                                    <div class="calendar-day">31</div>
+                                    <div class="calendar-day">1</div>
+                                    <div class="calendar-day">2</div>
+                                    <div class="calendar-day">3</div>
+                                    <div class="calendar-day">4</div>
+                                    <div class="calendar-day">5</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Sections (Hidden by default) -->
+            <div id="clients-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Klientenverwaltung</h1>
+                    <p class="page-subtitle">Verwalten Sie alle Ihre Coaching-Klienten</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Klientenverwaltung wird implementiert...<br>
+                            <small>Erweiterte Funktionen: Detailprofile, Session-Historie, Fortschrittstracking</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sessions-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Session-Management</h1>
+                    <p class="page-subtitle">Planen und verwalten Sie Ihre Coaching-Sessions</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Session-Management wird implementiert...<br>
+                            <small>Features: Terminplanung, Session-Notizen, Nachbereitung</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analytics-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Analytics & Reports</h1>
+                    <p class="page-subtitle">Einblicke in Ihre Coaching-Performance</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Analytics wird implementiert...<br>
+                            <small>Features: KPI-Tracking, Erfolgsmetriken, Export-Funktionen</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="calendar-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Kalender</h1>
+                    <p class="page-subtitle">Vollständige Terminübersicht</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Kalender wird implementiert...<br>
+                            <small>Features: Monats-/Wochenansicht, Terminbuchung, Erinnerungen</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notes-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Notizen</h1>
+                    <p class="page-subtitle">Zentrale Notizen und Dokumentation</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Notizen-System wird implementiert...<br>
+                            <small>Features: Rich-Text Editor, Kategorien, Suche</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings-section" class="content-section" style="display: none;">
+                <div class="page-header">
+                    <h1 class="page-title">Einstellungen</h1>
+                    <p class="page-subtitle">Personalisieren Sie Ihr Coach Mission Control</p>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p style="text-align: center; color: #64748b; padding: 2rem;">
+                            🚧 Einstellungen werden implementiert...<br>
+                            <small>Features: Profil-Einstellungen, Präferenzen, Integration</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => section.style.display = 'none');
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').style.display = 'block';
+            
+            // Update navigation
+            const navLinks = document.querySelectorAll('.sidebar-nav a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            const activeLink = document.querySelector(`[href="#${sectionName}"]`);
+            if (activeLink) activeLink.classList.add('active');
+            
+            // Update page title
+            document.title = `Coach Mission Control - ${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}`;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('dashboard');
+            
+            // Demo welcome message
+            setTimeout(() => {
+                if (!sessionStorage.getItem('admin-welcome-shown')) {
+                    alert(`🎯 Willkommen im Coach Mission Control Admin Dashboard!\n\n` +
+                          `Hier verwalten Sie Ihre gesamte Coaching-Praxis:\n` +
+                          `• 📊 Dashboard mit Key-Metriken\n` +
+                          `• 👥 Erweiterte Klientenverwaltung\n` +
+                          `• 📅 Session-Planung & Kalender\n` +
+                          `• 📈 Analytics & Performance\n` +
+                          `• 📝 Notizen & Dokumentation\n\n` +
+                          `Das Admin Dashboard befindet sich noch in der Entwicklung.\n` +
+                          `Die Basis-Funktionen sind bereits verfügbar!`);
+                    
+                    sessionStorage.setItem('admin-welcome-shown', 'true');
+                }
+            }, 1500);
+        });
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const statValues = document.querySelectorAll('.stat-value');
+            // Add subtle animation to show "live" data
+            statValues.forEach(stat => {
+                stat.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    stat.style.transform = 'scale(1)';
+                }, 200);
+            });
+        }, 30000);
+    </script>
+</body>
+</html>
