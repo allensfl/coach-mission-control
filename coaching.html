@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Coaching Interface - Coach Mission Control</title>
+    <link rel="stylesheet" href="css/common-gray.css">
+    <link rel="stylesheet" href="css/coach-gray.css">
+</head>
+<body>
+    <!-- Method Info Panel -->
+    <div id="methodInfoPanel" style="background: #3b82f6; color: white; padding: 15px 20px; margin-bottom: 20px; border-radius: 8px; display: flex; justify-content: space-between;">
+        <div>🎯 <strong>Aktive Methode:</strong> <span id="activeMethod">Systemisches Coaching</span></div>
+        <div>👤 <strong>Demo-Klient:</strong> <span id="demoClient">Lisa Müller</span></div>
+    </div>
+
+    <!-- Original index.html Inhalt hier einfügen -->
+    <div class="container">
+        <!-- Hier würde der komplette index.html Inhalt stehen -->
+        <h1>🎯 Coach Mission Control - Coaching Interface</h1>
+        <p>Demo-System aktiv mit Multi-Method Support</p>
+    </div>
+
+    <script>
+        // Method Info Panel aktualisieren
+        const urlParams = new URLSearchParams(window.location.search);
+        const client = urlParams.get('client') || 'demo-5';
+        const method = urlParams.get('method') || 'systemic';
+        
+        const methodNames = {
+            'systemic': 'Systemisches Coaching',
+            'solution': 'Lösungsorientiertes Coaching'
+        };
+        
+        const clientNames = {
+            'demo-5': 'Lisa Müller',
+            'demo-1': 'Marcus Weber'
+        };
+        
+        document.getElementById('activeMethod').textContent = methodNames[method];
+        document.getElementById('demoClient').textContent = clientNames[client];
+    </script>
+</body>
+</html>
