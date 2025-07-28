@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎯 Coaching Interface - Coach Mission Control</title>
+    <title>🎯 Coach Mission Control - Coaching</title>
     <link rel="stylesheet" href="css/common-gray.css">
     <link rel="stylesheet" href="css/coach-gray.css">
 </head>
@@ -14,13 +14,58 @@
         <div>👤 <strong>Demo-Klient:</strong> <span id="demoClient">Lisa Müller</span></div>
     </div>
 
-    <!-- Original index.html Inhalt hier einfügen -->
+    <!-- Komplette Coach Mission Control App -->
     <div class="container">
-        <!-- Hier würde der komplette index.html Inhalt stehen -->
-        <h1>🎯 Coach Mission Control - Coaching Interface</h1>
-        <p>Demo-System aktiv mit Multi-Method Support</p>
+        <h1>🎯 Coach Mission Control</h1>
+        
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="clients">👥 Klienten</button>
+            <button class="tab-btn" data-tab="coaching">🎯 Coaching</button>
+            <button class="tab-btn" data-tab="collaboration">🤝 Kollaboration</button>
+            <button class="tab-btn" data-tab="coachki">🧠 Coach-KI</button>
+        </div>
+
+        <!-- Klienten Tab -->
+        <div id="clientsTab" class="tab-content active">
+            <h2>👥 Klienten auswählen</h2>
+            <div class="clients-container" id="clientsContainer"></div>
+        </div>
+
+        <!-- Coaching Tab -->
+        <div id="coachingTab" class="tab-content">
+            <div class="coaching-layout">
+                <div class="prompt-repository">
+                    <h3>🧰 Prompt Repository</h3>
+                    <div class="prompts-container" id="promptsContainer"></div>
+                </div>
+                <div class="prompt-editor">
+                    <h3>✏️ Prompt Editor</h3>
+                    <textarea id="promptEditor" placeholder="Coaching-Prompt..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kollaboration Tab -->
+        <div id="collaborationTab" class="tab-content">
+            <h2>🤝 Kollaboration Monitor</h2>
+            <button onclick="window.open('/collaboration-window.html', 'collab', 'width=800,height=600')">
+                🔗 Kollaborations-Fenster öffnen
+            </button>
+        </div>
+
+        <!-- Coach-KI Tab -->
+        <div id="coachkiTab" class="tab-content">
+            <h2>🧠 Coach-KI</h2>
+            <p>KI-Unterstützung für Coaching-Prozesse</p>
+        </div>
     </div>
 
+    <script src="data/prompts.js"></script>
+    <script src="data/clients.js"></script>
+    <script src="js/communication.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/coach.js"></script>
+    
     <script>
         // Method Info Panel aktualisieren
         const urlParams = new URLSearchParams(window.location.search);
@@ -29,16 +74,23 @@
         
         const methodNames = {
             'systemic': 'Systemisches Coaching',
-            'solution': 'Lösungsorientiertes Coaching'
+            'solution': 'Lösungsorientiertes Coaching',
+            'values': 'Werte- & Sinnorientiertes Coaching',
+            'gestalt': 'Gestalt-/Erlebnisorientiertes Coaching',
+            'triadic': 'Triadisches KI-Coaching',
+            'resource': 'Ressourcenorientiertes Coaching'
         };
         
         const clientNames = {
-            'demo-5': 'Lisa Müller',
-            'demo-1': 'Marcus Weber'
+            'demo-1': 'Marcus Weber',
+            'demo-2': 'Sarah Klein',
+            'demo-3': 'Thomas Müller',
+            'demo-4': 'Anna Schmidt',
+            'demo-5': 'Lisa Müller'
         };
         
-        document.getElementById('activeMethod').textContent = methodNames[method];
-        document.getElementById('demoClient').textContent = clientNames[client];
+        document.getElementById('activeMethod').textContent = methodNames[method] || 'Systemisches Coaching';
+        document.getElementById('demoClient').textContent = clientNames[client] || 'Lisa Müller';
     </script>
 </body>
 </html>
