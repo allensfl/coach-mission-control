@@ -817,28 +817,228 @@
                     allPrompts = prompts;
                     console.log('Loaded prompts from global prompts:', allPrompts.length);
                 } else {
-                    // Fallback: create sample prompts for demo
+                    // Fallback: create comprehensive sample prompts for demo (no limit)
                     allPrompts = [
+                        // Lösungsorientierte Prompts
                         {
-                            id: 'demo-1',
-                            title: 'Lösungsorientierte Wunderfrage',
+                            id: 'solution-1',
+                            title: 'Wunderfrage klassisch',
                             category: 'Lösungsorientierte Fragen',
                             text: 'Angenommen, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie am nächsten Morgen merken, dass das Wunder geschehen ist?',
                             rating: 5
                         },
                         {
-                            id: 'demo-2',
-                            title: 'Systemische Perspektivfrage',
-                            category: 'Systemische Fragen',
-                            text: 'Was würde Ihr Team/Partner/Familie über diese Situation sagen? Welche Sichtweise hätten sie?',
+                            id: 'solution-2',
+                            title: 'Skalierungsfrage',
+                            category: 'Lösungsorientierte Fragen',
+                            text: 'Auf einer Skala von 1 bis 10: Wo stehen Sie heute mit Ihrem Problem? Was müsste passieren, damit Sie einen Punkt höher kommen?',
+                            rating: 5
+                        },
+                        {
+                            id: 'solution-3',
+                            title: 'Ausnahmenfrage',
+                            category: 'Lösungsorientierte Fragen',
+                            text: 'Gab es schon einmal eine Zeit, in der dieses Problem nicht da war oder weniger stark? Was war damals anders?',
                             rating: 4
                         },
                         {
-                            id: 'demo-3',
-                            title: 'Werte-Exploration',
-                            category: 'Wertearbeit',
-                            text: 'Welche Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
+                            id: 'solution-4',
+                            title: 'Ressourcenfrage',
+                            category: 'Ressourcenaktivierung',
+                            text: 'Welche Stärken und Fähigkeiten haben Ihnen in der Vergangenheit geholfen, schwierige Situationen zu meistern?',
                             rating: 4
+                        },
+                        {
+                            id: 'solution-5',
+                            title: 'Zielfrage konkret',
+                            category: 'Zielfindung',
+                            text: 'Wie würde Ihr Idealzustand ganz konkret aussehen? Was würden Sie dann anders machen, denken oder fühlen?',
+                            rating: 5
+                        },
+
+                        // Systemische Prompts
+                        {
+                            id: 'systemic-1',
+                            title: 'Zirkuläre Frage',
+                            category: 'Systemische Fragen',
+                            text: 'Was würde Ihr Partner/Team/Familie über diese Situation sagen? Welche Sichtweise hätten sie auf das Problem?',
+                            rating: 4
+                        },
+                        {
+                            id: 'systemic-2',
+                            title: 'Systemaufstellung mental',
+                            category: 'Systemische Fragen',
+                            text: 'Stellen Sie sich vor, alle beteiligten Personen stehen in einem Raum. Wie würden sie zueinander stehen? Wer steht näher, wer weiter weg?',
+                            rating: 4
+                        },
+                        {
+                            id: 'systemic-3',
+                            title: 'Perspektivwechsel',
+                            category: 'Perspektivwechsel',
+                            text: 'Betrachten Sie die Situation einmal aus der Vogelperspektive. Was würde ein neutraler Beobachter sehen?',
+                            rating: 4
+                        },
+                        {
+                            id: 'systemic-4',
+                            title: 'Musteranalyse',
+                            category: 'Systemische Fragen',
+                            text: 'Welche wiederkehrenden Muster erkennen Sie in ähnlichen Situationen? Was läuft immer wieder ähnlich ab?',
+                            rating: 5
+                        },
+                        {
+                            id: 'systemic-5',
+                            title: 'Hypothesenbildung',
+                            category: 'Systemische Fragen',
+                            text: 'Welche Hypothese haben Sie, warum diese Situation immer wieder entsteht? Was könnte die tiefere Ursache sein?',
+                            rating: 4
+                        },
+
+                        // Werteorientierte Prompts
+                        {
+                            id: 'values-1',
+                            title: 'Kernwerte identifizieren',
+                            category: 'Wertearbeit',
+                            text: 'Welche 3-5 Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
+                            rating: 5
+                        },
+                        {
+                            id: 'values-2',
+                            title: 'Sinnfrage',
+                            category: 'Sinnfindung',
+                            text: 'Welchen tieferen Sinn sehen Sie in dieser Herausforderung? Was könnte sie Ihnen lehren wollen?',
+                            rating: 4
+                        },
+                        {
+                            id: 'values-3',
+                            title: 'Biografischer Bezug',
+                            category: 'Biografische Arbeit',
+                            text: 'Welche prägenden Erfahrungen aus Ihrer Vergangenheit beeinflussen Ihre heutige Sichtweise auf diese Situation?',
+                            rating: 4
+                        },
+                        {
+                            id: 'values-4',
+                            title: 'Vision entwickeln',
+                            category: 'Sinnfindung',
+                            text: 'Wenn Sie in 5 Jahren auf diese Zeit zurückblicken: Welche sinnhafte Vision möchten Sie verwirklicht haben?',
+                            rating: 5
+                        },
+                        {
+                            id: 'values-5',
+                            title: 'Wertekonflikt',
+                            category: 'Wertearbeit',
+                            text: 'Welche Ihrer wichtigen Werte stehen möglicherweise in Konflikt zueinander? Wie können Sie einen Ausgleich finden?',
+                            rating: 4
+                        },
+
+                        // Gestalt Prompts
+                        {
+                            id: 'gestalt-1',
+                            title: 'Hier und Jetzt',
+                            category: 'Hier-und-Jetzt',
+                            text: 'Was nehmen Sie in diesem Moment in Ihrem Körper wahr? Welche Empfindungen, Spannungen oder Gefühle sind da?',
+                            rating: 4
+                        },
+                        {
+                            id: 'gestalt-2',
+                            title: 'Körperwahrnehmung',
+                            category: 'Körperarbeit',
+                            text: 'Wenn Ihr Körper zu diesem Problem sprechen könnte, was würde er Ihnen sagen? Wo spüren Sie es körperlich?',
+                            rating: 4
+                        },
+                        {
+                            id: 'gestalt-3',
+                            title: 'Leerer Stuhl Dialog',
+                            category: 'Emotionsarbeit',
+                            text: 'Stellen Sie sich vor, die Person/das Problem sitzt auf einem Stuhl vor Ihnen. Was möchten Sie ihr/ihm sagen?',
+                            rating: 5
+                        },
+                        {
+                            id: 'gestalt-4',
+                            title: 'Polaritäten erforschen',
+                            category: 'Emotionsarbeit',
+                            text: 'Welche gegensätzlichen Anteile in Ihnen kämpfen miteinander? Geben Sie beiden eine Stimme.',
+                            rating: 4
+                        },
+                        {
+                            id: 'gestalt-5',
+                            title: 'Kontakt und Rückzug',
+                            category: 'Hier-und-Jetzt',
+                            text: 'In welchen Momenten gehen Sie in Kontakt und wann ziehen Sie sich zurück? Was löst das jeweils aus?',
+                            rating: 4
+                        },
+
+                        // KI-Coaching Prompts
+                        {
+                            id: 'ai-1',
+                            title: 'Wahrnehmung schärfen',
+                            category: 'Wahrnehmungsschulung',
+                            text: 'Lassen Sie uns Ihre Wahrnehmung für diese Situation schärfen. Was nehmen Sie wahr, was andere möglicherweise übersehen?',
+                            rating: 4
+                        },
+                        {
+                            id: 'ai-2',
+                            title: 'Strukturierte Reflexion',
+                            category: 'Reflexion',
+                            text: 'Reflektieren wir systematisch: Was ist faktisch passiert? Wie haben Sie reagiert? Was würden Sie beim nächsten Mal anders machen?',
+                            rating: 5
+                        },
+                        {
+                            id: 'ai-3',
+                            title: 'KI als Sparringspartner',
+                            category: 'KI-Integration',
+                            text: 'Betrachten wir das Problem gemeinsam aus verschiedenen Blickwinkeln. Welche Aspekte sehen Sie, welche könnte ich als neutraler Partner beisteuern?',
+                            rating: 4
+                        },
+                        {
+                            id: 'ai-4',
+                            title: 'Muster mit KI erkennen',
+                            category: 'KI-Integration',
+                            text: 'Lassen Sie uns gemeinsam Muster in Ihrem Verhalten identifizieren. Wo wiederholen sich ähnliche Reaktionen?',
+                            rating: 5
+                        },
+                        {
+                            id: 'ai-5',
+                            title: 'Interventionsstrategie',
+                            category: 'Reflexion',
+                            text: 'Welche gezielte Intervention könnte hier den größten Hebel bewirken? Lassen Sie uns das strategisch durchdenken.',
+                            rating: 5
+                        },
+
+                        // Ressourcenorientierte Prompts
+                        {
+                            id: 'resource-1',
+                            title: 'Stärkenanalyse',
+                            category: 'Stärkenarbeit',
+                            text: 'Welche Ihrer Stärken und Talente können Sie in dieser Situation einsetzen? Was haben Sie schon oft erfolgreich gemacht?',
+                            rating: 5
+                        },
+                        {
+                            id: 'resource-2',
+                            title: 'Erfolgsgeschichten',
+                            category: 'Stärkenarbeit',
+                            text: 'Erzählen Sie mir von einer ähnlichen Situation, die Sie erfolgreich gemeistert haben. Was war damals Ihr Erfolgsrezept?',
+                            rating: 5
+                        },
+                        {
+                            id: 'resource-3',
+                            title: 'Support-System',
+                            category: 'Ressourcenaktivierung',
+                            text: 'Wer aus Ihrem Umfeld könnte Sie unterstützen? Welche Menschen, Ressourcen oder Hilfsmittel stehen Ihnen zur Verfügung?',
+                            rating: 4
+                        },
+                        {
+                            id: 'resource-4',
+                            title: 'Positive Emotionen',
+                            category: 'Positive Psychologie',
+                            text: 'Welche positiven Emotionen und Erfahrungen können Sie aus ähnlichen Situationen mitnehmen? Was hat Ihnen Kraft gegeben?',
+                            rating: 4
+                        },
+                        {
+                            id: 'resource-5',
+                            title: 'Potenziale aktivieren',
+                            category: 'Ressourcenaktivierung',
+                            text: 'Welche ungenutzten Potenziale schlummern in Ihnen? Was würden Sie gerne ausprobieren, haben sich aber noch nicht getraut?',
+                            rating: 5
                         }
                     ];
                     console.log('Using fallback demo prompts:', allPrompts.length);
