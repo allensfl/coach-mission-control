@@ -504,21 +504,28 @@
         }
 
         function filterPromptsByMethod(config) {
-            if (!allPrompts || allPrompts.length === 0) return;
+            // Safety check: ensure allPrompts is an array
+            if (!allPrompts || !Array.isArray(allPrompts) || allPrompts.length === 0) {
+                console.log('No prompts available for filtering');
+                return;
+            }
             
             const keywords = config.keywords.map(k => k.toLowerCase());
             const categories = config.categoryMapping;
             
             filteredPrompts = allPrompts.filter(prompt => {
+                // Ensure prompt has required properties
+                if (!prompt || typeof prompt !== 'object') return false;
+                
                 // Check if prompt matches any keyword
                 const textMatch = keywords.some(keyword => 
-                    prompt.text.toLowerCase().includes(keyword) ||
-                    prompt.title.toLowerCase().includes(keyword)
+                    (prompt.text || '').toLowerCase().includes(keyword) ||
+                    (prompt.title || '').toLowerCase().includes(keyword)
                 );
                 
                 // Check if prompt is in relevant category
                 const categoryMatch = categories.some(category => 
-                    prompt.category === category
+                    (prompt.category || '') === category
                 );
                 
                 return textMatch || categoryMatch;
@@ -540,19 +547,20 @@
             const container = document.getElementById('promptsContainer');
             if (!container) return;
             
-            if (!prompts || prompts.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 20px;">Keine passenden Prompts gefunden.</div>';
+            // Safety check: ensure prompts is an array
+            if (!prompts || !Array.isArray(prompts) || prompts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 20px;">Keine Prompts verfügbar. Lade prompts.js...</div>';
                 return;
             }
             
             container.innerHTML = prompts.map(prompt => `
                 <div class="prompt-item ${currentMethod ? 'method-filtered' : ''}" onclick="selectPrompt('${prompt.id}')">
                     <div class="prompt-header">
-                        <span class="prompt-category">${prompt.category}</span>
+                        <span class="prompt-category">${prompt.category || 'Allgemein'}</span>
                         <span class="prompt-rating">${'⭐'.repeat(prompt.rating || 3)}</span>
                     </div>
-                    <h4 class="prompt-title">${prompt.title}</h4>
-                    <p class="prompt-preview">${prompt.text.substring(0, 100)}...</p>
+                    <h4 class="prompt-title">${prompt.title || 'Unbenannt'}</h4>
+                    <p class="prompt-preview">${(prompt.text || '').substring(0, 100)}...</p>
                 </div>
             `).join('');
         }
@@ -799,14 +807,48 @@
                 window.loadClients();
             }
             
-            // Load prompts if available
-            if (typeof window.prompts !== 'undefined') {
-                allPrompts = window.prompts;
+            // Wait for prompts.js to load, then initialize
+            setTimeout(() => {
+                // Try different ways to access prompts
+                if (typeof window.prompts !== 'undefined' && Array.isArray(window.prompts)) {
+                    allPrompts = window.prompts;
+                    console.log('Loaded prompts from window.prompts:', allPrompts.length);
+                } else if (typeof prompts !== 'undefined' && Array.isArray(prompts)) {
+                    allPrompts = prompts;
+                    console.log('Loaded prompts from global prompts:', allPrompts.length);
+                } else {
+                    // Fallback: create sample prompts for demo
+                    allPrompts = [
+                        {
+                            id: 'demo-1',
+                            title: 'Lösungsorientierte Wunderfrage',
+                            category: 'Lösungsorientierte Fragen',
+                            text: 'Angenommen, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie am nächsten Morgen merken, dass das Wunder geschehen ist?',
+                            rating: 5
+                        },
+                        {
+                            id: 'demo-2',
+                            title: 'Systemische Perspektivfrage',
+                            category: 'Systemische Fragen',
+                            text: 'Was würde Ihr Team/Partner/Familie über diese Situation sagen? Welche Sichtweise hätten sie?',
+                            rating: 4
+                        },
+                        {
+                            id: 'demo-3',
+                            title: 'Werte-Exploration',
+                            category: 'Wertearbeit',
+                            text: 'Welche Werte sind Ihnen in dieser Situation besonders wichtig? Was ist Ihnen wirklich von Bedeutung?',
+                            rating: 4
+                        }
+                    ];
+                    console.log('Using fallback demo prompts:', allPrompts.length);
+                }
+                
                 filteredPrompts = allPrompts;
                 renderPrompts(allPrompts);
                 updatePromptStats();
                 initializeCategoryFilter();
-            }
+            }, 500);
             
             // Initialize collaboration if available
             if (typeof window.initCollaboration === 'function') {
