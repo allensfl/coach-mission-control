@@ -2379,3 +2379,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 4000);
 });
+// ===== TAB-NAVIGATION FIX =====
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.tab-btn').forEach((btn, index) => {
+        btn.onclick = function() {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const tabs = ['clientsTab', 'coachingTab', 'collaborationTab', 'coachkiTab'];
+            const targetTab = document.getElementById(tabs[index]);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+                this.classList.add('active');
+            }
+        };
+    });
+});
