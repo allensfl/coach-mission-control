@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Mission Control - Live Coaching Session</title>
-    <meta name="description" content="KI-gestütztes Live Coaching Interface mit Geissler-Methodik. Professionelle Coaching-Sessions in Echtzeit.">
+    <title>Coach Mission Control - Multi-Method Coaching System</title>
+    <meta name="description" content="Universelle Coaching-Plattform für alle großen Coaching-Methoden. KI-gestützt, DSGVO-konform, professionell.">
     
     <style>
         * {
@@ -22,7 +22,222 @@
             overflow: hidden;
         }
         
-        /* Header */
+        /* Method Selection Modal */
+        .method-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(168, 85, 247, 0.9) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 1000px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .modal-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-subtitle {
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+        
+        .client-info {
+            text-align: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: 1px solid #93c5fd;
+        }
+        
+        .client-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.25rem;
+        }
+        
+        .client-goals-preview {
+            color: #1e40af;
+            font-size: 0.9rem;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .method-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-color: #6366f1;
+        }
+        
+        .method-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .method-card.selected {
+            border-color: #6366f1;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+        
+        .method-card.selected::before {
+            transform: scaleX(1);
+        }
+        
+        .method-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .method-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+        
+        .method-founder {
+            font-size: 0.8rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .method-description {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+        }
+        
+        .method-tools {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #4f46e5;
+        }
+        
+        .method-tools strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .method-tools-list {
+            line-height: 1.5;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: #1e293b;
+        }
+        
+        /* Main Interface */
+        .main-interface {
+            display: none;
+            height: 100vh;
+        }
+        
         .header {
             background: white;
             border-bottom: 1px solid #e2e8f0;
@@ -41,13 +256,22 @@
         }
         
         .logo {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #1e293b;
         }
         
-        .client-badge {
+        .method-badge {
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .client-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
@@ -84,6 +308,15 @@
             gap: 0.5rem;
         }
         
+        .btn-method-switch {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .btn-method-switch:hover {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        }
+        
         .btn-end {
             background: #ef4444;
             color: white;
@@ -110,7 +343,7 @@
         
         /* Client Sidebar */
         .client-sidebar {
-            width: 300px;
+            width: 320px;
             background: white;
             border-right: 1px solid #e2e8f0;
             overflow-y: auto;
@@ -122,8 +355,8 @@
         }
         
         .client-avatar {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             display: flex;
@@ -131,25 +364,25 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.7rem;
+            margin-bottom: 1.5rem;
         }
         
-        .client-name {
-            font-size: 1.5rem;
+        .client-name-display {
+            font-size: 1.6rem;
             font-weight: 700;
             color: #1e293b;
             margin-bottom: 0.5rem;
         }
         
-        .client-meta {
+        .client-meta-display {
             color: #64748b;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
-        .client-goals {
+        .client-goals-display {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            padding: 1rem;
+            padding: 1.25rem;
             border-radius: 12px;
             border: 1px solid #93c5fd;
         }
@@ -157,7 +390,7 @@
         .goals-title {
             font-weight: 600;
             color: #1e40af;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
@@ -165,14 +398,56 @@
         
         .goals-text {
             color: #1e40af;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Method Tools */
+        .method-tools-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .tools-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .tool-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .tool-btn:hover {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-color: #0ea5e9;
+            transform: translateX(4px);
+        }
+        
+        .tool-btn.active {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border-color: #4f46e5;
+            transform: translateX(4px);
         }
         
         /* Session Notes */
         .session-notes {
             padding: 1.5rem;
-            border-bottom: 1px solid #f1f5f9;
         }
         
         .notes-title {
@@ -189,7 +464,7 @@
             min-height: 120px;
             padding: 1rem;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: inherit;
             font-size: 0.9rem;
             resize: vertical;
@@ -199,44 +474,6 @@
         .notes-area:focus {
             outline: none;
             border-color: #6366f1;
-        }
-        
-        /* Geissler Tools */
-        .geissler-tools {
-            padding: 1.5rem;
-        }
-        
-        .tools-title {
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .tool-btn {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-        }
-        
-        .tool-btn:hover {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            border-color: #0ea5e9;
-        }
-        
-        .tool-btn.active {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
-            border-color: #4f46e5;
         }
         
         /* Coaching Interface */
@@ -252,7 +489,7 @@
             color: white;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
         }
         
@@ -281,10 +518,11 @@
         
         .ai-suggestion {
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 20px;
             font-size: 0.9rem;
-            margin-left: auto;
+            max-width: 400px;
+            text-align: center;
         }
         
         /* Chat Area */
@@ -334,13 +572,14 @@
         
         .message-content {
             flex: 1;
-            max-width: 70%;
+            max-width: 75%;
         }
         
         .message-bubble {
             padding: 1rem 1.5rem;
             border-radius: 18px;
             margin-bottom: 0.5rem;
+            line-height: 1.5;
         }
         
         .message.client .message-bubble {
@@ -367,8 +606,8 @@
         .input-area {
             background: white;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 16px;
+            padding: 1.25rem;
             display: flex;
             gap: 1rem;
         }
@@ -385,12 +624,13 @@
             font-size: 1rem;
             resize: none;
             min-height: 60px;
+            line-height: 1.5;
         }
         
         .input-actions {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
         
         .send-btn {
@@ -398,7 +638,7 @@
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -417,10 +657,11 @@
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             padding: 0.5rem;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
             font-size: 0.8rem;
+            font-weight: 500;
         }
         
         .ai-assist-btn:hover {
@@ -431,19 +672,25 @@
         /* Welcome Message */
         .welcome-message {
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             color: #64748b;
         }
         
         .welcome-message h3 {
             color: #1e293b;
             margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .welcome-message p {
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
         
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
             .client-sidebar {
-                width: 250px;
+                width: 280px;
             }
         }
         
@@ -454,7 +701,7 @@
             
             .client-sidebar {
                 width: 100%;
-                height: 200px;
+                height: 250px;
                 border-right: none;
                 border-bottom: 1px solid #e2e8f0;
             }
@@ -463,111 +710,449 @@
                 padding: 1rem;
             }
             
-            .session-notes, .geissler-tools {
+            .method-tools-section, .session-notes {
                 display: none;
             }
             
             .header {
                 padding: 1rem;
+                flex-wrap: wrap;
+                gap: 1rem;
             }
             
             .session-info {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-wrap: wrap;
                 gap: 0.5rem;
             }
             
             .chat-area {
                 padding: 1rem;
             }
+            
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 2rem;
+                margin: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="session-info">
-            <div class="logo">🎯 Mission Control</div>
-            <div class="client-badge" id="clientBadge">Klient wird geladen...</div>
-            <div class="session-timer" id="sessionTimer">00:00:00</div>
-        </div>
-        <div class="header-actions">
-            <button class="action-btn btn-end" onclick="endSession()">
-                ⏹️ Session beenden
-            </button>
-            <a href="/app" class="action-btn btn-back">
-                ← Zurück zur Übersicht
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Layout -->
-    <div class="main-layout">
-        <!-- Client Sidebar -->
-        <aside class="client-sidebar">
-            <div class="client-profile">
-                <div class="client-avatar" id="clientAvatar">?</div>
-                <div class="client-name" id="clientName">Klient wird geladen...</div>
-                <div class="client-meta" id="clientMeta">-</div>
-                <div class="client-goals">
-                    <div class="goals-title">🎯 Coaching-Ziele</div>
-                    <div class="goals-text" id="clientGoals">Ziele werden geladen...</div>
+    <!-- Method Selection Modal -->
+    <div class="method-modal" id="methodModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🎯 Coaching-Methode wählen</h2>
+                <p class="modal-subtitle">Wählen Sie Ihre bevorzugte Methode für diese Session</p>
+            </div>
+            
+            <div class="client-info" id="clientInfoPreview">
+                <div class="client-name" id="clientNamePreview">Klient wird geladen...</div>
+                <div class="client-goals-preview" id="clientGoalsPreview">Ziele werden geladen...</div>
+            </div>
+            
+            <div class="methods-grid">
+                <div class="method-card" data-method="geissler" onclick="selectMethod('geissler')">
+                    <div class="method-icon">🧠</div>
+                    <div class="method-name">Geissler-Methodik</div>
+                    <div class="method-founder">Prof. Dr. Geissler</div>
+                    <div class="method-description">Strukturierte Methodik mit Fokus auf bewusste Wahrnehmung und systematische Entwicklung. Wissenschaftlich fundiert.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">Wahrnehmung • Reflektion • Zielsetzung • Handlung • Evaluation</div>
+                    </div>
+                </div>
+                
+                <div class="method-card" data-method="solution" onclick="selectMethod('solution')">
+                    <div class="method-icon">💡</div>
+                    <div class="method-name">Lösungsorientiert</div>
+                    <div class="method-founder">Steve de Shazer, Insoo Kim Berg</div>
+                    <div class="method-description">Fokus auf Lösungen statt Probleme. Ressourcenorientiert, kurzzeitorientiert und sehr pragmatisch.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">Wunderfrage • Skalierung • Ausnahmefrage • Ressourcenaktivierung • Fortschrittsfokus</div>
+                    </div>
+                </div>
+                
+                <div class="method-card" data-method="systemic" onclick="selectMethod('systemic')">
+                    <div class="method-icon">🌐</div>
+                    <div class="method-name">Systemisches Coaching</div>
+                    <div class="method-founder">Familientherapie, Kybernetik</div>
+                    <div class="method-description">Betrachtung sozialer Systeme und Wechselwirkungen. Perspektivwechsel und Beziehungsdynamiken im Fokus.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">Genogramm • Aufstellungen • Zirkuläre Fragen • Hypothesen • Reframing</div>
+                    </div>
+                </div>
+                
+                <div class="method-card" data-method="values" onclick="selectMethod('values')">
+                    <div class="method-icon">⭐</div>
+                    <div class="method-name">Werte & Sinn</div>
+                    <div class="method-founder">Viktor Frankl, Logotherapie</div>
+                    <div class="method-description">Sinnorientiertes Coaching. Menschen brauchen ein Wozu - Sinn als Triebkraft für Entwicklung.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">Wertearbeit • Sinnmatrix • Biografische Sinnspur • Lebenssinn • Vision</div>
+                    </div>
+                </div>
+                
+                <div class="method-card" data-method="gestalt" onclick="selectMethod('gestalt')">
+                    <div class="method-icon">🎭</div>
+                    <div class="method-name">Gestalt & Erlebnis</div>
+                    <div class="method-founder">Gestalttherapie, Humanistische Psychologie</div>
+                    <div class="method-description">Hier-und-Jetzt Fokus. Ganzheitliche Betrachtung mit emotionalem Zugang und Körperwahrnehmung.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">Leerer Stuhl • Innerer Dialog • Symbolarbeit • Körperwahrnehmung • Hier & Jetzt</div>
+                    </div>
+                </div>
+                
+                <div class="method-card" data-method="ai" onclick="selectMethod('ai')">
+                    <div class="method-icon">🤖</div>
+                    <div class="method-name">KI-gestütztes Coaching</div>
+                    <div class="method-founder">Aktueller Trend, Triadisch</div>
+                    <div class="method-description">KI als Reflexionspartnerin und strukturierendes Element. Coach - Coachee - KI Triade für erweiterte Perspektiven.</div>
+                    <div class="method-tools">
+                        <strong>Kern-Tools:</strong>
+                        <div class="method-tools-list">KI-Strukturierung • Mustererkennung • Perspektivvielfalt • Strategieentwicklung • KI-Feedback</div>
+                    </div>
                 </div>
             </div>
-
-            <div class="session-notes">
-                <div class="notes-title">📝 Session-Notizen</div>
-                <textarea class="notes-area" id="sessionNotes" placeholder="Notizen zu dieser Session..."></textarea>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="goBack()">
+                    ← Zurück zur Übersicht
+                </button>
+                <button class="btn btn-primary" id="startSessionBtn" onclick="startSession()" disabled>
+                    🚀 Session starten
+                </button>
             </div>
+        </div>
+    </div>
 
-            <div class="geissler-tools">
-                <div class="tools-title">🧠 Geissler-Methodik</div>
-                <button class="tool-btn" onclick="activateTool('wahrnehmung')">👁️ Wahrnehmung</button>
-                <button class="tool-btn" onclick="activateTool('reflektion')">🤔 Reflektion</button>
-                <button class="tool-btn" onclick="activateTool('zielsetzung')">🎯 Zielsetzung</button>
-                <button class="tool-btn" onclick="activateTool('handlung')">⚡ Handlung</button>
-                <button class="tool-btn" onclick="activateTool('evaluation')">📊 Evaluation</button>
+    <!-- Main Coaching Interface -->
+    <div class="main-interface" id="mainInterface">
+        <header class="header">
+            <div class="session-info">
+                <div class="logo">🎯 Mission Control</div>
+                <div class="method-badge" id="currentMethodBadge">Methode wählen</div>
+                <div class="client-badge" id="currentClientBadge">Klient wird geladen...</div>
+                <div class="session-timer" id="sessionTimer">00:00:00</div>
             </div>
-        </aside>
-
-        <!-- Coaching Interface -->
-        <main class="coaching-interface">
-            <!-- AI Assistant Bar -->
-            <div class="ai-assistant">
-                <div class="ai-status">
-                    <div class="ai-indicator"></div>
-                    <div class="ai-text">KI-Assistent aktiv</div>
-                </div>
-                <div class="ai-suggestion" id="aiSuggestion">Bereit für Coaching-Session</div>
+            <div class="header-actions">
+                <button class="action-btn btn-method-switch" onclick="switchMethod()">
+                    🔄 Methode wechseln
+                </button>
+                <button class="action-btn btn-end" onclick="endSession()">
+                    ⏹️ Session beenden
+                </button>
+                <a href="/app" class="action-btn btn-back">
+                    ← Zurück zur Übersicht
+                </a>
             </div>
+        </header>
 
-            <!-- Chat Area -->
-            <div class="chat-area">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="welcome-message">
-                        <h3>🚀 Session gestartet</h3>
-                        <p>Willkommen zur KI-gestützten Coaching-Session. Der KI-Assistent unterstützt Sie mit der bewährten Geissler-Methodik.</p>
+        <div class="main-layout">
+            <!-- Client Sidebar -->
+            <aside class="client-sidebar">
+                <div class="client-profile">
+                    <div class="client-avatar" id="clientAvatar">?</div>
+                    <div class="client-name-display" id="clientName">Klient wird geladen...</div>
+                    <div class="client-meta-display" id="clientMeta">-</div>
+                    <div class="client-goals-display">
+                        <div class="goals-title">🎯 Coaching-Ziele</div>
+                        <div class="goals-text" id="clientGoals">Ziele werden geladen...</div>
                     </div>
                 </div>
 
-                <!-- Input Area -->
-                <div class="input-area">
-                    <textarea class="message-input" id="messageInput" placeholder="Was möchten Sie heute besprechen?"></textarea>
-                    <div class="input-actions">
-                        <button class="send-btn" id="sendBtn" onclick="sendMessage()">Senden</button>
-                        <button class="ai-assist-btn" onclick="getAISuggestion()">🤖 KI-Hilfe</button>
+                <div class="method-tools-section">
+                    <div class="tools-title" id="toolsTitle">🧠 Coaching-Tools</div>
+                    <div id="methodTools">
+                        <!-- Tools werden dynamisch geladen -->
                     </div>
                 </div>
-            </div>
-        </main>
+
+                <div class="session-notes">
+                    <div class="notes-title">📝 Session-Notizen</div>
+                    <textarea class="notes-area" id="sessionNotes" placeholder="Notizen zu dieser Session..."></textarea>
+                </div>
+            </aside>
+
+            <!-- Coaching Interface -->
+            <main class="coaching-interface">
+                <!-- AI Assistant Bar -->
+                <div class="ai-assistant">
+                    <div class="ai-status">
+                        <div class="ai-indicator"></div>
+                        <div class="ai-text">KI-Assistent aktiv</div>
+                    </div>
+                    <div class="ai-suggestion" id="aiSuggestion">Wählen Sie eine Coaching-Methode um zu beginnen</div>
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-area">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="welcome-message">
+                            <h3>🎯 Multi-Method Coaching System</h3>
+                            <p>Willkommen zum universellen Coaching-Interface. Ihre gewählte Methode wird das Gespräch strukturieren und die KI entsprechend unterstützen.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="input-area">
+                        <textarea class="message-input" id="messageInput" placeholder="Was möchten Sie heute besprechen?"></textarea>
+                        <div class="input-actions">
+                            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Senden</button>
+                            <button class="ai-assist-btn" onclick="getAISuggestion()">🤖 KI-Hilfe</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script>
         // Global variables
         let currentClient = null;
+        let currentMethod = null;
         let sessionStartTime = new Date();
         let chatHistory = [];
-        let activeGeisslerTool = null;
+        let activeMethodTool = null;
+
+        // Method configurations with comprehensive prompts and tools
+        const methodConfigs = {
+            geissler: {
+                name: 'Geissler-Methodik',
+                icon: '🧠',
+                color: '#6366f1',
+                tools: [
+                    { 
+                        id: 'wahrnehmung', 
+                        name: '👁️ Wahrnehmung', 
+                        prompt: 'Was nehmen Sie in dieser Situation konkret wahr? Beschreiben Sie, was Sie sehen, hören, fühlen.',
+                        aiSuggestion: 'Führen Sie zur bewussten Wahrnehmung der Situation'
+                    },
+                    { 
+                        id: 'reflektion', 
+                        name: '🤔 Reflektion', 
+                        prompt: 'Was denken und fühlen Sie dabei? Welche Gedanken kommen Ihnen?',
+                        aiSuggestion: 'Leiten Sie zur Selbstreflexion an'
+                    },
+                    { 
+                        id: 'zielsetzung', 
+                        name: '🎯 Zielsetzung', 
+                        prompt: 'Was möchten Sie erreichen? Wie würde das ideale Ergebnis aussehen?',
+                        aiSuggestion: 'Fokussieren Sie auf konkrete, erreichbare Ziele'
+                    },
+                    { 
+                        id: 'handlung', 
+                        name: '⚡ Handlung', 
+                        prompt: 'Welche konkreten Schritte sind nötig? Was werden Sie als erstes tun?',
+                        aiSuggestion: 'Entwickeln Sie einen konkreten Handlungsplan'
+                    },
+                    { 
+                        id: 'evaluation', 
+                        name: '📊 Evaluation', 
+                        prompt: 'Wie bewerten Sie das Ergebnis? Was haben Sie gelernt?',
+                        aiSuggestion: 'Reflektieren Sie gemeinsam die Fortschritte'
+                    }
+                ],
+                welcomeMessage: 'Ich freue mich auf unser strukturiertes Coaching heute. Die Geissler-Methodik hilft uns, systematisch vorzugehen.'
+            },
+            solution: {
+                name: 'Lösungsorientiert',
+                icon: '💡',
+                color: '#10b981',
+                tools: [
+                    { 
+                        id: 'wunderfrage', 
+                        name: '✨ Wunderfrage', 
+                        prompt: 'Stellen Sie sich vor, über Nacht geschieht ein Wunder und Ihr Problem ist gelöst. Woran würden Sie das merken?',
+                        aiSuggestion: 'Nutzen Sie die Wunderfrage für Zielvision'
+                    },
+                    { 
+                        id: 'skalierung', 
+                        name: '📏 Skalierung', 
+                        prompt: 'Auf einer Skala von 1-10, wo stehen Sie heute mit Ihrem Thema? Was bräuchte es für einen Punkt höher?',
+                        aiSuggestion: 'Arbeiten Sie mit Skalierungsfragen'
+                    },
+                    { 
+                        id: 'ausnahme', 
+                        name: '🔍 Ausnahmefrage', 
+                        prompt: 'Wann war das Problem schon mal kleiner oder gar nicht da? Was war da anders?',
+                        aiSuggestion: 'Erforschen Sie erfolgreiche Ausnahmen'
+                    },
+                    { 
+                        id: 'ressourcen', 
+                        name: '💪 Ressourcen', 
+                        prompt: 'Was sind Ihre Stärken und Fähigkeiten? Womit haben Sie schon mal ähnliche Herausforderungen gemeistert?',
+                        aiSuggestion: 'Aktivieren Sie vorhandene Ressourcen'
+                    },
+                    { 
+                        id: 'fortschritt', 
+                        name: '📈 Fortschritt', 
+                        prompt: 'Was ist seit unserem letzten Gespräch schon besser geworden? Auch kleine Schritte zählen.',
+                        aiSuggestion: 'Würdigen Sie jeden Fortschritt, auch kleine'
+                    }
+                ],
+                welcomeMessage: 'Großartig, dass Sie da sind! Ich bin neugierig auf Ihre Lösungen und was schon funktioniert.'
+            },
+            systemic: {
+                name: 'Systemisches Coaching',
+                icon: '🌐',
+                color: '#8b5cf6',
+                tools: [
+                    { 
+                        id: 'genogramm', 
+                        name: '👨‍👩‍👧‍👦 Genogramm', 
+                        prompt: 'Zeichnen wir Ihr System auf. Wer gehört dazu und wie sind die Beziehungen?',
+                        aiSuggestion: 'Visualisieren Sie das relevante System'
+                    },
+                    { 
+                        id: 'aufstellung', 
+                        name: '🎭 Aufstellung', 
+                        prompt: 'Stellen Sie die wichtigsten Personen/Rollen auf. Wo stehen Sie, wo die anderen?',
+                        aiSuggestion: 'Nutzen Sie räumliche Aufstellungen'
+                    },
+                    { 
+                        id: 'zirkulaer', 
+                        name: '🔄 Zirkuläre Fragen', 
+                        prompt: 'Was würde Person X über die Situation von Person Y sagen? Wie sieht Z das Verhältnis zwischen X und Y?',
+                        aiSuggestion: 'Wechseln Sie die Perspektiven systematisch'
+                    },
+                    { 
+                        id: 'hypothesen', 
+                        name: '💭 Hypothesen', 
+                        prompt: 'Was könnte der Grund/Nutzen für dieses Verhalten im System sein? Welche Hypothese haben Sie?',
+                        aiSuggestion: 'Entwickeln Sie systemische Hypothesen'
+                    },
+                    { 
+                        id: 'reframing', 
+                        name: '🔄 Reframing', 
+                        prompt: 'Aus welcher anderen Perspektive könnte man das noch betrachten? Was wäre eine positive Umdeutung?',
+                        aiSuggestion: 'Bieten Sie alternative Sichtweisen an'
+                    }
+                ],
+                welcomeMessage: 'Schön, dass Sie hier sind. Ich bin gespannt auf Ihr System und die verschiedenen Perspektiven.'
+            },
+            values: {
+                name: 'Werte & Sinn',
+                icon: '⭐',
+                color: '#f59e0b',
+                tools: [
+                    { 
+                        id: 'wertearbeit', 
+                        name: '⭐ Wertearbeit', 
+                        prompt: 'Was ist Ihnen wirklich wichtig im Leben? Welche Werte leiten Sie? Wo spüren Sie Wertekonflikt?',
+                        aiSuggestion: 'Erkunden Sie die Kernwerte des Klienten'
+                    },
+                    { 
+                        id: 'sinnmatrix', 
+                        name: '🎯 Sinnmatrix', 
+                        prompt: 'Wofür stehen Sie morgens auf? Was gibt Ihrem Leben Bedeutung? Was ist größer als Sie selbst?',
+                        aiSuggestion: 'Arbeiten Sie mit der individuellen Sinnstruktur'
+                    },
+                    { 
+                        id: 'biographie', 
+                        name: '📖 Biografische Sinnspur', 
+                        prompt: 'Wenn Sie auf Ihr Leben blicken: Was hat Ihnen Sinn und Erfüllung gegeben? Welche Muster erkennen Sie?',
+                        aiSuggestion: 'Erforschen Sie biografische Sinnquellen'
+                    },
+                    { 
+                        id: 'lebenssinn', 
+                        name: '🌟 Lebenssinn', 
+                        prompt: 'Was möchten Sie in der Welt bewirken? Welchen Unterschied wollen Sie machen?',
+                        aiSuggestion: 'Verbinden Sie mit dem größeren Lebenssinn'
+                    },
+                    { 
+                        id: 'vision', 
+                        name: '🔮 Vision', 
+                        prompt: 'Wie sieht Ihr ideales, sinnerfülltes Leben aus? Wenn Sie zurückblicken: worauf wären Sie stolz?',
+                        aiSuggestion: 'Entwickeln Sie eine sinnbasierte Vision'
+                    }
+                ],
+                welcomeMessage: 'Ich freue mich auf unser Gespräch über das, was Ihnen wirklich wichtig ist und Sinn gibt.'
+            },
+            gestalt: {
+                name: 'Gestalt & Erlebnis',
+                icon: '🎭',
+                color: '#ec4899',
+                tools: [
+                    { 
+                        id: 'leerer_stuhl', 
+                        name: '🪑 Leerer Stuhl', 
+                        prompt: 'Setzen Sie die Person/den Teil auf den Stuhl gegenüber. Was möchten Sie ihr/ihm sagen?',
+                        aiSuggestion: 'Nutzen Sie den leeren Stuhl für Dialoge'
+                    },
+                    { 
+                        id: 'dialog', 
+                        name: '💬 Innerer Dialog', 
+                        prompt: 'Was sagt Ihr innerer Kritiker/Antreiber? Wie antwortet der andere Teil in Ihnen?',
+                        aiSuggestion: 'Moderieren Sie innere Dialoge'
+                    },
+                    { 
+                        id: 'symbol', 
+                        name: '🎨 Symbolarbeit', 
+                        prompt: 'Welches Bild, Symbol oder Tier würde zu Ihrer Situation passen? Was sagt Ihnen das Symbol?',
+                        aiSuggestion: 'Arbeiten Sie mit Symbolen und Metaphern'
+                    },
+                    { 
+                        id: 'koerper', 
+                        name: '🧘 Körperwahrnehmung', 
+                        prompt: 'Was spüren Sie gerade in Ihrem Körper? Wo sitzt das Gefühl? Wie fühlt es sich an?',
+                        aiSuggestion: 'Lenken Sie Aufmerksamkeit auf Körperempfindungen'
+                    },
+                    { 
+                        id: 'hier_jetzt', 
+                        name: '⏰ Hier & Jetzt', 
+                        prompt: 'Was ist gerade jetzt in diesem Moment da? Was nehmen Sie wahr? Was bewegt Sie?',
+                        aiSuggestion: 'Bringen Sie ins Hier und Jetzt zurück'
+                    }
+                ],
+                welcomeMessage: 'Willkommen! Lassen Sie uns schauen, was gerade da ist und was sich zeigen möchte.'
+            },
+            ai: {
+                name: 'KI-gestütztes Coaching',
+                icon: '🤖',
+                color: '#06b6d4',
+                tools: [
+                    { 
+                        id: 'ai_struktur', 
+                        name: '🤖 KI-Strukturierung', 
+                        prompt: 'KI, analysiere die Situation: Welche Struktur erkennst du? Was sind die Kernthemen?',
+                        aiSuggestion: 'Nutzen Sie KI zur Situationsanalyse'
+                    },
+                    { 
+                        id: 'ai_reflektion', 
+                        name: '🔍 KI-Reflexion', 
+                        prompt: 'KI, welche Muster erkennst du in dem, was der Klient erzählt? Was fällt dir auf?',
+                        aiSuggestion: 'Lassen Sie KI Muster und Verbindungen aufzeigen'
+                    },
+                    { 
+                        id: 'ai_perspektiven', 
+                        name: '👁️ Perspektivvielfalt', 
+                        prompt: 'KI, aus welchen verschiedenen Blickwinkeln könnte man diese Situation betrachten?',
+                        aiSuggestion: 'Nutzen Sie KI für alternative Sichtweisen'
+                    },
+                    { 
+                        id: 'ai_strategien', 
+                        name: '⚡ Strategieentwicklung', 
+                        prompt: 'KI, welche Lösungsansätze und Strategien könnten hier hilfreich sein?',
+                        aiSuggestion: 'Lassen Sie KI Lösungsoptionen generieren'
+                    },
+                    { 
+                        id: 'ai_feedback', 
+                        name: '📊 KI-Feedback', 
+                        prompt: 'KI, wie siehst du den Fortschritt? Was ist seit dem letzten Mal anders geworden?',
+                        aiSuggestion: 'Nutzen Sie KI für objektives Progress-Feedback'
+                    }
+                ],
+                welcomeMessage: 'Perfekt! Ich freue mich auf das triadische Coaching mit KI-Unterstützung. Lassen Sie uns gemeinsam entdecken.'
+            }
+        };
 
         // Get client from URL parameters
         function getClientFromURL() {
@@ -585,7 +1170,7 @@
 
         // Load client data
         function loadClient(clientId) {
-            // Try to load from demo clients first
+            // Demo clients data
             const demoClients = [
                 {
                     id: 'demo-1',
@@ -593,7 +1178,6 @@
                     age: 34,
                     profession: 'Marketing Managerin',
                     goals: 'Führungskompetenzen entwickeln, Work-Life-Balance verbessern, Selbstvertrauen stärken',
-                    status: 'active',
                     sessionCount: 8
                 },
                 {
@@ -602,7 +1186,6 @@
                     age: 42,
                     profession: 'IT-Abteilungsleiter',
                     goals: 'Stress-Management, Kommunikation im Team verbessern, Burn-out Prävention',
-                    status: 'active',
                     sessionCount: 12
                 },
                 {
@@ -611,7 +1194,6 @@
                     age: 29,
                     profession: 'Projektmanagerin',
                     goals: 'Karriereplanung, Verhandlungsgeschick, Networking aufbauen',
-                    status: 'active',
                     sessionCount: 5
                 },
                 {
@@ -620,7 +1202,6 @@
                     age: 38,
                     profession: 'Vertriebsleiter',
                     goals: 'Teamführung optimieren, Konflikte lösen, Motivation des Teams steigern',
-                    status: 'pending',
                     sessionCount: 3
                 },
                 {
@@ -629,12 +1210,11 @@
                     age: 31,
                     profession: 'Rechtsanwältin',
                     goals: 'Selbstständigkeit vorbereiten, Kundenakquise lernen, Ängste überwinden',
-                    status: 'active',
                     sessionCount: 6
                 }
             ];
 
-            // Check demo clients
+            // Check demo clients first
             let client = demoClients.find(c => c.id === clientId);
             
             // If not found, try localStorage clients
@@ -653,18 +1233,113 @@
             }
             
             currentClient = client;
-            displayClient(client);
+            displayClientPreview(client);
         }
 
-        // Display client information
+        // Display client in preview
+        function displayClientPreview(client) {
+            document.getElementById('clientNamePreview').textContent = `Session mit ${client.name}`;
+            document.getElementById('clientGoalsPreview').textContent = `Ziele: ${client.goals}`;
+        }
+
+        // Display client in main interface
         function displayClient(client) {
-            document.getElementById('clientBadge').textContent = `Session mit ${client.name}`;
+            document.getElementById('currentClientBadge').textContent = client.name;
             document.getElementById('clientAvatar').textContent = client.name.split(' ').map(n => n[0]).join('');
             document.getElementById('clientName').textContent = client.name;
             document.getElementById('clientMeta').textContent = `${client.age} Jahre • ${client.profession}`;
             document.getElementById('clientGoals').textContent = client.goals;
             
-            document.title = `Mission Control - Session mit ${client.name}`;
+            updateDocumentTitle();
+        }
+
+        // Select method
+        function selectMethod(methodId) {
+            // Remove previous selection
+            document.querySelectorAll('.method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Add selection to clicked card
+            document.querySelector(`[data-method="${methodId}"]`).classList.add('selected');
+            
+            selectedMethod = methodId;
+            document.getElementById('startSessionBtn').disabled = false;
+        }
+
+        // Start session with selected method
+        function startSession() {
+            if (!selectedMethod || !currentClient) return;
+            
+            currentMethod = selectedMethod;
+            const config = methodConfigs[currentMethod];
+            
+            // Update interface
+            document.getElementById('currentMethodBadge').textContent = config.icon + ' ' + config.name;
+            document.getElementById('toolsTitle').textContent = config.icon + ' ' + config.name;
+            
+            // Load method-specific tools
+            loadMethodTools();
+            
+            // Display client info
+            displayClient(currentClient);
+            
+            // Update AI suggestion
+            document.getElementById('aiSuggestion').textContent = 'Bereit für ' + config.name + ' Session';
+            
+            // Hide modal, show interface
+            document.getElementById('methodModal').style.display = 'none';
+            document.getElementById('mainInterface').style.display = 'block';
+            
+            // Start session timer
+            sessionStartTime = new Date();
+            setInterval(updateTimer, 1000);
+            
+            // Add welcome message
+            setTimeout(() => {
+                addMessage('client', config.welcomeMessage);
+            }, 1500);
+        }
+
+        // Load method-specific tools
+        function loadMethodTools() {
+            const config = methodConfigs[currentMethod];
+            const toolsContainer = document.getElementById('methodTools');
+            
+            toolsContainer.innerHTML = config.tools.map(tool => `
+                <button class="tool-btn" onclick="activateTool('${tool.id}')">
+                    ${tool.name}
+                </button>
+            `).join('');
+        }
+
+        // Activate coaching tool
+        function activateTool(toolId) {
+            const config = methodConfigs[currentMethod];
+            const tool = config.tools.find(t => t.id === toolId);
+            
+            // Remove active state from all tools
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active state to clicked tool
+            event.target.classList.add('active');
+            
+            activeMethodTool = toolId;
+            
+            // Update AI suggestion
+            document.getElementById('aiSuggestion').textContent = tool.aiSuggestion;
+            
+            // Auto-insert prompt suggestion (optional)
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput.value.trim() === '') {
+                messageInput.value = tool.prompt;
+                messageInput.focus();
+            }
+        }
+
+        // Switch method during session
+        function switchMethod() {
+            document.getElementById('methodModal').style.display = 'flex';
         }
 
         // Session timer
@@ -686,17 +1361,16 @@
             
             if (!message) return;
             
-            // Add message to chat
             addMessage('coach', message);
             input.value = '';
             
-            // Simulate client response after delay
+            // Simulate client response
             setTimeout(() => {
                 simulateClientResponse(message);
             }, 1000 + Math.random() * 2000);
             
-            // Update AI suggestion
-            updateAISuggestion(message);
+            // Update AI suggestion based on method and message
+            updateAISuggestionBasedOnMessage(message);
         }
 
         // Add message to chat
@@ -725,63 +1399,105 @@
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
-            // Add to history
-            chatHistory.push({ sender, content, timestamp });
+            chatHistory.push({ sender, content, timestamp, method: currentMethod });
         }
 
-        // Simulate client response
+        // Simulate client response based on method
         function simulateClientResponse(coachMessage) {
-            const responses = [
-                "Das ist ein interessanter Punkt. Können Sie mir dabei helfen, das genauer zu verstehen?",
-                "Ich sehe das Problem, aber bin unsicher, wie ich es angehen soll.",
-                "Das macht Sinn. Was wäre der erste Schritt, den ich unternehmen könnte?",
-                "Ja, das kenne ich. In ähnlichen Situationen reagiere ich oft emotional.",
-                "Das ist herausfordernd für mich. Haben Sie konkrete Strategien dafür?",
-                "Ich merke, dass mir das schwerfällt. Wie kann ich das besser machen?",
-                "Das ist ein guter Ansatz. Wie würden Sie das in meiner Situation umsetzen?"
-            ];
+            const config = methodConfigs[currentMethod];
+            let responses = [];
+            
+            // Method-specific responses
+            switch(currentMethod) {
+                case 'geissler':
+                    responses = [
+                        "Das ist eine gute Struktur. Ich versuche das systematisch zu betrachten.",
+                        "Ja, das hilft mir, klarer zu sehen was wirklich da ist.",
+                        "Wenn ich es so strukturiert angehe, wird es übersichtlicher."
+                    ];
+                    break;
+                    
+                case 'solution':
+                    responses = [
+                        "Das ist ein interessanter Blickwinkel auf die Lösung.",
+                        "Ja, da waren tatsächlich schon Momente, wo es besser lief.",
+                        "Wenn ich an meine Stärken denke, sehe ich neue Möglichkeiten."
+                    ];
+                    break;
+                    
+                case 'systemic':
+                    responses = [
+                        "Interessant, aus dieser Perspektive habe ich das noch nicht gesehen.",
+                        "Ja, die anderen Beteiligten spielen wirklich eine wichtige Rolle.",
+                        "Das System zu betrachten hilft mir, die Zusammenhänge zu verstehen."
+                    ];
+                    break;
+                    
+                case 'values':
+                    responses = [
+                        "Das trifft wirklich ins Herz dessen, was mir wichtig ist.",
+                        "Ja, da spüre ich eine tiefe Verbindung zu meinen Werten.",
+                        "Das gibt dem Ganzen eine größere Bedeutung."
+                    ];
+                    break;
+                    
+                case 'gestalt':
+                    responses = [
+                        "Ich spüre da wirklich etwas in mir aufsteigen.",
+                        "Das berührt mich emotonal. Da ist eine starke Resonanz.",
+                        "Wenn ich das so erlebe, wird mir vieles klarer."
+                    ];
+                    break;
+                    
+                case 'ai':
+                    responses = [
+                        "Die KI-Perspektive bringt wirklich neue Einsichten.",
+                        "Interessant, diese objektive Sicht hilft mir weiter.",
+                        "Das strukturierte Herangehen mit KI-Unterstützung ist sehr hilfreich."
+                    ];
+                    break;
+                    
+                default:
+                    responses = [
+                        "Das macht Sinn. Können Sie mir dabei helfen, das zu vertiefen?",
+                        "Ja, das sehe ich auch so. Wie gehen wir am besten vor?",
+                        "Das ist ein guter Punkt. Was wäre der nächste Schritt?"
+                    ];
+            }
             
             const response = responses[Math.floor(Math.random() * responses.length)];
             addMessage('client', response);
         }
 
-        // Activate Geissler tool
-        function activateTool(tool) {
-            // Remove active state from all tools
-            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+        // Update AI suggestion based on message and method
+        function updateAISuggestionBasedOnMessage(message) {
+            const config = methodConfigs[currentMethod];
             
-            // Add active state to clicked tool
-            event.target.classList.add('active');
-            activeGeisslerTool = tool;
-            
-            // Update AI suggestion based on tool
-            const toolSuggestions = {
-                'wahrnehmung': 'Fragen Sie: "Was nehmen Sie in dieser Situation wahr?"',
-                'reflektion': 'Leiten Sie zur Selbstreflexion an: "Was denken Sie darüber?"',
-                'zielsetzung': 'Fokus auf Ziele: "Was möchten Sie erreichen?"',
-                'handlung': 'Handlungsplanung: "Welche Schritte sind nötig?"',
-                'evaluation': 'Bewertung: "Wie bewerten Sie das Ergebnis?"'
-            };
-            
-            document.getElementById('aiSuggestion').textContent = toolSuggestions[tool];
+            if (message.includes('?')) {
+                document.getElementById('aiSuggestion').textContent = `Gute ${config.name} Frage! Lassen Sie den Klienten antworten.`;
+            } else if (activeMethodTool) {
+                const tool = config.tools.find(t => t.id === activeMethodTool);
+                document.getElementById('aiSuggestion').textContent = tool.aiSuggestion;
+            } else {
+                document.getElementById('aiSuggestion').textContent = `Nutzen Sie die ${config.name} Tools für tiefere Erkenntnisse`;
+            }
         }
 
         // Get AI suggestion
         function getAISuggestion() {
+            const config = methodConfigs[currentMethod];
             const suggestions = [
-                "Versuchen Sie eine offene Frage zu stellen",
-                "Reflektieren Sie gemeinsam die Situation",
-                "Fokussieren Sie auf konkrete Ziele",
-                "Entwickeln Sie einen Handlungsplan",
-                "Erfragen Sie die Emotionen dahinter",
-                "Arbeiten Sie mit Ressourcen des Klienten",
-                "Nutzen Sie die Geissler-Methodik Tools"
+                `Vertiefen Sie mit ${config.name} Methoden`,
+                'Stellen Sie eine offene Frage',
+                'Reflektieren Sie gemeinsam',
+                'Nutzen Sie die verfügbaren Tools',
+                'Bleiben Sie neugierig'
             ];
             
             const suggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
             document.getElementById('aiSuggestion').textContent = suggestion;
             
-            // Brief highlight effect
+            // Animation
             const suggestionEl = document.getElementById('aiSuggestion');
             suggestionEl.style.animation = 'none';
             setTimeout(() => {
@@ -789,42 +1505,45 @@
             }, 10);
         }
 
-        // Update AI suggestion based on context
-        function updateAISuggestion(message) {
-            if (message.includes('?')) {
-                document.getElementById('aiSuggestion').textContent = 'Gute Frage! Lassen Sie den Klienten antworten.';
-            } else if (message.includes('ziel') || message.includes('Ziel')) {
-                document.getElementById('aiSuggestion').textContent = 'Vertiefen Sie die Ziele mit der Zielsetzungs-Methodik';
-            } else {
-                document.getElementById('aiSuggestion').textContent = 'Bleiben Sie neugierig und stellen Sie Fragen';
-            }
-        }
-
         // End session
         function endSession() {
             const sessionDuration = Math.floor((new Date() - sessionStartTime) / 1000 / 60);
             const notes = document.getElementById('sessionNotes').value;
+            const config = methodConfigs[currentMethod];
             
-            if (confirm(`Session mit ${currentClient.name} beenden?\n\nDauer: ${sessionDuration} Minuten\nNotizen: ${notes ? 'Gespeichert' : 'Keine'}`)) {
-                // Save session data (in real app, this would go to backend)
+            if (confirm(`Session mit ${currentClient.name} beenden?\n\nMethode: ${config.name}\nDauer: ${sessionDuration} Minuten\nNotizen: ${notes ? 'Gespeichert' : 'Keine'}`)) {
+                // Save session data
                 const sessionData = {
                     clientId: currentClient.id,
+                    method: currentMethod,
+                    methodName: config.name,
                     duration: sessionDuration,
                     notes: notes,
                     chatHistory: chatHistory,
-                    geisslerTool: activeGeisslerTool,
+                    activeTools: activeMethodTool,
                     timestamp: new Date().toISOString()
                 };
                 
-                // Store in localStorage for demo purposes
                 const existingSessions = JSON.parse(localStorage.getItem('coaching-sessions') || '[]');
                 existingSessions.push(sessionData);
                 localStorage.setItem('coaching-sessions', JSON.stringify(existingSessions));
                 
-                alert(`✅ Session erfolgreich beendet!\n\nDauer: ${sessionDuration} Minuten\nDaten wurden gespeichert.`);
+                alert(`✅ ${config.name} Session erfolgreich beendet!\n\nDauer: ${sessionDuration} Minuten\nMethode: ${config.name}\nDaten wurden gespeichert.`);
                 
-                // Redirect back to app
                 window.location.href = '/app';
+            }
+        }
+
+        // Go back to overview
+        function goBack() {
+            window.location.href = '/app';
+        }
+
+        // Update document title
+        function updateDocumentTitle() {
+            if (currentClient && currentMethod) {
+                const config = methodConfigs[currentMethod];
+                document.title = `Mission Control - ${config.name} mit ${currentClient.name}`;
             }
         }
 
@@ -835,25 +1554,43 @@
             }
             
             if (e.key === 'Escape') {
-                endSession();
+                if (document.getElementById('methodModal').style.display === 'flex') {
+                    // Close method selection
+                    document.getElementById('methodModal').style.display = 'none';
+                    document.getElementById('mainInterface').style.display = 'block';
+                } else {
+                    // End session
+                    endSession();
+                }
             }
         });
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             getClientFromURL();
-            setInterval(updateTimer, 1000);
             
-            // Auto-focus message input
-            document.getElementById('messageInput').focus();
+            // Auto-focus message input when interface is shown
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                        const mainInterface = document.getElementById('mainInterface');
+                        if (mainInterface.style.display === 'block') {
+                            setTimeout(() => {
+                                document.getElementById('messageInput').focus();
+                            }, 100);
+                        }
+                    }
+                });
+            });
             
-            // Welcome message
-            setTimeout(() => {
-                if (currentClient) {
-                    addMessage('client', `Hallo! Ich freue mich auf unser Coaching heute. ${currentClient.goals.split(',')[0]} ist mir besonders wichtig.`);
-                }
-            }, 2000);
+            observer.observe(document.getElementById('mainInterface'), {
+                attributes: true,
+                attributeFilter: ['style']
+            });
         });
+
+        // Global variable for selected method in modal
+        let selectedMethod = null;
     </script>
 </body>
 </html>

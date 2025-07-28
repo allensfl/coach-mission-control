@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coach Mission Control - KI-gestütztes Coaching-System</title>
-    <meta name="description" content="Revolutionäres KI-gestütztes Coaching-System mit bewährter Geissler-Methodik. Jetzt 3 Sessions kostenlos testen!">
+    <title>Coach Mission Control - Universal Coaching Platform für alle Methoden</title>
+    <meta name="description" content="Die einzige Coaching-Software für ALLE großen Methoden: Geissler, Lösungsorientiert, Systemisch, Werte & Sinn, Gestalt, KI-gestützt. DSGVO-konform, KI-unterstützt.">
     
     <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Coach Mission Control - Die Zukunft des Coachings">
-    <meta property="og:description" content="Revolutionäres KI-gestütztes Coaching-System mit Geissler-Methodik. 3 kostenlose Demo-Sessions verfügbar.">
+    <meta property="og:title" content="Coach Mission Control - Universal Coaching Platform">
+    <meta property="og:description" content="Die erste Coaching-Software für alle großen Methoden. Von Geissler bis KI-gestützt. Jetzt 3 Sessions kostenlos testen!">
     <meta property="og:image" content="/og-image.jpg">
     <meta property="og:url" content="https://coach-mission-control-6l4gbay0c-ki-coaching.vercel.app">
     
@@ -82,17 +82,28 @@
         }
         
         .hero-content h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 800;
             margin-bottom: 1.5rem;
             color: #ffffff;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         
-        .hero-content .subtitle {
-            font-size: 1.25rem;
+        .hero-subtitle {
+            font-size: 1.4rem;
             color: #f1f5f9;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            margin-bottom: 3rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
@@ -103,11 +114,12 @@
             display: inline-block;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 50px;
             font-weight: 600;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             animation: pulse 2s infinite;
+            font-size: 1.1rem;
         }
         
         @keyframes pulse {
@@ -127,11 +139,11 @@
             display: inline-block;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 12px;
+            padding: 1.25rem 2.5rem;
+            border-radius: 16px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             transition: all 0.3s;
             box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
             margin: 0.5rem;
@@ -161,10 +173,101 @@
             box-shadow: 0 15px 40px rgba(99, 102, 241, 0.5);
         }
         
+        /* Methods Showcase */
+        .methods-showcase {
+            background: white;
+            padding: 5rem 0;
+        }
+        
+        .methods-showcase h2 {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: #1e293b;
+        }
+        
+        .methods-subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #64748b;
+            margin-bottom: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .method-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        }
+        
+        .method-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .method-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .method-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+        
+        .method-founder {
+            font-size: 0.9rem;
+            color: #6366f1;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .method-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .method-tools {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+        
         /* Features Section */
         .features {
-            padding: 4rem 0;
-            background: white;
+            padding: 5rem 0;
+            background: #f8fafc;
         }
         
         .features h2 {
@@ -181,7 +284,7 @@
         }
         
         .feature-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: white;
             padding: 2rem;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
@@ -211,15 +314,24 @@
         
         /* Demo Section */
         .demo-section {
-            padding: 4rem 0;
+            padding: 5rem 0;
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white;
             text-align: center;
         }
         
         .demo-section h2 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 2rem;
+        }
+        
+        .demo-description {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .demo-features {
@@ -231,52 +343,79 @@
         
         .demo-feature {
             background: rgba(255, 255, 255, 0.1);
-            padding: 1.5rem;
-            border-radius: 12px;
+            padding: 2rem;
+            border-radius: 16px;
             backdrop-filter: blur(10px);
         }
         
         .demo-feature h4 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
             color: #fbbf24;
+        }
+        
+        .demo-feature p {
+            opacity: 0.9;
+            line-height: 1.6;
         }
         
         /* Pricing Section */
         .pricing {
-            padding: 4rem 0;
-            background: #f8fafc;
+            padding: 5rem 0;
+            background: white;
             text-align: center;
         }
         
         .pricing h2 {
-            font-size: 2.5rem;
-            margin-bottom: 3rem;
+            font-size: 3rem;
+            margin-bottom: 2rem;
             color: #1e293b;
         }
         
+        .pricing-subtitle {
+            font-size: 1.3rem;
+            color: #64748b;
+            margin-bottom: 4rem;
+        }
+        
         .pricing-card {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 4rem 3rem;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
             margin: 0 auto;
-            border: 2px solid #10b981;
+            border: 3px solid #10b981;
+            position: relative;
+        }
+        
+        .pricing-card::before {
+            content: 'BEST VALUE';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 2rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
         }
         
         .price-badge {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 2rem;
             border-radius: 50px;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
             display: inline-block;
+            font-size: 1.1rem;
         }
         
         .price {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 800;
             color: #1e293b;
             margin-bottom: 0.5rem;
@@ -285,29 +424,32 @@
         .price-old {
             color: #94a3b8;
             text-decoration: line-through;
-            font-size: 1.5rem;
+            font-size: 2rem;
             margin-left: 1rem;
         }
         
         .price-description {
             color: #64748b;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
         }
         
         .features-list {
             text-align: left;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
         
         .features-list li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
+            font-size: 1.1rem;
         }
         
         .features-list li::before {
             content: "✅";
-            margin-right: 0.5rem;
+            margin-right: 1rem;
+            font-size: 1.2rem;
         }
         
         /* Footer */
@@ -315,22 +457,22 @@
             background: #1e293b;
             color: white;
             text-align: center;
-            padding: 2rem 0;
+            padding: 3rem 0;
         }
         
-        /* Success Banner */
-        .success-banner {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-            color: white;
-            text-align: center;
-            padding: 0.75rem;
-            font-weight: 600;
-            animation: slideDown 0.5s ease-out;
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
         }
         
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+        .footer h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer p {
+            opacity: 0.8;
+            line-height: 1.6;
         }
         
         /* Responsive */
@@ -339,10 +481,21 @@
                 font-size: 2.5rem;
             }
             
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .methods-showcase h2,
+            .demo-section h2,
+            .pricing h2 {
+                font-size: 2rem;
+            }
+            
             .nav-links {
                 display: none;
             }
             
+            .methods-grid,
             .features-grid {
                 grid-template-columns: 1fr;
             }
@@ -357,6 +510,11 @@
                 max-width: 300px;
                 margin: 0.25rem 0;
             }
+            
+            .pricing-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
         }
     </style>
 </head>
@@ -366,6 +524,7 @@
         <nav class="nav container">
             <div class="logo">🎯 Coach Mission Control</div>
             <ul class="nav-links">
+                <li><a href="#methods">Methoden</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#demo">Demo</a></li>
                 <li><a href="#pricing">Preise</a></li>
@@ -379,15 +538,17 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <div class="demo-badge">🚀 KOSTENLOSE DEMO VERFÜGBAR</div>
-                <h1>Die Zukunft des Coachings</h1>
-                <p class="subtitle">
-                    Revolutionäres KI-gestütztes Coaching-System mit der bewährten Geissler-Methodik. 
-                    Erleben Sie professionelles Coaching neu definiert.
+                <div class="demo-badge">🚀 ALLE COACHING-METHODEN IN EINER SOFTWARE</div>
+                <h1>Die Universal Coaching Platform</h1>
+                <p class="hero-subtitle">
+                    Für ALLE großen Coaching-Methoden
+                </p>
+                <p class="hero-description">
+                    Von Geissler über Systemisch bis KI-gestützt. Die erste und einzige Software, die alle professionellen Coaching-Ansätze unterstützt. KI-gestützt, DSGVO-konform, sofort einsatzbereit.
                 </p>
                 <div class="cta-buttons">
                     <a href="/demo" class="cta-button">
-                        🎯 Jetzt 3 Sessions kostenlos testen
+                        🎯 Jetzt alle Methoden kostenlos testen
                     </a>
                     <a href="/admin" class="cta-button cta-admin">
                         📊 Admin Dashboard
@@ -400,45 +561,105 @@
         </div>
     </section>
 
+    <!-- Methods Showcase -->
+    <section class="methods-showcase" id="methods">
+        <div class="container">
+            <h2>Alle großen Coaching-Methoden</h2>
+            <p class="methods-subtitle">
+                Die einzige Software, die alle professionellen Coaching-Ansätze in einem System vereint. Wechseln Sie die Methode sogar während der Session.
+            </p>
+            
+            <div class="methods-grid">
+                <div class="method-card">
+                    <div class="method-icon">🧠</div>
+                    <div class="method-name">Geissler-Methodik</div>
+                    <div class="method-founder">Prof. Dr. Geissler</div>
+                    <div class="method-description">Strukturierte, wissenschaftlich fundierte Methodik mit systematischem Vorgehen für nachhaltige Entwicklung.</div>
+                    <div class="method-tools">Wahrnehmung • Reflektion • Zielsetzung • Handlung • Evaluation</div>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">💡</div>
+                    <div class="method-name">Lösungsorientiert</div>
+                    <div class="method-founder">Steve de Shazer, Insoo Kim Berg</div>
+                    <div class="method-description">Fokus auf Lösungen statt Probleme. Ressourcenorientiert, kurzzeitorientiert und sehr pragmatisch.</div>
+                    <div class="method-tools">Wunderfrage • Skalierung • Ausnahmefrage • Ressourcenaktivierung</div>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">🌐</div>
+                    <div class="method-name">Systemisches Coaching</div>
+                    <div class="method-founder">Familientherapie, Kybernetik</div>
+                    <div class="method-description">Betrachtung sozialer Systeme und Wechselwirkungen. Perspektivwechsel und Beziehungsdynamiken.</div>
+                    <div class="method-tools">Genogramm • Aufstellungen • Zirkuläre Fragen • Hypothesen</div>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">⭐</div>
+                    <div class="method-name">Werte & Sinn</div>
+                    <div class="method-founder">Viktor Frankl, Logotherapie</div>
+                    <div class="method-description">Sinnorientiertes Coaching. Sinn als Triebkraft für Entwicklung und Lebensgestaltung.</div>
+                    <div class="method-tools">Wertearbeit • Sinnmatrix • Biografische Sinnspur • Vision</div>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">🎭</div>
+                    <div class="method-name">Gestalt & Erlebnis</div>
+                    <div class="method-founder">Gestalttherapie, Humanistische Psychologie</div>
+                    <div class="method-description">Hier-und-Jetzt Fokus. Ganzheitliche Betrachtung mit emotionalem Zugang und Körperwahrnehmung.</div>
+                    <div class="method-tools">Leerer Stuhl • Innerer Dialog • Symbolarbeit • Körperwahrnehmung</div>
+                </div>
+                
+                <div class="method-card">
+                    <div class="method-icon">🤖</div>
+                    <div class="method-name">KI-gestütztes Coaching</div>
+                    <div class="method-founder">Aktueller Trend, Triadisch</div>
+                    <div class="method-description">KI als Reflexionspartnerin. Coach - Coachee - KI Triade für erweiterte Perspektiven und Strukturierung.</div>
+                    <div class="method-tools">KI-Strukturierung • Mustererkennung • Perspektivvielfalt • Strategieentwicklung</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="container">
             <h2>Warum Coach Mission Control?</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3>KI-gestützte Beratung</h3>
-                    <p>Fortschrittliche Künstliche Intelligenz analysiert Klientenbedürfnisse und schlägt maßgeschneiderte Coaching-Strategien vor.</p>
+                    <div class="feature-icon">🎯</div>
+                    <h3>Alle Methoden in einem System</h3>
+                    <p>Wechseln Sie zwischen den Coaching-Methoden - sogar während einer laufenden Session. Kein anderes System bietet diese Flexibilität.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Geissler-Methodik</h3>
-                    <p>Bewährte psychologische Coaching-Methoden, systematisch digitalisiert und durch KI optimiert für maximale Wirksamkeit.</p>
+                    <div class="feature-icon">🤖</div>
+                    <h3>KI-Unterstützung für jede Methode</h3>
+                    <p>Intelligente KI-Assistenz, die sich an die gewählte Coaching-Methode anpasst und methodenspezifische Unterstützung bietet.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">👥</div>
-                    <h3>Klienten-Management</h3>
-                    <p>Vollständige Verwaltung Ihrer Coaching-Klienten mit Fortschrittstracking, Notizen und automatischen Erinnerungen.</p>
+                    <h3>Professionelles Klienten-Management</h3>
+                    <p>Vollständige Verwaltung mit Session-Historie, Notizen, Fortschrittstracking und automatischer Dokumentation aller Methoden.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
-                    <h3>Erfolgs-Tracking</h3>
-                    <p>Detaillierte Analysen und Reports über Coaching-Fortschritte, Zielerreichung und Klientenzufriedenheit.</p>
+                    <div class="feature-icon">📊</div>
+                    <h3>Methodenübergreifende Analytics</h3>
+                    <p>Vergleichen Sie die Wirksamkeit verschiedener Methoden bei Ihren Klienten und optimieren Sie Ihren Coaching-Ansatz.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
-                    <h3>DSGVO-Datenschutz</h3>
-                    <p>Höchste Sicherheitsstandards und vollständige DSGVO-Konformität für den Schutz sensibler Coaching-Daten. Lokale Speicherung, keine Cloud.</p>
+                    <h3>DSGVO-konforme Datenhaltung</h3>
+                    <p>Höchste Sicherheitsstandards mit lokaler Datenspeicherung. Keine Cloud-Abhängigkeit, vollständige Kontrolle über Coaching-Daten.</p>
                 </div>
                 
                 <div class="feature-card">
                     <div class="feature-icon">⚡</div>
-                    <h3>Einfache Bedienung</h3>
-                    <p>Intuitive Benutzeroberfläche, die es Coaches ermöglicht, sich auf das Wesentliche zu konzentrieren: ihre Klienten.</p>
+                    <h3>Sofort einsatzbereit</h3>
+                    <p>Intuitive Benutzeroberfläche für alle Coaching-Methoden. Keine Einarbeitung nötig - starten Sie sofort mit Ihren bewährten Ansätzen.</p>
                 </div>
             </div>
         </div>
@@ -447,33 +668,33 @@
     <!-- Demo Section -->
     <section class="demo-section" id="demo">
         <div class="container">
-            <h2>🎯 Live-Demo erleben</h2>
-            <p>Testen Sie Coach Mission Control mit echten Demo-Szenarien</p>
+            <h2>🎯 Alle Methoden live erleben</h2>
+            <p class="demo-description">Testen Sie jede Coaching-Methode mit realistischen Klienten-Szenarien. Wechseln Sie zwischen den Ansätzen und erleben Sie die Vielseitigkeit.</p>
             
             <div class="demo-features">
                 <div class="demo-feature">
-                    <h4>👥 5 Demo-Klienten</h4>
-                    <p>Realistische Coaching-Szenarien mit Sarah Weber, Michael Keller, Anna Schneider und anderen</p>
+                    <h4>6 Coaching-Methoden</h4>
+                    <p>Von klassischen Ansätzen bis zu modernem KI-gestützten Coaching - alle in einem System</p>
                 </div>
                 
                 <div class="demo-feature">
-                    <h4>🤖 KI-Coaching</h4>
-                    <p>Erleben Sie KI-gestützte Gesprächsführung und Strategieentwicklung</p>
+                    <h4>5 realistische Test-Klienten</h4>
+                    <p>Verschiedene Coaching-Szenarien mit Sarah, Michael, Anna, Thomas und Lisa</p>
                 </div>
                 
                 <div class="demo-feature">
-                    <h4>📊 Geissler-Methodik</h4>
-                    <p>Bewährte psychologische Coaching-Techniken in digitaler Form</p>
+                    <h4>Methodenwechsel möglich</h4>
+                    <p>Wechseln Sie die Coaching-Methode sogar während einer laufenden Session</p>
                 </div>
                 
                 <div class="demo-feature">
-                    <h4>⚡ 3 kostenlose Sessions</h4>
-                    <p>Vollzugriff auf alle Features ohne Einschränkungen</p>
+                    <h4>Vollständig funktionsfähig</h4>
+                    <p>Komplettes Live-Coaching-Interface mit KI-Unterstützung und Session-Dokumentation</p>
                 </div>
             </div>
             
             <a href="/demo" class="cta-button">
-                🚀 Demo jetzt starten
+                🚀 Alle Methoden jetzt testen
             </a>
         </div>
     </section>
@@ -481,33 +702,36 @@
     <!-- Pricing Section -->
     <section class="pricing" id="pricing">
         <div class="container">
-            <h2>Investition in Ihre Coaching-Zukunft</h2>
+            <h2>Investition in Ihre Universal Coaching-Zukunft</h2>
+            <p class="pricing-subtitle">Alle Coaching-Methoden zum Preis einer einzigen Lösung</p>
             
             <div class="pricing-card">
-                <div class="price-badge">🔥 EINFÜHRUNGSANGEBOT</div>
+                <div class="price-badge">⚡ EINFÜHRUNGSANGEBOT - BEGRENZT</div>
                 <div class="price">
-                    €197
-                    <span class="price-old">€297</span>
+                    €497
+                    <span class="price-old">€897</span>
                 </div>
-                <p class="price-description">Einmalige Zahlung • Vollversion • Sofortiger Zugang</p>
+                <p class="price-description">Einmalige Zahlung • Alle 6 Methoden • Sofortiger Zugang • Lebenslange Updates</p>
                 
                 <ul class="features-list">
-                    <li>Unbegrenzte Klienten</li>
-                    <li>Alle KI-Coaching-Features</li>
-                    <li>Geissler-Methodik komplett</li>
-                    <li>Fortschrittstracking & Analytics</li>
+                    <li>Alle 6 großen Coaching-Methoden</li>
+                    <li>KI-Unterstützung für jede Methode</li>
+                    <li>Unbegrenzte Klienten & Sessions</li>
+                    <li>Methodenwechsel während Sessions</li>
+                    <li>Vollständiges Admin-Dashboard</li>
                     <li>DSGVO-konforme Datenhaltung</li>
-                    <li>Email-Support</li>
-                    <li>Regelmäßige Updates</li>
+                    <li>Session-Aufzeichnung & Analytics</li>
+                    <li>Email-Support & Community</li>
+                    <li>Alle zukünftigen Updates inklusive</li>
                     <li>30 Tage Geld-zurück-Garantie</li>
                 </ul>
                 
-                <a href="https://paypal.me/allensfl/197" class="cta-button">
-                    💳 Jetzt für €197 kaufen
+                <a href="https://paypal.me/allensfl/497" class="cta-button">
+                    💳 Jetzt alle Methoden für €497 sichern
                 </a>
                 
-                <p style="margin-top: 1rem; font-size: 0.9rem; color: #64748b;">
-                    💡 <strong>Tipp:</strong> Testen Sie erst die kostenlose Demo oben!
+                <p style="margin-top: 2rem; font-size: 1rem; color: #64748b;">
+                    💡 <strong>Vergleich:</strong> Einzelne Coaching-Software kosten €200-400. Sie erhalten 6 Methoden zum Preis von einer!
                 </p>
             </div>
         </div>
@@ -516,44 +740,55 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Coach Mission Control. Entwickelt für professionelle Coaches.</p>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
-                KI-gestütztes Coaching • Geissler-Methodik • DSGVO-konform
-            </p>
+            <div class="footer-content">
+                <h4>🎯 Coach Mission Control - Universal Coaching Platform</h4>
+                <p>&copy; 2025 Coach Mission Control. Die erste und einzige Software für alle großen Coaching-Methoden.</p>
+                <p style="margin-top: 1rem; opacity: 0.6;">
+                    Geissler • Lösungsorientiert • Systemisch • Werte & Sinn • Gestalt • KI-gestützt • DSGVO-konform
+                </p>
+            </div>
         </div>
     </footer>
 
     <!-- Analytics & Tracking -->
     <script>
+        // Track method interest
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const methodName = card.querySelector('.method-name').textContent;
+                console.log('Method interest:', methodName);
+            });
+        });
+        
         // Demo-Button Tracking
         document.querySelectorAll('a[href="/demo"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('Demo-Link geklickt: Interne /demo Route');
+                console.log('Multi-Method Demo started');
             });
         });
         
         // App-Button Tracking
         document.querySelectorAll('a[href="/app"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('App-Link geklickt: Interne /app Route');
+                console.log('App access from multi-method landing');
             });
         });
         
         // Admin-Button Tracking
         document.querySelectorAll('a[href="/admin"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('Admin-Link geklickt: Interne /admin Route');
+                console.log('Admin access from multi-method landing');
             });
         });
         
-        // Kauf-Button Tracking
+        // Purchase tracking
         document.querySelectorAll('a[href*="paypal"]').forEach(link => {
             link.addEventListener('click', () => {
-                console.log('Kauf-Link geklickt:', link.href);
+                console.log('Multi-Method Purchase click: €497');
             });
         });
         
-        // Smooth Scrolling für Navigation
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -567,25 +802,14 @@
             });
         });
 
-        // Success message if coming from demo
-        if (window.location.hash === '#success' || document.referrer.includes('/demo')) {
-            const banner = document.createElement('div');
-            banner.className = 'success-banner';
-            banner.innerHTML = '🎉 Demo erfolgreich getestet! Bereit für Coach Mission Control?';
-            document.body.insertBefore(banner, document.body.firstChild);
-            
-            setTimeout(() => {
-                banner.style.animation = 'slideUp 0.5s ease-out forwards';
-                setTimeout(() => banner.remove(), 500);
-            }, 4000);
-        }
+        // Show value proposition on scroll
+        let hasShownValueProp = false;
+        window.addEventListener('scroll', () => {
+            if (!hasShownValueProp && window.scrollY > 500) {
+                hasShownValueProp = true;
+                // Could show a subtle notification about the multi-method advantage
+            }
+        });
     </script>
-
-    <style>
-        @keyframes slideUp {
-            from { transform: translateY(0); }
-            to { transform: translateY(-100%); }
-        }
-    </style>
 </body>
 </html>
