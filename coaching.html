@@ -4,138 +4,148 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coach Mission Control - Live Coaching</title>
+    <link rel="stylesheet" href="css/common-gray.css">
+    <link rel="stylesheet" href="css/coach-gray.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        .coaching-container {
-            display: flex;
-            height: 100vh;
-            max-width: 1400px;
-            margin: 0 auto;
-            gap: 20px;
+        /* Additional styles for method integration */
+        .method-selector {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             padding: 20px;
+            margin-bottom: 25px;
         }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 350px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
+        .method-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .client-profile {
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .method-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
         }
 
-        .client-avatar-large {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .method-option:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .method-option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .method-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .method-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .client-info-panel {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .client-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .client-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 2rem;
-            margin: 0 auto 15px;
+            font-size: 1.5rem;
         }
 
-        .client-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
+        .client-details h3 {
+            color: #1e293b;
             margin-bottom: 5px;
         }
 
-        .client-role-large {
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 15px;
-        }
-
-        .method-display {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 20px;
+        .client-role {
+            color: #64748b;
             font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .session-info {
-            background: #f8f9ff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-        }
-
-        .session-timer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .timer-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .session-status {
-            background: #d4edda;
-            color: #155724;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
         }
 
         .session-meta {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            font-size: 0.9rem;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
         }
 
         .meta-item {
-            color: #666;
+            text-align: center;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 5px;
         }
 
         .meta-value {
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e293b;
         }
 
-        /* Method Tools */
+        /* Update existing coaching tab styles */
+        .coaching-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
         .method-tools {
-            margin-bottom: 25px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
         }
 
         .tools-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1e293b;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -144,491 +154,265 @@
 
         .tool-btn {
             width: 100%;
-            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
             padding: 12px 15px;
             margin-bottom: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: left;
             font-size: 0.9rem;
-            color: #2c3e50;
+            color: #1e293b;
         }
 
         .tool-btn:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            border-color: #3b82f6;
+            background: #eff6ff;
         }
 
         .tool-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-        }
-
-        /* Live Notes */
-        .live-notes {
-            margin-bottom: 25px;
-        }
-
-        .notes-textarea {
-            width: 100%;
-            height: 120px;
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: vertical;
-            background: rgba(255, 255, 255, 0.9);
-            transition: border-color 0.3s ease;
-        }
-
-        .notes-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .action-btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Main Chat Area */
-        .main-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-
-        .chat-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Chat Messages */
-        .chat-messages {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .message {
-            display: flex;
-            gap: 15px;
-            animation: slideIn 0.3s ease;
-        }
-
-        .message.coach {
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        .avatar-client {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
-
-        .avatar-coach {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
-
-        .avatar-ai {
-            background: linear-gradient(135deg, #ffc107, #ff8c00);
-        }
-
-        .message-content {
-            flex: 1;
-            background: #f8f9ff;
-            padding: 15px 20px;
-            border-radius: 18px;
-            border-bottom-left-radius: 5px;
-            position: relative;
-        }
-
-        .message.coach .message-content {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-bottom-left-radius: 18px;
-            border-bottom-right-radius: 5px;
-        }
-
-        .message.ai .message-content {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border-left: 4px solid #ffc107;
-        }
-
-        .message-sender {
-            font-weight: 600;
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-            opacity: 0.8;
-        }
-
-        .message-text {
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-top: 8px;
-        }
-
-        /* Chat Input */
-        .chat-input {
-            padding: 25px 30px;
-            border-top: 1px solid #eee;
-            background: rgba(248, 249, 255, 0.8);
-        }
-
-        .input-container {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-        }
-
-        .message-input {
-            flex: 1;
-            min-height: 45px;
-            max-height: 120px;
-            padding: 12px 20px;
-            border: 2px solid #e1e8ed;
-            border-radius: 25px;
-            font-family: inherit;
-            font-size: 1rem;
-            resize: none;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .message-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 45px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .send-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* AI Assistant Panel */
-        .ai-panel {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border-left: 4px solid #ffc107;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .ai-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 600;
-            color: #856404;
-            margin-bottom: 15px;
-        }
-
-        .ai-suggestions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .ai-suggestion {
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            border-radius: 8px;
-            padding: 10px 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .ai-suggestion:hover {
-            background: white;
-            transform: translateX(5px);
-            box-shadow: 0 3px 10px rgba(255, 193, 7, 0.2);
-        }
-
-        /* Animations */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .coaching-container {
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
-            }
-
-            .sidebar {
-                width: 100%;
-                order: 2;
-            }
-
-            .main-area {
-                order: 1;
-                min-height: 60vh;
-            }
+            border-color: #3b82f6;
+            background: #eff6ff;
+            color: #1d4ed8;
         }
 
         @media (max-width: 768px) {
-            .coaching-container {
-                padding: 10px;
+            .coaching-layout {
+                grid-template-columns: 1fr;
             }
 
-            .chat-header {
-                padding: 15px 20px;
-            }
-
-            .chat-messages {
-                padding: 20px;
-            }
-
-            .chat-input {
-                padding: 20px;
-            }
-
-            .message-input {
-                font-size: 16px; /* Prevents zoom on iOS */
+            .method-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
         }
     </style>
 </head>
 <body>
-    <div class="coaching-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <!-- Client Profile -->
-            <div class="client-profile">
-                <div class="client-avatar-large" id="clientAvatarLarge">SW</div>
-                <div class="client-name" id="clientNameLarge">Sarah Weber</div>
-                <div class="client-role-large" id="clientRoleLarge">Marketing Managerin</div>
-                <div class="method-display" id="methodDisplay">🎯 Lösungsorientiertes Coaching</div>
+    <div class="container">
+        <h1>🎯 Coach Mission Control</h1>
+        
+        <!-- Method Selection (only shown if no method selected) -->
+        <div id="methodSelection" class="method-selector">
+            <div class="method-title">
+                🎨 Coaching-Methode wählen
             </div>
-
-            <!-- Session Info -->
-            <div class="session-info">
-                <div class="session-timer">
-                    <span class="timer-display" id="sessionTimer">00:00</span>
-                    <span class="session-status">Live Session</span>
+            <div class="method-grid">
+                <div class="method-option" data-method="solution-focused" onclick="selectMethod('solution-focused')">
+                    <span class="method-icon">🎯</span>
+                    <div class="method-name">Lösungsorientiert</div>
                 </div>
-                <div class="session-meta">
-                    <div class="meta-item">
-                        <div style="font-size: 0.8rem; color: #999;">Session #</div>
-                        <div class="meta-value" id="sessionNumber">4</div>
-                    </div>
-                    <div class="meta-item">
-                        <div style="font-size: 0.8rem; color: #999;">Methode</div>
-                        <div class="meta-value" id="methodShort">Lösungsorientiert</div>
-                    </div>
+                <div class="method-option" data-method="systemic" onclick="selectMethod('systemic')">
+                    <span class="method-icon">🔄</span>
+                    <div class="method-name">Systemisch</div>
                 </div>
-            </div>
-
-            <!-- Method-Specific Tools -->
-            <div class="method-tools">
-                <div class="tools-title">
-                    <span id="toolsIcon">🎯</span>
-                    <span id="toolsTitle">Coaching-Tools</span>
+                <div class="method-option" data-method="values-meaning" onclick="selectMethod('values-meaning')">
+                    <span class="method-icon">🌟</span>
+                    <div class="method-name">Werteorientiert</div>
                 </div>
-                <div id="methodToolsContainer">
-                    <!-- Tools will be loaded dynamically -->
+                <div class="method-option" data-method="gestalt" onclick="selectMethod('gestalt')">
+                    <span class="method-icon">🎭</span>
+                    <div class="method-name">Gestalt</div>
+                </div>
+                <div class="method-option" data-method="triadic-ai" onclick="selectMethod('triadic-ai')">
+                    <span class="method-icon">🤖</span>
+                    <div class="method-name">KI-Coaching</div>
+                </div>
+                <div class="method-option" data-method="resource-oriented" onclick="selectMethod('resource-oriented')">
+                    <span class="method-icon">💎</span>
+                    <div class="method-name">Ressourcenorientiert</div>
                 </div>
             </div>
+        </div>
 
-            <!-- Live Notes -->
-            <div class="live-notes">
-                <div class="tools-title">
-                    <span>📝</span>
-                    <span>Live-Notizen</span>
+        <!-- Client Info Panel -->
+        <div id="clientInfoPanel" class="client-info-panel" style="display: none;">
+            <div class="client-header">
+                <div class="client-avatar" id="clientAvatar">SW</div>
+                <div class="client-details">
+                    <h3 id="clientName">Sarah Weber</h3>
+                    <div class="client-role" id="clientRole">Marketing Managerin</div>
                 </div>
-                <textarea class="notes-textarea" 
-                         placeholder="Notizen während der Session..."
-                         id="liveNotes"></textarea>
             </div>
+            <div class="session-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Methode</div>
+                    <div class="meta-value" id="selectedMethodName">Lösungsorientiert</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Session #</div>
+                    <div class="meta-value" id="sessionNumber">4</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Status</div>
+                    <div class="meta-value" style="color: #059669;">Live</div>
+                </div>
+            </div>
+        </div>
 
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <button class="action-btn btn-primary" onclick="saveSession()">
-                    💾 Session speichern
-                </button>
-                <a href="/app" class="action-btn btn-secondary">
-                    ← Zurück zur Übersicht
-                </a>
-                <button class="action-btn btn-danger" onclick="endSession()">
-                    🔚 Session beenden
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="clients">👥 Klienten</button>
+            <button class="tab-btn" data-tab="coaching">🎯 Coaching</button>
+            <button class="tab-btn" data-tab="collaboration">🤝 Kollaboration</button>
+            <button class="tab-btn" data-tab="coachki" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">🧠 Coach-KI</button>
+        </div>
+
+        <!-- Klienten Tab -->
+        <div id="clientsTab" class="tab-content active">
+            <h2 style="margin-bottom: 25px; color: #1e293b;">👥 Klienten auswählen</h2>
+            <div class="clients-container" id="clientsContainer">
+                <!-- Klienten werden hier geladen -->
+            </div>
+            <div style="text-align: center; margin-top: 30px;">
+                <button id="startSessionBtn" class="start-session-btn" onclick="startSession()" style="display: none;">
+                    🚀 Session starten
                 </button>
             </div>
         </div>
 
-        <!-- Main Chat Area -->
-        <div class="main-area">
-            <!-- Chat Header -->
-            <div class="chat-header">
-                <div class="chat-title" id="chatTitle">Live Coaching Session</div>
-                <div class="chat-controls">
-                    <button class="control-btn" onclick="toggleAI()">
-                        <span id="aiToggleText">🤖 KI ein</span>
-                    </button>
-                    <button class="control-btn" onclick="exportSession()">
-                        📄 Export
-                    </button>
+        <!-- Coaching Tab -->
+        <div id="coachingTab" class="tab-content">
+            <div class="coaching-layout">
+                <!-- Method-Specific Tools -->
+                <div class="method-tools">
+                    <div class="tools-title">
+                        <span id="toolsIcon">🎯</span>
+                        <span id="toolsTitle">Coaching-Tools</span>
+                    </div>
+                    <div id="methodToolsContainer">
+                        <!-- Tools will be loaded dynamically -->
+                    </div>
                 </div>
-            </div>
 
-            <!-- AI Assistant Panel -->
-            <div class="ai-panel" id="aiPanel" style="display: none;">
-                <div class="ai-title">
-                    🤖 KI-Assistent Vorschläge
-                </div>
-                <div class="ai-suggestions" id="aiSuggestions">
-                    <!-- AI suggestions will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Chat Messages -->
-            <div class="chat-messages" id="chatMessages">
-                <div class="message client">
-                    <div class="message-avatar avatar-client">SW</div>
-                    <div class="message-content">
-                        <div class="message-sender">Sarah Weber</div>
-                        <div class="message-text">Hallo! Ich freue mich auf unsere heutige Session. Ich hatte diese Woche wieder viel Stress im Marketing-Team und würde gerne darüber sprechen.</div>
-                        <div class="message-time">vor 2 Minuten</div>
+                <!-- Prompt Editor (renamed from original) -->
+                <div class="prompt-editor">
+                    <h3 style="margin-bottom: 20px; color: #1e293b;">✏️ Session Führung</h3>
+                    <textarea id="promptEditor" placeholder="Coaching-Impulse und Interventionen für die aktuelle Session..."></textarea>
+                    <div class="editor-actions">
+                        <button class="send-btn" onclick="sendToCollaboration()">📤 An Coachee senden</button>
+                        <button class="send-btn" onclick="openCollaborationWindow()">🔗 Kollaborations-Fenster öffnen</button>
+                        <button onclick="clearEditor()" style="background: #6b7280; color: white;">🗑️ Leeren</button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Chat Input -->
-            <div class="chat-input">
-                <div class="input-container">
-                    <textarea class="message-input" 
-                             placeholder="Ihre Antwort eingeben... (Strg+Enter zum Senden)"
-                             id="messageInput"
-                             rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                        ➤
+        <!-- Kollaboration Tab -->
+        <div id="collaborationTab" class="tab-content">
+            <h2 style="margin-bottom: 25px; color: #1e293b;">🤝 Live Session Monitor</h2>
+            <div class="collaboration-monitor">
+                <div class="monitor-header">
+                    <span>Status: <span id="connectionStatus">Bereit</span></span>
+                    <button onclick="openCollaborationWindow()" class="open-collab-btn">
+                        🔗 Coachee-Fenster öffnen
                     </button>
+                </div>
+                <div class="collaboration-messages" id="collaborationMessages">
+                    <div style="text-align: center; color: #64748b; padding: 40px;">
+                        Hier sehen Sie den Live-Dialog mit dem Coachee.<br>
+                        Öffnen Sie das Coachee-Fenster für die Session.
+                    </div>
+                </div>
+                <div id="collaborationActions" style="display: none;">
+                    <!-- Aktionen werden hier angezeigt -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Coach-KI Tab -->
+        <div id="coachkiTab" class="tab-content">
+            <div class="coachki-container">
+                <h2 style="color: #1e293b; margin-bottom: 25px; display: flex; align-items: center;">
+                    🧠 Coach-KI Assistance
+                    <span style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.9rem; margin-left: 15px;">Live Support</span>
+                </h2>
+                
+                <!-- Schnellzugriff Bereiche -->
+                <div class="quick-access">
+                    <button onclick="loadProcessSupport()" class="quick-btn process">
+                        ⚙️ Prozess-Support
+                    </button>
+                    <button onclick="loadMethodenBeratung()" class="quick-btn methods">
+                        🛠️ Methoden-Beratung
+                    </button>
+                    <button onclick="loadInterventionshilfe()" class="quick-btn intervention">
+                        🎯 Interventionshilfe
+                    </button>
+                    <button onclick="loadNotfallSupport()" class="quick-btn emergency">
+                        🚨 Notfall-Support
+                    </button>
+                </div>
+
+                <!-- Coach-Eingabe -->
+                <div class="coach-input-section">
+                    <label class="input-label">
+                        💬 Session-Situation beschreiben:
+                    </label>
+                    <textarea id="coachInput" placeholder="Beschreiben Sie die aktuelle Session-Situation, Herausforderung oder benötigte Intervention..."></textarea>
+                </div>
+
+                <!-- Kontext-Info -->
+                <div class="context-grid">
+                    <div>
+                        <label class="context-label">Session-Phase:</label>
+                        <select id="sessionPhase" class="context-select">
+                            <option>Phase 1: Problem & Ziel</option>
+                            <option>Phase 2: Analyse</option>
+                            <option>Phase 3: Lösung</option>
+                            <option>Phase 4: Umsetzung</option>
+                            <option>Meta: Prozessreflexion</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="context-label">Coachee-Typ:</label>
+                        <select id="coacheeType" class="context-select">
+                            <option>Führungskraft</option>
+                            <option>Entrepreneur</option>
+                            <option>Übergangsphase</option>
+                            <option>Team/Gruppe</option>
+                            <option>Paar</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="context-label">Dringlichkeit:</label>
+                        <select id="urgency" class="context-select">
+                            <option>Normal</option>
+                            <option>Live-Support</option>
+                            <option>Notfall</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button onclick="askCoachKI()" class="ask-ki-btn">
+                        🧠 Coach-KI fragen
+                    </button>
+                    <button onclick="clearCoachInput()" class="clear-btn">
+                        🗑️ Leeren
+                    </button>
+                </div>
+
+                <!-- KI-Antwort Bereich -->
+                <div id="coachKIResponse" class="ki-response" style="display: none;">
+                    <h3 class="response-header">
+                        🤖 Coach-KI Empfehlung
+                        <span id="responseCategory" class="response-category"></span>
+                    </h3>
+                    <div id="coachKIResponseContent" class="response-content"></div>
+                    
+                    <!-- Follow-up Aktionen -->
+                    <div id="followUpActions" class="follow-up-actions" style="display: none;">
+                        <button onclick="implementSuggestion()" class="follow-up-btn implement">
+                            ✅ Umsetzen
+                        </button>
+                        <button onclick="getAlternativeAdvice()" class="follow-up-btn alternative">
+                            🔄 Alternative
+                        </button>
+                        <button onclick="deepDive()" class="follow-up-btn deep-dive">
+                            🔍 Vertiefen
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -636,11 +420,7 @@
 
     <script>
         let currentClient = null;
-        let currentMethod = 'solution-focused';
-        let sessionStartTime = Date.now();
-        let timerInterval = null;
-        let aiEnabled = false;
-        let sessionMessages = [];
+        let currentMethod = null;
 
         // Method configurations
         const methodConfigs = {
@@ -727,45 +507,38 @@
             'demo-5': { name: 'Lisa Müller', role: 'Vertriebsleiterin', avatar: 'LM' }
         };
 
-        function loadClientFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const clientId = urlParams.get('client');
+        function selectMethod(method) {
+            // Remove previous selection
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('selected');
+            });
             
-            if (clientId && demoClients[clientId]) {
-                currentClient = demoClients[clientId];
-                updateClientDisplay();
+            // Add selection to clicked option
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            
+            currentMethod = method;
+            updateMethodDisplay();
+            loadMethodTools();
+            
+            // Hide method selection, show client info if client is selected
+            document.getElementById('methodSelection').style.display = 'none';
+            if (currentClient) {
+                document.getElementById('clientInfoPanel').style.display = 'block';
             }
-        }
-
-        function loadMethodFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const method = urlParams.get('method');
-            
-            if (method && methodConfigs[method]) {
-                currentMethod = method;
-                updateMethodDisplay();
-                loadMethodTools();
-            }
-        }
-
-        function updateClientDisplay() {
-            if (!currentClient) return;
-            
-            document.getElementById('clientAvatarLarge').textContent = currentClient.avatar;
-            document.getElementById('clientNameLarge').textContent = currentClient.name;
-            document.getElementById('clientRoleLarge').textContent = currentClient.role;
-            document.getElementById('chatTitle').textContent = `Live Session - ${currentClient.name}`;
         }
 
         function updateMethodDisplay() {
+            if (!currentMethod) return;
+            
             const config = methodConfigs[currentMethod];
-            document.getElementById('methodDisplay').innerHTML = `${config.icon} ${config.name}`;
-            document.getElementById('methodShort').textContent = config.short;
+            document.getElementById('selectedMethodName').textContent = config.short;
             document.getElementById('toolsIcon').textContent = config.icon;
             document.getElementById('toolsTitle').textContent = config.name + ' Tools';
         }
 
         function loadMethodTools() {
+            if (!currentMethod) return;
+            
             const config = methodConfigs[currentMethod];
             const container = document.getElementById('methodToolsContainer');
             
@@ -777,205 +550,133 @@
         }
 
         function useTool(prompt) {
-            // Add AI suggestion based on tool
-            if (aiEnabled) {
-                addAISuggestion(prompt);
+            // Insert prompt into editor
+            document.getElementById('promptEditor').value = prompt;
+            document.getElementById('promptEditor').focus();
+            
+            // Switch to coaching tab if not already there
+            showTab('coaching');
+        }
+
+        function loadClientFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const clientId = urlParams.get('client');
+            const method = urlParams.get('method');
+            
+            if (clientId && demoClients[clientId]) {
+                currentClient = demoClients[clientId];
+                updateClientDisplay();
+            }
+            
+            if (method && methodConfigs[method]) {
+                selectMethod(method);
             } else {
-                // Insert prompt into message input
-                document.getElementById('messageInput').value = prompt;
-                document.getElementById('messageInput').focus();
+                // Show method selection if no method specified
+                document.getElementById('methodSelection').style.display = 'block';
             }
         }
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const elapsed = Date.now() - sessionStartTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                document.getElementById('sessionTimer').textContent = 
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
+        function updateClientDisplay() {
+            if (!currentClient) return;
+            
+            document.getElementById('clientAvatar').textContent = currentClient.avatar;
+            document.getElementById('clientName').textContent = currentClient.name;
+            document.getElementById('clientRole').textContent = currentClient.role;
+            
+            if (currentMethod) {
+                document.getElementById('clientInfoPanel').style.display = 'block';
+            }
         }
 
-        function toggleAI() {
-            aiEnabled = !aiEnabled;
-            const panel = document.getElementById('aiPanel');
-            const toggleText = document.getElementById('aiToggleText');
+        // Integration with existing coach.js functions
+        function sendToCollaboration() {
+            const content = document.getElementById('promptEditor').value;
+            if (!content.trim()) {
+                alert('Bitte geben Sie einen Coaching-Impuls ein.');
+                return;
+            }
             
-            if (aiEnabled) {
-                panel.style.display = 'block';
-                toggleText.textContent = '🤖 KI aus';
-                loadAISuggestions();
+            // Use existing communication functionality
+            if (typeof window.sendToCollaboration === 'function') {
+                window.sendToCollaboration(content);
             } else {
-                panel.style.display = 'none';
-                toggleText.textContent = '🤖 KI ein';
+                alert('Coaching-Impuls würde an Coachee gesendet: ' + content);
             }
         }
 
-        function loadAISuggestions() {
-            const config = methodConfigs[currentMethod];
-            const suggestions = [
-                `Basierend auf ${config.name}: Wie könnten Sie das Gespräch vertiefen?`,
-                `${config.icon} Methodenvorschlag: Nutzen Sie eine spezifische Technik`,
-                `Reflexionsfrage: Was würde Ihrer Einschätzung nach hier weiterhelfen?`
-            ];
-            
-            const container = document.getElementById('aiSuggestions');
-            container.innerHTML = suggestions.map(suggestion => `
-                <div class="ai-suggestion" onclick="useAISuggestion('${suggestion}')">
-                    ${suggestion}
-                </div>
-            `).join('');
-        }
-
-        function addAISuggestion(text) {
-            const container = document.getElementById('aiSuggestions');
-            const suggestionDiv = document.createElement('div');
-            suggestionDiv.className = 'ai-suggestion';
-            suggestionDiv.textContent = text;
-            suggestionDiv.onclick = () => useAISuggestion(text);
-            container.appendChild(suggestionDiv);
-        }
-
-        function useAISuggestion(suggestion) {
-            document.getElementById('messageInput').value = suggestion;
-            document.getElementById('messageInput').focus();
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            // Add coach message
-            addMessage('coach', 'Coach', message);
-            input.value = '';
-            
-            // Auto-resize textarea
-            input.style.height = 'auto';
-            
-            // Simulate client response after delay
-            setTimeout(() => {
-                simulateClientResponse(message);
-            }, 1500 + Math.random() * 2000);
-        }
-
-        function addMessage(type, sender, text) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            
-            const avatarClass = type === 'coach' ? 'avatar-coach' : 
-                              type === 'ai' ? 'avatar-ai' : 'avatar-client';
-            const avatar = type === 'coach' ? 'C' : 
-                          type === 'ai' ? 'AI' : (currentClient ? currentClient.avatar : 'K');
-            
-            messageDiv.innerHTML = `
-                <div class="message-avatar ${avatarClass}">${avatar}</div>
-                <div class="message-content">
-                    <div class="message-sender">${sender}</div>
-                    <div class="message-text">${text}</div>
-                    <div class="message-time">${new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'})}</div>
-                </div>
-            `;
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Store message
-            sessionMessages.push({ type, sender, text, timestamp: Date.now() });
-        }
-
-        function simulateClientResponse(coachMessage) {
-            const responses = [
-                "Das ist ein interessanter Punkt. Ich denke, das könnte mir wirklich helfen.",
-                "Ja, das macht Sinn. Ich merke, dass ich das anders betrachten kann.",
-                "Hmm, darüber habe ich noch nicht so gedacht. Das gibt mir neue Perspektiven.",
-                "Das trifft genau ins Schwarze. Ich spüre, dass sich etwas in mir bewegt.",
-                "Vielen Dank für diese Frage. Das bringt mich zum Nachdenken."
-            ];
-            
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            const clientName = currentClient ? currentClient.name : 'Klient';
-            addMessage('client', clientName, randomResponse);
-        }
-
-        function saveSession() {
-            const sessionData = {
-                client: currentClient,
-                method: currentMethod,
-                startTime: sessionStartTime,
-                duration: Date.now() - sessionStartTime,
-                messages: sessionMessages,
-                notes: document.getElementById('liveNotes').value
-            };
-            
-            // Simulate save
-            alert('Session erfolgreich gespeichert!');
-            console.log('Session saved:', sessionData);
-        }
-
-        function endSession() {
-            if (confirm('Möchten Sie die Session wirklich beenden?')) {
-                saveSession();
-                window.location.href = '/app';
+        function openCollaborationWindow() {
+            // Use existing functionality
+            if (typeof window.openCollaborationWindow === 'function') {
+                window.openCollaborationWindow();
+            } else {
+                alert('Kollaborations-Fenster würde geöffnet');
             }
         }
 
-        function exportSession() {
-            const sessionData = {
-                client: currentClient?.name || 'Unbekannt',
-                method: methodConfigs[currentMethod].name,
-                date: new Date().toLocaleDateString('de-DE'),
-                duration: document.getElementById('sessionTimer').textContent,
-                messages: sessionMessages,
-                notes: document.getElementById('liveNotes').value
-            };
+        function clearEditor() {
+            document.getElementById('promptEditor').value = '';
+        }
+
+        // Original coach.js functions placeholders
+        function startSession() {
+            if (currentClient && currentMethod) {
+                alert(`Session startet mit ${currentClient.name} - ${methodConfigs[currentMethod].name}`);
+                showTab('coaching');
+            } else {
+                alert('Bitte wählen Sie einen Klienten und eine Methode.');
+            }
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            const dataStr = JSON.stringify(sessionData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `session-${currentClient?.name || 'unknown'}-${Date.now()}.json`;
-            link.click();
+            // Hide all tab buttons active state
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         }
 
-        function initializeKeyboardShortcuts() {
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    sendMessage();
-                }
-                if (e.key === 'Escape') {
-                    if (confirm('Session beenden?')) {
-                        endSession();
-                    }
-                }
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.getAttribute('data-tab');
+                showTab(tab);
             });
+        });
 
-            // Auto-resize textarea
-            const messageInput = document.getElementById('messageInput');
-            messageInput.addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-            });
-        }
+        // Coach-KI functions (placeholders)
+        function loadProcessSupport() { alert('Prozess-Support wird geladen...'); }
+        function loadMethodenBeratung() { alert('Methoden-Beratung wird geladen...'); }
+        function loadInterventionshilfe() { alert('Interventionshilfe wird geladen...'); }
+        function loadNotfallSupport() { alert('Notfall-Support wird geladen...'); }
+        function askCoachKI() { alert('Coach-KI wird befragt...'); }
+        function clearCoachInput() { document.getElementById('coachInput').value = ''; }
+        function implementSuggestion() { alert('Empfehlung wird umgesetzt...'); }
+        function getAlternativeAdvice() { alert('Alternative wird gesucht...'); }
+        function deepDive() { alert('Vertiefung wird geladen...'); }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadClientFromURL();
-            loadMethodFromURL();
-            initializeKeyboardShortcuts();
-            startTimer();
             
-            // Auto-select first method if none provided
-            if (!currentMethod || !methodConfigs[currentMethod]) {
-                currentMethod = 'solution-focused';
-                updateMethodDisplay();
-                loadMethodTools();
+            // Load clients if the function exists
+            if (typeof window.loadClients === 'function') {
+                window.loadClients();
             }
         });
     </script>
+
+    <script src="data/prompts.js"></script>
+    <script src="data/clients.js"></script>
+    <script src="js/communication.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/coach.js"></script>
 </body>
 </html>
