@@ -139,10 +139,41 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        
+        .workflow-info {
+            background: #f8fafc;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .workflow-step {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+        }
+        
+        .workflow-step.active {
+            background: #3b82f6;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <a href="/" class="back-button">← Zurück zur Startseite</a>
+    <a href="/landing" class="back-button">← Zurück zur Startseite</a>
     
     <div class="demo-container">
         <div class="demo-header">
@@ -151,6 +182,17 @@
         </div>
         
         <div class="method-selection">
+            <div class="workflow-info">
+                <h3>🚀 Demo-Workflow</h3>
+                <p>Nach der Method-Auswahl öffnet sich das komplette Mission Control mit Admin Dashboard</p>
+                <div class="workflow-steps">
+                    <div class="workflow-step">1. Landing Page</div>
+                    <div class="workflow-step active">2. Methode wählen</div>
+                    <div class="workflow-step">3. Mission Control</div>
+                    <div class="workflow-step">4. Admin Dashboard</div>
+                </div>
+            </div>
+            
             <div class="method-grid">
                 <div class="method-card" onclick="startDemo('systemic', 'demo-5')">
                     <span class="method-icon">🔄</span>
@@ -214,11 +256,11 @@
             </div>
             
             <div style="text-align: center; margin-top: 40px; padding: 30px; background: #f8fafc; border-radius: 15px;">
-                <h3 style="color: #1f2937; margin-bottom: 15px;">🚀 Warum die Universal Platform?</h3>
+                <h3 style="color: #1f2937; margin-bottom: 15px;">🚀 Was passiert nach der Auswahl?</h3>
                 <p style="color: #6b7280; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-                    <strong>6 bewährte Coaching-Methoden</strong> in einer Software. 
-                    Wählen Sie für jeden Klienten die optimale Methode oder kombinieren Sie verschiedene Ansätze. 
-                    <strong>Professional Grade System</strong> für Ihren Coaching-Erfolg.
+                    <strong>Mission Control öffnet sich</strong> mit der gewählten Methode und dem Demo-Klienten. 
+                    Sie sehen das <strong>Method Info Panel</strong> oben und haben Zugriff auf alle 
+                    <strong>5 Tabs inklusive Admin Dashboard</strong> mit Statistiken, Terminkalender und Abrechnungen.
                 </p>
             </div>
         </div>
@@ -229,12 +271,80 @@
         function startDemo(method, client) {
             console.log('🎯 Starting demo:', method, 'with client:', client);
             
-            // Zu Coaching-Interface mit gewählter Methode und Demo-Klient weiterleiten
-            const coachingUrl = `/coaching?method=${method}&client=${client}`;
-            console.log('🔗 Redirecting to:', coachingUrl);
+            // Zu Mission Control mit gewählter Methode und Demo-Klient weiterleiten
+            const missionControlUrl = `/?method=${method}&client=${client}`;
+            console.log('🔗 Redirecting to Mission Control:', missionControlUrl);
             
-            // Sofortige Weiterleitung
-            window.location.href = coachingUrl;
+            // Loading-Animation anzeigen
+            showLoadingAnimation(method, client);
+            
+            // Nach kurzer Verzögerung weiterleiten (für UX)
+            setTimeout(() => {
+                window.location.href = missionControlUrl;
+            }, 1500);
+        }
+        
+        function showLoadingAnimation(method, client) {
+            // Overlay erstellen
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(59, 130, 246, 0.95);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+                font-family: system-ui;
+            `;
+            
+            const methodNames = {
+                'systemic': 'Systemisches Coaching',
+                'solution': 'Lösungsorientiertes Coaching',
+                'values': 'Werte- & Sinnorientiertes Coaching',
+                'gestalt': 'Gestalt-/Erlebnisorientiertes Coaching',
+                'triadic': 'Triadisches KI-Coaching',
+                'resource': 'Ressourcenorientiertes Coaching'
+            };
+            
+            const clientNames = {
+                'demo-1': 'Marcus Weber',
+                'demo-2': 'Sarah Klein',
+                'demo-3': 'Thomas Müller',
+                'demo-4': 'Anna Schmidt',
+                'demo-5': 'Lisa Müller'
+            };
+            
+            overlay.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 20px; animation: pulse 1.5s infinite;">🎯</div>
+                    <h2 style="font-size: 2rem; margin-bottom: 15px;">Mission Control wird gestartet...</h2>
+                    <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px;">
+                        <strong>Methode:</strong> ${methodNames[method]}<br>
+                        <strong>Demo-Klient:</strong> ${clientNames[client]}
+                    </p>
+                    <div style="width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; overflow: hidden;">
+                        <div style="width: 100%; height: 100%; background: white; animation: loading 1.5s ease-in-out infinite;"></div>
+                    </div>
+                </div>
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.1); }
+                    }
+                    @keyframes loading {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(100%); }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(overlay);
         }
         
         // Hover-Effekte für bessere UX
@@ -252,6 +362,7 @@
         console.log('🎯 Method Selection Interface geladen');
         console.log('✅ Verfügbare Methoden: systemic, solution, values, gestalt, triadic, resource');
         console.log('✅ Demo-Klienten: demo-1 bis demo-5');
+        console.log('🔗 Ziel: Mission Control mit URL-Parametern');
     </script>
 </body>
 </html>
